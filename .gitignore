@@ -46,12 +46,3 @@ Thumbs.db
 *.ini
 *.log
 *.zip
-
-#Wwise
-*.wsettings
-*.validationcache
-*.akd
-*.akpk
-ViralCurse/ViralCurse_WwiseProject/.cache/
-ViralCurse/ViralCurse_WwiseProject/Originals/
-ViralCurse/ViralCurse_WwiseProject/GeneratedSoundBanks/
