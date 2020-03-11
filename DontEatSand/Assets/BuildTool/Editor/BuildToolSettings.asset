@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: -1788727018, guid: 9a726e73091c81041b47387b76fc5a35, type: 3}
   m_Name: BuildToolSettings
   m_EditorClassIdentifier: 
-  buildRepository: 
+  buildRepository: ChrisViral/DontEatSand
   useWebService: 0
   versionURL: 
   developmentBuild: 0
   publishRelease: 1
   outputFolder: 
   targetFlags: 0
-  copyOnBuild: []
+  copyOnBuild:
+  - path: credits.txt
+    location: 0
+  - path: readme.txt
+    location: 0
