@@ -8,60 +8,55 @@ namespace RTSCam
     public class RTSCamera : MonoBehaviour
     {
 
-        #region Foldouts
 #if UNITY_EDITOR
+        #region Editor GUI Fields
         public int lastTab;
-        public bool movementSettingsFoldout;
-        public bool zoomingSettingsFoldout;
-        public bool rotationSettingsFoldout;
-        public bool heightSettingsFoldout;
-        public bool mapLimitSettingsFoldout;
-        public bool targetingSettingsFoldout;
-        public bool inputSettingsFoldout;
+        public bool movementFoldout;
+        public bool zoomingFoldout;
+        public bool rotationFoldout;
+        public bool heightFoldout;
+        public bool mapLimitFoldout;
+        public bool targetingFoldout;
+        public bool inputFoldout;
+        #endregion
 #endif
+
+        #region Static properties
+        private static Vector2 MouseInput => Input.mousePosition;
+
+        private static Vector2 MouseAxis => new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         #endregion
 
-        public bool useFixedUpdate; //use FixedUpdate() or Update()
-
-        #region Movement
-        public float keyboardMovementSpeed = 5f; //speed with keyboard movement
-        public float screenEdgeMovementSpeed = 3f; //speed with screen edge movement
-        public float followingSpeed = 5f; //speed when following a target
+        #region Fields
+        //Movement
+        public bool useFixedUpdate; //Use FixedUpdate() or Update()
+        public float keyboardMovementSpeed = 5f; //Speed with keyboard movement
+        public float screenEdgeMovementSpeed = 3f; //Speed with screen edge movement
+        public float followingSpeed = 5f; //Speed when following a target
         public float rotationSped = 3f;
         public float panningSpeed = 10f;
         public float mouseRotationSpeed = 10f;
-        #endregion
 
-        #region Height
+        //Height
         public bool autoHeight = true;
-        public LayerMask groundMask = -1; //layermask of ground or other objects that affect height
-
-        public float maxHeight = 10f; //maximal height
-        public float minHeight = 15f; //minimal height
+        public LayerMask groundMask = -1; //Layermask of ground or other objects that affect height
+        public float maxHeight = 10f; //Maximal height
+        public float minHeight = 15f; //Minimal height
         public float heightDampening = 5f;
         public float keyboardZoomingSensitivity = 2f;
         public float scrollWheelZoomingSensitivity = 25f;
+        private float zoomPos; //Value in range (0, 1) used as t in Mathf.Lerp
 
-        private float zoomPos; //value in range (0, 1) used as t in Mathf.Lerp
-        #endregion
-
-        #region MapLimits
+        //Map limits
         public bool limitMap = true;
-        public float limitX = 50f; //x limit of map
-        public float limitY = 50f; //z limit of map
-        #endregion
+        public float limitX = 50f; //X limit of map
+        public float limitY = 50f; //Z limit of map
 
-        #region Targeting
-        public Transform targetFollow; //target to follow
+        //Targeting
+        public Transform targetFollow; //Target to follow
         public Vector3 targetOffset;
 
-        /// <summary>
-        /// are we following target
-        /// </summary>
-        public bool FollowingTarget => this.targetFollow != null;
-        #endregion
-
-        #region Input
+        //Input
         public bool useScreenEdgeInput = true;
         public float screenEdgeBorder = 25f;
 
@@ -85,14 +80,17 @@ namespace RTSCam
 
         public bool useMouseRotation = true;
         public KeyCode mouseRotationKey = KeyCode.Mouse1;
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// If we are following a target
+        /// </summary>
+        public bool FollowingTarget => this.targetFollow != null;
 
         private Vector2 KeyboardInput => this.useKeyboardInput ? new Vector2(Input.GetAxis(this.horizontalAxis), Input.GetAxis(this.verticalAxis)) : Vector2.zero;
 
-        private static Vector2 MouseInput => Input.mousePosition;
-
         private float ScrollWheel => Input.GetAxis(this.zoomingAxis);
-
-        private static Vector2 MouseAxis => new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
         private int ZoomDirection
         {
@@ -100,13 +98,21 @@ namespace RTSCam
             {
                 bool zoomIn = Input.GetKey(this.zoomInKey);
                 bool zoomOut = Input.GetKey(this.zoomOutKey);
-                if (zoomIn && zoomOut)
-                    return 0;
-                if (!zoomIn && zoomOut)
+                if (zoomOut)
+                {
+                    if (!zoomIn)
+                    {
+                        //Zooming out
+                        return -1;
+                    }
+                }
+                else if (zoomIn)
+                {
+                    //Zooming in
                     return 1;
-                if (zoomIn)
-                    return -1;
+                }
 
+                //Doing both/none
                 return 0;
             }
         }
@@ -115,42 +121,45 @@ namespace RTSCam
         {
             get
             {
-                bool rotateRight = Input.GetKey(this.rotateRightKey);
-                bool rotateLeft = Input.GetKey(this.rotateLeftKey);
-                if(rotateLeft && rotateRight)
-                    return 0;
-                if(rotateLeft)
-                    return -1;
-                return rotateRight ? 1 : 0;
+                bool right = Input.GetKey(this.rotateRightKey);
+                bool left = Input.GetKey(this.rotateLeftKey);
+                if (left)
+                {
+                    if (!right)
+                    {
+                        return -1;
+                    }
+                }
+                else if (right)
+                {
+                    return 1;
+                }
+
+                return 0;
             }
         }
 
-        #endregion
-
-        #region Unity_Methods
-        private void Update()
-        {
-            if (!this.useFixedUpdate)
-                CameraUpdate();
-        }
-
-        private void FixedUpdate()
-        {
-            if (this.useFixedUpdate)
-                CameraUpdate();
-        }
-        #endregion
-
-        #region RTSCamera_Methods
         /// <summary>
-        /// update camera movement and rotation
+        /// Vertical distance from the camera to the ground
+        /// </summary>
+        private float DistanceToGround
+        {
+            get
+            {
+                Vector3 pos = this.transform.position;
+                return Physics.Raycast(pos, Vector3.down, out RaycastHit hit, this.groundMask.value) ? hit.distance : 0f;
+            }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Update camera movement and rotation
         /// </summary>
         private void CameraUpdate()
         {
-            if (this.FollowingTarget)
-                FollowTarget();
-            else
-                Move();
+            if (this.FollowingTarget) { FollowTarget(); }
+            else { Move(); }
 
             HeightCalculation();
             Rotation();
@@ -158,7 +167,7 @@ namespace RTSCam
         }
 
         /// <summary>
-        /// move camera with keyboard or with screen edge
+        /// Move camera with keyboard or with screen edge
         /// </summary>
         private void Move()
         {
@@ -208,11 +217,11 @@ namespace RTSCam
         }
 
         /// <summary>
-        /// calculate height
+        /// Calculate height
         /// </summary>
         private void HeightCalculation()
         {
-            float distanceToGround = DistanceToGround();
+            float distanceToGround = this.DistanceToGround;
             if(this.useScrollwheelZooming) this.zoomPos += this.ScrollWheel * Time.deltaTime * this.scrollWheelZoomingSensitivity;
             if (this.useKeyboardZooming) this.zoomPos += this.ZoomDirection * Time.deltaTime * this.keyboardZoomingSensitivity;
 
@@ -222,72 +231,78 @@ namespace RTSCam
             float difference = 0;
 
             if(Math.Abs(distanceToGround - targetHeight) > 0.001f)
+            {
                 difference = targetHeight - distanceToGround;
+            }
 
-            this.transform.position = Vector3.Lerp(this.transform.position,
-                                                   new Vector3(this.transform.position.x, targetHeight + difference, this.transform.position.z), Time.deltaTime * this.heightDampening);
+            Vector3 pos = this.transform.position;
+            this.transform.position = Vector3.Lerp(pos, new Vector3(pos.x, targetHeight + difference, pos.z), Time.deltaTime * this.heightDampening);
         }
 
         /// <summary>
-        /// rotate camera
+        /// Rotate camera
         /// </summary>
         private void Rotation()
         {
-            if(this.useKeyboardRotation) this.transform.Rotate(Vector3.up, this.RotationDirection * Time.deltaTime * this.rotationSped, Space.World);
+            if (this.useKeyboardRotation)
+            {
+                this.transform.Rotate(Vector3.up, this.RotationDirection * Time.deltaTime * this.rotationSped, Space.World);
+            }
 
             if (this.useMouseRotation && Input.GetKey(this.mouseRotationKey))
+            {
                 this.transform.Rotate(Vector3.up, -MouseAxis.x * Time.deltaTime * this.mouseRotationSpeed, Space.World);
+            }
         }
 
         /// <summary>
-        /// follow target if target != null
+        /// Follow target if target != null
         /// </summary>
         private void FollowTarget()
         {
-            Vector3 targetPos = new Vector3(this.targetFollow.position.x, this.transform.position.y, this.targetFollow.position.z) + this.targetOffset;
-            this.transform.position = Vector3.MoveTowards(this.transform.position, targetPos, Time.deltaTime * this.followingSpeed);
+            Vector3 pos = this.transform.position, targetPos = this.targetFollow.position;
+            this.transform.position = Vector3.MoveTowards(pos, new Vector3(targetPos.x, pos.y, targetPos.z) + this.targetOffset, Time.deltaTime * this.followingSpeed);
         }
 
         /// <summary>
-        /// limit camera position
+        /// Limit camera position
         /// </summary>
         private void LimitPosition()
         {
-            if (!this.limitMap)
-                return;
+            if (!this.limitMap) { return; }
 
-            this.transform.position = new Vector3(Mathf.Clamp(this.transform.position.x, -this.limitX, this.limitX),
-                                                  this.transform.position.y,
-                                                  Mathf.Clamp(this.transform.position.z, -this.limitY, this.limitY));
+            Vector3 pos = this.transform.position;
+            this.transform.position = new Vector3(Mathf.Clamp(pos.x, -this.limitX, this.limitX), pos.y, Mathf.Clamp(pos.z, -this.limitY, this.limitY));
         }
 
         /// <summary>
-        /// set the target
+        /// Set the target
         /// </summary>
-        /// <param name="target"></param>
-        public void SetTarget(Transform target)
-        {
-            this.targetFollow = target;
-        }
+        /// <param name="target">New target to follow</param>
+        public void SetTarget(Transform target) => this.targetFollow = target;
 
         /// <summary>
-        /// reset the target (target is set to null)
+        /// Reset the target to null
         /// </summary>
-        public void ResetTarget()
+        public void ResetTarget() => this.targetFollow = null;
+        #endregion
+
+        #region Functions
+        private void Update()
         {
-            this.targetFollow = null;
+            if (!this.useFixedUpdate)
+            {
+                CameraUpdate();
+            }
         }
 
-        /// <summary>
-        /// calculate distance to ground
-        /// </summary>
-        /// <returns></returns>
-        private float DistanceToGround()
+        private void FixedUpdate()
         {
-            Ray ray = new Ray(this.transform.position, Vector3.down);
-            return Physics.Raycast(ray, out RaycastHit hit, this.groundMask.value) ? (hit.point - this.transform.position).magnitude : 0f;
+            if (this.useFixedUpdate)
+            {
+                CameraUpdate();
+            }
         }
-
         #endregion
     }
 }
