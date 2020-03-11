@@ -1,0 +1,1092 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BuildTool</name>
+    </assembly>
+    <members>
+        <member name="T:BuildTool.Builder">
+            <summary>
+            Unity builder class
+            </summary>
+        </member>
+        <member name="M:BuildTool.Builder.BuildAll(BuildTool.BuildToolSettings,UnityEditor.BuildTarget[],System.Boolean[]@,System.Boolean)">
+            <summary>
+            Builds all the players for the given targets
+            </summary>
+            <param name="settings">The settings to build for</param>
+            <param name="targets">Targets to build for</param>
+            <param name="success">An array containing the success of each build</param>
+            <param name="resetTarget">If the buildTarget should be reset at the end of the build</param>
+        </member>
+        <member name="M:BuildTool.Builder.Build(BuildTool.BuildToolSettings,UnityEditor.BuildTarget)">
+            <summary>
+            Builds the game for the given platform
+            </summary>
+            <param name="settings">Settings to build for</param>
+            <param name="target">Target to build</param>
+            <exception cref="T:UnityEditor.Build.BuildFailedException">If the build failed for any reason</exception>
+        </member>
+        <member name="T:BuildTool.BuildToolSettings">
+            <summary>
+            Build tool settings object
+            </summary>
+        </member>
+        <member name="T:BuildTool.BuildToolSettings.BuildToolSettingsEditor">
+            <summary>
+            Custom Inspector for this type of asset
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildToolSettings.BuildToolSettingsEditor.OnInspectorGUI">
+            <summary>
+            Generate the inspector GUI
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.filePath">
+            <summary>
+            Settings file name
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.BUILD_REPOSITORY_NAME">
+            <summary>
+            Name of the BuildRepository SerializedProperty
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.USE_WEB_SERVICE_NAME">
+            <summary>
+            Name of the UseWebService SerializedProperty
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.VERSION_URL_NAME">
+            <summary>
+            Name of the VersionURL SerializedProperty
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.DEVELOPMENT_BUILD_NAME">
+            <summary>
+            Name of the DevelopmentBuild SerializedProperty
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.PUBLISH_RELEASE_NAME">
+            <summary>
+            Name of the PublishRelease SerializedProperty
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.OUTPUT_FOLDER_NAME">
+            <summary>
+            Name of the OutputFolder SerializedProperty
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.TARGET_FLAGS_NAME">
+            <summary>
+            Name of the TargetFlags SerializedProperty
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolSettings.COPY_ON_BUILD_NAME">
+            <summary>
+            Name of the CopyOnBuild SerializedProperty
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.BuildRepository">
+            <summary>
+            The last used build repository
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.UseWebService">
+            <summary>
+            If a BuildVersion web service is used
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.VersionURL">
+            <summary>
+            The URL of the hosted Version API
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.DevelopmentBuild">
+            <summary>
+            If the build to do must be a development build or not
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.PublishRelease">
+            <summary>
+            If the release should be published to GitHub or not
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.OutputFolder">
+            <summary>
+            The local path of the build output directory
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.TargetFlags">
+            <summary>
+            Platform targets to build
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolSettings.CopyOnBuild">
+            <summary>
+            List of files and folders to copy on build
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildToolSettings.Load">
+            <summary>
+            Loads the BuildToolSettings asset into memory, else creates it
+            </summary>
+        </member>
+        <member name="T:BuildTool.BuildTargetFlags">
+            <summary>
+            The BuildTarget enum under flag form, intended to pass multiple targets to build at once
+            </summary>
+        </member>
+        <member name="T:BuildTool.BuildToolUtils">
+            <summary>
+            Utility methods for the BuildTool
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolUtils.targetNames">
+            <summary>
+            Dictionary giving a nice name for BuildTargets
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolUtils.targets">
+            <summary>
+            Array containing BuildTargetFlags and their equivalent BuildTarget
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolUtils.Red">
+            <summary>
+            Red colour used throughout the UI
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolUtils.Green">
+            <summary>
+            Green colour used throughout the UI
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildToolUtils.separatorString">
+            <summary>
+            The directory separator char as a string
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolUtils.DataPath">
+            <summary>
+            The path to the data directory
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolUtils.ProductName">
+            <summary>
+            Name of the Product being built
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolUtils.ProjectFolderPath">
+            <summary>
+            Full path of the project folder
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildToolUtils.BackgroundStyle">
+            <summary>
+            The background style of the selection UI
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.GetBuildTargetName(UnityEditor.BuildTarget)">
+            <summary>
+            Gets the nice name for a given BuildTarget
+            </summary>
+            <param name="target">BuildTarget to get the name for</param>
+            <exception cref="T:System.NotSupportedException">The BuildTarget is not supported by the tool</exception>
+            <returns>The nice name of this given BuildTarget</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.GetTargets(BuildTool.BuildTargetFlags)">
+            <summary>
+            Gets all the BuildTargets out of a flag object
+            </summary>
+            <param name="flags">BuildTarget flags</param>
+            <returns>An Enumerable of the BuildTargets held in the flag</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.OpenProjectFilePanel(System.String,System.String)">
+            <summary>
+            Opens a file selection panel within the project folder and returns the relative path to the file selected
+            </summary>
+            <param name="title">Title for the file selection panel</param>
+            <param name="extension">Filter extension for files</param>
+            <returns>The relative path from the project root to the selected file</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.OpenProjectFolderPanel(System.String,System.String)">
+            <summary>
+            Opens a folder selection panel within the project folder and returns the relative path to the folder selected
+            </summary>
+            <param name="title">Title for the folder selection panel</param>
+            <param name="defaultName">Default selected folder name</param>
+            <returns>The relative path from the project root to the selected folder</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.GetAppDataPath(UnityEditor.BuildTarget,System.String)">
+            <summary>
+            Gets the relative path to the build's application data folder
+            </summary>
+            <param name="target">The BuildTarget to get the path for</param>
+            <param name="productName">Name of the product to look for, if omitted uses the default one</param>
+            <returns>The relative path to the application data folder, or an empty string if the platform isn't supported</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.GetRelativePath(System.String,System.String)">
+            <summary>
+            Gets the relative path to a given folder
+            </summary>
+            <param name="path">Path to get the relative for</param>
+            <param name="folder">Folder to get the relative from</param>
+            <returns>The relative path from the specified folder</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.CopyFileAsync(System.String,System.String)">
+            <summary>
+            Copies a file from a source path to a destination path asynchronously
+            </summary>
+            <param name="source">Source path to the file to copy</param>
+            <param name="destination">Destination path to copy to</param>
+            <returns>The awaitable copy I/O task</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.CopyFolderAsync(System.String,System.String)">
+            <summary>
+            Copies a folder and all it's contents recursively from a source path to a destination path asynchronously
+            </summary>
+            <param name="source">Source path to copy from</param>
+            <param name="destination">Destination path to copy to</param>
+            <exception cref="T:System.ArgumentNullException">If the source or destination directories are null</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">If the source directory cannot be found</exception>
+            <returns>The awaitable copy I/O task</returns>
+        </member>
+        <member name="M:BuildTool.BuildToolUtils.CreateZipAsync(System.String,System.String)">
+            <summary>
+            Creates a new zip file asynchronously at the given path, and adds the given source directory to it
+            </summary>
+            <param name="path">Path to create the zip file at</param>
+            <param name="source">Source directory to add to the zip file</param>
+            <returns>The task associated to this zip file creation</returns>
+        </member>
+        <member name="T:BuildTool.BuildVersion">
+            <summary>
+            Game build version object
+            </summary>
+        </member>
+        <member name="T:BuildTool.BuildVersion.VersionBump">
+            <summary>
+            Indicates what action should be done on the version number on build
+            </summary>
+        </member>
+        <member name="T:BuildTool.BuildVersion.VersionProxy">
+            <summary>
+            Proxy struct to serialize a Version object correctly
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersion.VersionProxy.major">
+            <summary>
+            Major version number
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersion.VersionProxy.minor">
+            <summary>
+            Minor version number
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersion.VersionProxy.build">
+            <summary>
+            Build version number
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersion.VersionProxy.revision">
+            <summary>
+            Revision version number
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildVersion.VersionProxy.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a new VersionProxy with the given version numbers
+            </summary>
+            <param name="major">Major version number</param>
+            <param name="minor">Minor version number</param>
+            <param name="build">Build version number</param>
+            <param name="revision">Revision version number</param>
+        </member>
+        <member name="F:BuildTool.BuildVersion.EXTENSION">
+            <summary>
+            File extension of the build files
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersion.TIME_FORMAT">
+            <summary>
+            The Build time format string
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersion.PATTERN">
+            <summary>
+            The regex pattern to parse the build file
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildVersion.Version">
+            <summary>
+            Version number of the build
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildVersion.TempVersion">
+            <summary>
+            Proxy version object to get and set the version in the Json correctly
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildVersion.VersionString">
+            <summary>
+            The string version of the current version
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildVersion.BuildTime">
+            <summary>
+            Date and time of the build
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildVersion.BuildDateString">
+            <summary>
+            The date string of the UTC now time
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildVersion.Author">
+            <summary>
+            Author of the build
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildVersion.#ctor">
+            <summary>
+            Default constructor, in-class use only
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildVersion.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.DateTime)">
+            <summary>
+            Tests only instantiation
+            </summary>
+            <param name="major">Major version number</param>
+            <param name="minor">Minor version number</param>
+            <param name="build">Build version number</param>
+            <param name="revision">Revision version number</param>
+            <param name="author">Name of the author</param>
+            <param name="time">DateTime of the build</param>
+        </member>
+        <member name="M:BuildTool.BuildVersion.FromFile">
+            <summary>
+            Loads a BuildVersion from the file on the disk, if it fails, a new default version is created
+            </summary>
+            <returns>The loaded or created BuildVersion</returns>
+        </member>
+        <member name="M:BuildTool.BuildVersion.GetBumpedVersionString(BuildTool.BuildVersion.VersionBump)">
+            <summary>
+            Gets the bumped up version string without actually applying it to the version object
+            </summary>
+            <param name="bump">The Version bump to apply</param>
+            <returns>The Updated version string</returns>
+        </member>
+        <member name="M:BuildTool.BuildVersion.Build(BuildTool.BuildVersion.VersionBump,System.String,System.String)">
+            <summary>
+            Gets the game's version after the next build, with the given version bump information
+            </summary>
+            <param name="bump">How to bump the version over this build</param>
+            <param name="author">The build's author</param>
+            <param name="uploadURL">The URL to upload the version to if desired</param>
+            <returns>The new version after the build</returns>
+        </member>
+        <member name="M:BuildTool.BuildVersion.SaveToFile">
+            <summary>
+            Saves this BuildVersion to the disk
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildVersion.ToString">
+             <summary>
+            A string version of the build
+             </summary>
+             <returns></returns>
+        </member>
+        <member name="M:BuildTool.BuildVersion.InfoString">
+            <summary>
+            Gets an info string from the BuildVersion
+            </summary>
+            <returns>Nicely formatted info string string</returns>
+        </member>
+        <member name="T:BuildTool.Extensions.Extensions">
+            <summary>
+            Collection of extension methods
+            </summary>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.Log(System.Object,System.Object)">
+            <summary>
+            Logs an object message
+            </summary>
+            <param name="o">Object that is logging</param>
+            <param name="message">Message to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.LogWarning(System.Object,System.Object)">
+            <summary>
+            Logs a given warning message
+            </summary>
+            <param name="o">Object that is logging</param>
+            <param name="message">Message to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.LogError(System.Object,System.Object)">
+            <summary>
+            Logs a given error message
+            </summary>
+            <param name="o">Object that is logging</param>
+            <param name="message">Message to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.LogException(System.Object,System.Exception)">
+            <summary>
+            Logs an exception
+            </summary>
+            <param name="o">Object that is logging</param>
+            <param name="e">Exception to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.Log(UnityEngine.Object,System.Object)">
+            <summary>
+            Logs an object message
+            </summary>
+            <param name="o">Unity object that is logging</param>
+            <param name="message">Message to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.LogWarning(UnityEngine.Object,System.Object)">
+            <summary>
+            Logs a given warning message
+            </summary>
+            <param name="o">Unity object that is logging</param>
+            <param name="message">Message to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.LogError(UnityEngine.Object,System.Object)">
+            <summary>
+            Logs a given error message
+            </summary>
+            <param name="o">Unity object that is logging</param>
+            <param name="message">Message to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.LogException(UnityEngine.Object,System.Exception)">
+            <summary>
+            Logs an exception
+            </summary>
+            <param name="o">Unity object that is logging</param>
+            <param name="e">Exception to log</param>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.Yield``1(``0)">
+            <summary>
+            Wraps this object instance into an <see cref="T:System.Collections.Generic.IEnumerable`1"/> consisting of a single item.
+            </summary>
+            <typeparam name="T">Type of the object</typeparam>
+            <param name="item">The instance that will be wrapped.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> consisting of a single item.</returns>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.Children(UnityEditor.SerializedProperty)">
+            <summary>
+            Enumerates all the children of this property
+            </summary>
+            <param name="parent">Parent property</param>
+            <returns>An Enumerator of all the children of this property</returns>
+        </member>
+        <member name="M:BuildTool.Extensions.Extensions.Contains(UnityEditor.SerializedProperty,System.String,System.String)">
+            <summary>
+            Checks if a SerializedProperty contains a given value
+            </summary>
+            <param name="property">Property to check</param>
+            <param name="name">Name of the property to find</param>
+            <param name="value">Value to find</param>
+            <returns>True if the value is contained in the SerializedProperty's children, false otherwise</returns>
+        </member>
+        <member name="T:BuildTool.GitHubAuthenticator">
+            <summary>
+            GitHub Authenticator utility to create and manage Authorization Tokens
+            </summary>
+        </member>
+        <member name="T:BuildTool.GitHubAuthenticator.ConnectionStatus">
+            <summary>
+            Indicates the connection status of the GitHub client
+            </summary>
+        </member>
+        <member name="T:BuildTool.GitHubAuthenticator.UserEqualityComparer">
+            <summary>
+            EqualityComparer used to store Users in a Dictionary
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.UserEqualityComparer.Comparer">
+            <summary>
+            Comparer instance
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.UserEqualityComparer.#ctor">
+            <summary>
+            Prevents instantiation, user <see cref="P:BuildTool.GitHubAuthenticator.UserEqualityComparer.Comparer"/> instead
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.UserEqualityComparer.Equals(Octokit.User,Octokit.User)">
+            <inheritdoc/>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.UserEqualityComparer.GetHashCode(Octokit.User)">
+            <inheritdoc/>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.appName">
+            <summary>
+            Name of the applet
+            </summary>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.fileName">
+            <summary>
+            Name of the stored credentials file
+            </summary>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.timeFormat">
+            <summary>
+            Format of the saved date time
+            </summary>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.scopes">
+            <summary>
+            GitHub permission scopes
+            </summary>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.request">
+            <summary>
+            User repositories requests settings
+            </summary>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.filePath">
+            <summary>
+            Path to the credentials file location on the disk
+            </summary>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.assemblyVersion">
+            <summary>
+            Assembly version of the BuildTool
+            </summary>
+        </member>
+        <member name="F:BuildTool.GitHubAuthenticator.entropy">
+            <summary>
+            Unique Entropy used to encrypt the token to the disk
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.Token">
+            <summary>
+            Github authentication token, reads and writes to the encrypted file on the disk
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.Authorization">
+            <summary>
+            Creates a new application authorization to the GitHub API
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.IsConnected">
+            <summary>
+            If the client is connected or not
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.Status">
+            <summary>
+            Connection status of the Client
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.User">
+            <summary>
+            Currently connected user
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.Email">
+            <summary>
+            The primary email address of the User
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.Name">
+            <summary>
+            The best known name of this user
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.Selector">
+            <summary>
+            Repositories this user has access to
+            This object is thread-safe
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.RepositoriesFetched">
+            <summary>
+            If the repositories the user has access to have been fetched yet or not
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.CurrentRepository">
+            <summary>
+            The Repository to use for builds
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.FetchingBranches">
+            <summary>
+            If the branches for the current repository are currently being fetched
+            </summary>
+        </member>
+        <member name="P:BuildTool.GitHubAuthenticator.CurrentBranches">
+            <summary>
+            Branch/head commit list for the current repository
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.#cctor">
+            <summary>
+            Does one time initialization for Authenticator objects
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.#ctor(BuildTool.UI.BuildToolWindow)">
+            <summary>
+            Creates a new GitHubAuthenticator but does not connect to the API, use <see cref="M:BuildTool.GitHubAuthenticator.Connect"/>
+            </summary>
+            <param name="window">Window this Authenticator is associated to</param>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.Connect">
+            <summary>
+            Tries to connect to the API using the stored credentials file
+            Can only be called once
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.SubmitCredentials(System.String,System.String)">
+            <summary>
+            Submits the username and password credentials and attempts to login to the GitHub account
+            </summary>
+            <param name="username">Connection username</param>
+            <param name="password">Connection password</param>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.Submit2FA(System.String)">
+            <summary>
+            Submits the Two Factor Authorization code and attempts to login
+            </summary>
+            <param name="twoFactorCode">Two Factor Authorization code</param>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.RequestToken(System.String)">
+            <summary>
+            Requests an Authorization Token from Github
+            </summary>
+            <param name="twoFactorCode">Two Factor Authorization code to obtain authorization code</param>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.TestConnection">
+            <summary>
+            Tests the validity of the connection to GitHub
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.FetchAllRepositories">
+            <summary>
+            Asynchronously fetches all the repositories a User has access to and stores them in the object
+            This method can be called from a different thread
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.SetBuildRepository">
+            <summary>
+            Sets the currently selected repository as the build repository
+            </summary>
+        </member>
+        <member name="M:BuildTool.GitHubAuthenticator.CreateNewRelease(BuildTool.BuildVersion,UnityEditor.BuildTarget[],BuildTool.UI.BuildHandler.ReleaseSnapshot,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new release with the specified information
+            </summary>
+            <param name="version">Version object to bump for the release</param>
+            <param name="targets">BuildTargets to release for</param>
+            <param name="snapshot">Snapshot of the release info to create the release from</param>
+            <param name="token">Token to cancel this task</param>
+        </member>
+        <member name="T:BuildTool.BuildVersionWebClient">
+            <summary>
+            Helper methods to interact with a web client to handle build objects
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersionWebClient.client">
+            <summary>
+            HTTP Client instance
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersionWebClient.settings">
+            <summary>
+            The settings to use in the JsonSerializer
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildVersionWebClient.serializer">
+            <summary>
+            The JsonSerializer to use to serialize this type of object
+            </summary>
+        </member>
+        <member name="M:BuildTool.BuildVersionWebClient.GetBuildVersion(System.String)">
+            <summary>
+            Gets a BuildVersion object from the given Library
+            </summary>
+            <param name="url">URL to request to</param>
+            <returns>A task returning to object</returns>
+        </member>
+        <member name="M:BuildTool.BuildVersionWebClient.PostBuildVersion(System.String,BuildTool.BuildVersion)">
+            <summary>
+            Posts an object as Json to the given URL
+            </summary>
+            <param name="url">Request URL</param>
+            <param name="version">The BuildVersion to post</param>
+        </member>
+        <member name="T:BuildTool.UI.BuildHandler">
+            <summary>
+            Build handling UI
+            </summary>
+        </member>
+        <member name="T:BuildTool.UI.BuildHandler.ReleaseSnapshot">
+            <summary>
+            Struct containing all the necessary information to create a new release
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.BuildHandler.ReleaseSnapshot.bump">
+            <summary>
+            The VersionBump to apply
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.BuildHandler.ReleaseSnapshot.title">
+            <summary>
+            The title of the release
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.BuildHandler.ReleaseSnapshot.description">
+            <summary>
+            The description of the release
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.BuildHandler.ReleaseSnapshot.targetSHA">
+            <summary>
+            The target commit's SHA
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.BuildHandler.ReleaseSnapshot.prerelease">
+            <summary>
+            If this is a prerelease
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.BuildHandler.ReleaseSnapshot.draft">
+            <summary>
+            If the release should be saved as a draft
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.ReleaseSnapshot.#ctor(BuildTool.UI.BuildHandler)">
+            <summary>
+            Creates a new ReleaseSnapshot from the given BuildHandler
+            </summary>
+            <param name="handler">BuildHandler to create the snapshot from</param>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.ReleaseSnapshot.op_Implicit(BuildTool.UI.BuildHandler)~BuildTool.UI.BuildHandler.ReleaseSnapshot">
+            <summary>
+            Implicitly converts a BuildHandler to a release snapshot
+            </summary>
+            <param name="handler">BuildHandler to create the snapshot from</param>
+        </member>
+        <member name="F:BuildTool.UI.BuildHandler.connectionStyles">
+            <summary>
+            Array containing the GUIStyles of labels indicating the connection of the webservice
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildHandler.CurrentCommit">
+            <summary>
+            The last commit of the currently selected branch
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.#ctor(BuildTool.UI.BuildToolWindow)">
+            <summary>
+            Creates a new BuildHandler Control attached to the given window
+            </summary>
+            <param name="window">BuildToolWindow to attach to</param>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.InitStyles">
+            <summary>
+            Initializes various used GUIStyles
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.EnsureBranchesLoaded">
+            <summary>
+            Makes sure the branch selector is loaded correctly
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.Reset">
+            <summary>
+            Resets the release creation window to default
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.URLSelector">
+            <summary>
+            Displays this control
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildHandler.ReleaseCreator">
+            <summary>
+            Displays the Release creator UI
+            </summary>
+        </member>
+        <member name="T:BuildTool.UI.BuildToolWindow">
+            <summary>
+            Build Tool editor window
+            </summary>
+        </member>
+        <member name="T:BuildTool.UI.BuildToolWindow.BuildAPIStatus">
+            <summary>
+            The status of the connection to the webservice providing build info
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.BuildToolWindow.windowTitle">
+            <summary>
+            Window title
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.Window">
+            <summary>
+            Current active BuildToolWindow
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.BuildFilePath">
+            <summary>
+            Path to the BuildFile on the disk
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.RefreshButtonStyle">
+            <summary>
+            The style used for the Refresh button
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.Authenticator">
+            <summary>
+            The GitHubAuthenticator connected to this BuildToolWindow
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.Settings">
+            <summary>
+            The Settings for this BuildTool
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.SerializedSettings">
+            <summary>
+            The SerializedObject associated to the Settings object
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.UIEnabled">
+            <summary>
+            If the UI is currently enabled
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.BuildVersion">
+            <summary>
+            Current BuildVersion
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.BuildTaskRunning">
+            <summary>
+            Checks if the build task exists and is currently running
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.APIStatus">
+            <summary>
+            Status of the connection to the build webservice
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.BuildToolWindow.APIConnected">
+            <summary>
+            If a valid API connection has been made
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.ShowWindow">
+            <summary>
+            Allows to show the window from the top menu
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.Init">
+            <summary>
+            Initializes the window
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.RefreshConnection">
+            <summary>
+            Sets up the connection to GitHub and all the necessary objects
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.GetBuild">
+            <summary>
+            Gets the latest build from the web service
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.GetBuildFromFile">
+            <summary>
+            Fetches the BuildVersion from the text file
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.StartBuild">
+            <summary>
+            Starts the building process asynchronously
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.PostBuildAsync(System.Boolean[],System.Threading.CancellationToken)">
+            <summary>
+            Copies necessary and creates compressed zip folder for each build target
+            </summary>
+            <param name="success">Array containing the fail/pass status of each target build</param>
+            <param name="token">CancellationToken to cancel the ongoing task</param>
+        </member>
+        <member name="M:BuildTool.UI.BuildToolWindow.OnBuildProcessComplete(System.Threading.Tasks.Task)">
+            <summary>
+            Ran when the build task finishes
+            </summary>
+            <param name="task">Task that initiated the callback</param>
+        </member>
+        <member name="T:BuildTool.UI.ConnectionHandler">
+            <summary>
+            A GitHub connection handler UI Control
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.ConnectionHandler.numberFilter">
+            <summary>
+            2FA Code number only filter
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.ConnectionHandler.status">
+            <summary>
+            Status message dictionary
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.ConnectionHandler.#ctor(BuildTool.UI.BuildToolWindow)">
+            <summary>
+            Creates a new ConnectionHandler control for the given BuildToolWindow
+            </summary>
+            <param name="window">The window to attach this handler to</param>
+        </member>
+        <member name="M:BuildTool.UI.ConnectionHandler.OnGUI">
+            <summary>
+            Displays this ConnectionHandler control
+            </summary>
+        </member>
+        <member name="T:BuildTool.UI.RepositoryInfo">
+            <summary>
+            Repository info UI Toggle
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositoryInfo.Repository">
+            <summary>
+            The repository associated to this Toggle
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositoryInfo.Toggled">
+            <summary>
+            If this RepositoryInfo is toggled
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.RepositoryInfo.#ctor(Octokit.Repository,BuildTool.UI.BuildToolWindow)">
+            <summary>
+            Creates a new RepositoryInfo from the given Repository
+            </summary>
+            <param name="repository">Repository to create the info from</param>
+            <param name="window">The BuildToolWindow this repository toggle works on</param>
+        </member>
+        <member name="M:BuildTool.UI.RepositoryInfo.Toggle">
+            <summary>
+            Creates a repository toggle
+            </summary>
+            <returns>The toggled state of the control</returns>
+        </member>
+        <member name="T:BuildTool.UI.RepositoryOwner">
+            <summary>
+            Owner/repositories owner classification
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositoryOwner.Owner">
+            <summary>
+            Repository owner
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositoryOwner.Repositories">
+            <summary>
+            Owned repositories by the User
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositoryOwner.Selected">
+            <summary>
+            The currently selected Repository
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.RepositoryOwner.#ctor(Octokit.User,System.Collections.Generic.IList{BuildTool.UI.RepositoryInfo},BuildTool.UI.BuildToolWindow)">
+            <summary>
+            Creates a new RepositoryOwner with the given owner and repository list
+            </summary>
+            <param name="owner">Owner of the repositories</param>
+            <param name="repositories">Repositories owner</param>
+            <param name="window">The BuildToolWindow this Owner folder operates on</param>
+        </member>
+        <member name="M:BuildTool.UI.RepositoryOwner.Select">
+            <summary>
+            UI Selection control for the Owner
+            </summary>
+            <returns>The selected repository or null if none is</returns>
+        </member>
+        <member name="M:BuildTool.UI.RepositoryOwner.Deselect">
+            <summary>
+            Deselects the current repository
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.RepositoryOwner.CompareTo(BuildTool.UI.RepositoryOwner)">
+            <summary>
+            Compares this instance to the other to determine sort order
+            </summary>
+            <param name="other">Other RepositoryOwner to compare to</param>
+            <returns>An int value indicating order</returns>
+        </member>
+        <member name="T:BuildTool.UI.RepositorySelector">
+            <summary>
+            Repository selector UI Control
+            </summary>
+        </member>
+        <member name="F:BuildTool.UI.RepositorySelector.scrollOptions">
+            <summary>
+            Repository selection scrollview options
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositorySelector.TotalRepos">
+            <summary>
+            Total amount of Repositories in this selector
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositorySelector.SelectedOwner">
+            <summary>
+            The currently selected Repository owner
+            </summary>
+        </member>
+        <member name="P:BuildTool.UI.RepositorySelector.SelectedRepository">
+            <summary>
+            The currently selected Repository
+            </summary>
+        </member>
+        <member name="M:BuildTool.UI.RepositorySelector.#ctor(System.Collections.Generic.IList{BuildTool.UI.RepositoryOwner},BuildTool.GitHubAuthenticator)">
+            <summary>
+            Creates a new RepositorySelector from the given owners
+            </summary>
+            <param name="owners">Owners to select from</param>
+            <param name="authenticator">The GitHubAuthenticator associated to this Control</param>
+        </member>
+        <member name="M:BuildTool.UI.RepositorySelector.OnGUI">
+            <summary>
+            Repository selector UI function
+            </summary>
+        </member>
+        <member name="T:BuildTool.BuildItem">
+            <summary>
+            An item to be copied on build
+            </summary>
+        </member>
+        <member name="T:BuildTool.BuildItem.CopyLocation">
+            <summary>
+            Enum representing where to copy the item
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildItem.PATH_NAME">
+            <summary>
+            Name of the Path property
+            </summary>
+        </member>
+        <member name="F:BuildTool.BuildItem.LOCATION_NAME">
+            <summary>
+            Name of the Location property
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildItem.Path">
+            <summary>
+            Path to the item to copy
+            </summary>
+        </member>
+        <member name="P:BuildTool.BuildItem.Location">
+            <summary>
+            Location to copy the item
+            </summary>
+        </member>
+    </members>
+</doc>
