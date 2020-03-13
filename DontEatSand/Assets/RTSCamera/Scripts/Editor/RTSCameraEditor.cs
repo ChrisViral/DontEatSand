@@ -3,33 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-// ReSharper disable once CheckNamespace
+//ReSharper disable once CheckNamespace
 namespace RTSCam
 {
     [CustomEditor(typeof(RTSCamera))]
     public class RTSCameraEditor : Editor
     {
-        private RTSCamera Camera => this.target as RTSCamera;
+        #region Properties
+        /// <summary>
+        /// The Camera object this editor targets
+        /// </summary>
+        private RTSCamera Camera => (RTSCamera)this.target;
+        #endregion
 
+        #region Fields
         private TabsBlock tabs;
+        #endregion
 
-        private void OnEnable()
-        {
-            this.tabs = new TabsBlock(new Dictionary<string, Action>
-            {
-                ["Movement"] = MovementTab,
-                ["Rotation"] = RotationTab,
-                ["Height"]   = HeightTab
-            });
-            this.tabs.SetCurrentMethod(this.Camera.lastTab);
-        }
-
+        #region Methods
         public override void OnInspectorGUI()
         {
-            //base.OnInspectorGUI();
             Undo.RecordObject(this.Camera, "RTSCamera");
             this.tabs.Draw();
             if (GUI.changed) this.Camera.lastTab = this.tabs.curMethodIndex;
+            if (this.serializedObject.hasModifiedProperties)
+            {
+                this.serializedObject.ApplyModifiedProperties();
+            }
             EditorUtility.SetDirty(this.Camera);
         }
 
@@ -55,8 +55,8 @@ namespace RTSCam
 
             if(this.Camera.useScreenEdgeInput)
             {
-                EditorGUILayout.FloatField("Screen edge border size: ", this.Camera.screenEdgeBorder);
-                this.Camera.screenEdgeMovementSpeed = EditorGUILayout.FloatField("Screen edge movement speed: ", this.Camera.screenEdgeMovementSpeed);
+                EditorGUILayout.FloatField("Edge border size: ", this.Camera.screenEdgeBorder);
+                this.Camera.screenEdgeMovementSpeed = EditorGUILayout.FloatField("Edge movement speed: ", this.Camera.screenEdgeMovementSpeed);
             }
 
             using (new HorizontalBlock())
@@ -147,12 +147,23 @@ namespace RTSCam
 
             if (this.Camera.useScrollwheelZooming || this.Camera.useKeyboardZooming)
             {
-                using (new HorizontalBlock())
-                {
-                    this.Camera.maxHeight = EditorGUILayout.FloatField("Max height: ", this.Camera.maxHeight);
-                    this.Camera.minHeight = EditorGUILayout.FloatField("Min height: ", this.Camera.minHeight);
-                }
+                this.Camera.maxOrtho = EditorGUILayout.FloatField("Max ortho size: ", this.Camera.maxOrtho);
+                this.Camera.minOrtho = EditorGUILayout.FloatField("Min ortho size: ", this.Camera.minOrtho);
             }
         }
+        #endregion
+
+        #region Functions
+        private void OnEnable()
+        {
+            this.tabs = new TabsBlock(new Dictionary<string, Action>
+            {
+                ["Movement"] = MovementTab,
+                ["Rotation"] = RotationTab,
+                ["Height"]   = HeightTab
+            });
+            this.tabs.SetCurrentMethod(this.Camera.lastTab);
+        }
+        #endregion
     }
 }

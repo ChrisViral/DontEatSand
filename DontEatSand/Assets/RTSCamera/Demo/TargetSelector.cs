@@ -1,33 +1,42 @@
 ﻿using UnityEngine;
-using System.Collections;
-using RTSCam;
 
-[RequireComponent(typeof(RTSCamera))]
-public class TargetSelector : MonoBehaviour 
+// ReSharper disable once CheckNamespace
+namespace RTSCam
 {
-    private RTSCamera cam;
-    private new Camera camera;
-    public string targetsTag;
-
-    private void Start()
+    [RequireComponent(typeof(RTSCamera))]
+    public class TargetSelector : MonoBehaviour
     {
-        cam = gameObject.GetComponent<RTSCamera>();
-        camera = gameObject.GetComponent<Camera>();
-    }
+        #region Fields
+        private RTSCamera rtsCam;
+        private new Camera camera;
+        [SerializeField]
+        private string targetsTag;
+        #endregion
 
-    private void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
+        #region Functions
+        private void Awake()
         {
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if(Physics.Raycast(ray, out hit))
+            this.rtsCam = GetComponent<RTSCamera>();
+            this.camera = GetComponent<Camera>();
+        }
+
+        private void Update()
+        {
+            if(Input.GetMouseButtonDown(0))
             {
-                if (hit.transform.CompareTag(targetsTag))
-                    cam.SetTarget(hit.transform);
-                else
-                    cam.ResetTarget();
+                if(Physics.Raycast(this.camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+                {
+                    if (hit.transform.CompareTag(this.targetsTag))
+                    {
+                        this.rtsCam.SetTarget(hit.transform);
+                    }
+                    else
+                    {
+                        this.rtsCam.ResetTarget();
+                    }
+                }
             }
         }
+        #endregion
     }
 }

@@ -1,21 +1,34 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
-public class DemoScene : MonoBehaviour 
+//ReSharper disable once CheckNamespace
+namespace RTSCam
 {
-    public Button btn45;
-    public Button btn90;
-
-    private void Start()
+    public class DemoScene : MonoBehaviour
     {
-        Transform camT = Camera.main.transform;
-        btn45.onClick.AddListener(() => SetXRotation(camT, 45f));
-        btn90.onClick.AddListener(() => SetXRotation(camT, 90f));
-    }
+        #region Fields
+        public Button btn45;
+        public Button btn90;
+        #endregion
 
-    private void SetXRotation(Transform t, float angle)
-    {
-        t.localEulerAngles = new Vector3(angle, t.localEulerAngles.y, t.localEulerAngles.z);
+        #region Static methods
+        private static void SetXRotation(Transform t, float angle)
+        {
+            Vector3 euler = t.localEulerAngles;
+            t.localEulerAngles = new Vector3(angle, euler.y, euler.z);
+        }
+        #endregion
+
+        #region Functions
+        private void Start()
+        {
+            if (Camera.main != null)
+            {
+                Transform camT = Camera.main.transform;
+                this.btn45.onClick.AddListener(() => SetXRotation(camT, 45f));
+                this.btn90.onClick.AddListener(() => SetXRotation(camT, 90f));
+            }
+        }
+        #endregion
     }
 }
