@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 //ReSharper disable once CheckNamespace
 namespace RTSCam
@@ -11,7 +12,7 @@ namespace RTSCam
         /// Minimum detected movement
         /// </summary>
         private const float EPSILON = 0.001f;
-        private const float MIN_TILT = 20f;
+        private const float MIN_TILT = 30f;
         private const float MAX_TILT = 75f;
         #endregion
 
@@ -90,6 +91,9 @@ namespace RTSCam
         public KeyCode rotateLeftKey = KeyCode.Z;
         public bool useMouseRotation = true;
         public KeyCode mouseRotationKey = KeyCode.Mouse1;
+
+        //UI Detection
+        private bool cameraDisabled;
         #endregion
 
         #region Properties
@@ -214,11 +218,12 @@ namespace RTSCam
             this.zoomPos = Mathf.Clamp01(this.zoomPos);
             this.camera.orthographicSize = Mathf.Lerp(this.minOrtho, this.maxOrtho, this.zoomPos);
 
-            Vector3 pos = this.transform.parent.position;
-            if (Physics.Raycast(pos, Vector3.up, out RaycastHit hit, 20f, this.groundMask))
-            {
-                this.transform.parent.position = Vector3.Lerp(pos, new Vector3(pos.x, hit.point.y - 1f, pos.z), Time.deltaTime * this.heightDampening);
-            }
+            //Not sure we're gonna need this, disabling for now
+            //Vector3 pos = this.transform.parent.position;
+            //if (Physics.Raycast(pos, Vector3.up, out RaycastHit hit, 20f, this.groundMask))
+            //{
+            //    this.transform.parent.position = Vector3.Lerp(pos, new Vector3(pos.x, hit.point.y - 1f, pos.z), Time.deltaTime * this.heightDampening);
+            //}
         }
 
         /// <summary>
@@ -295,6 +300,9 @@ namespace RTSCam
 
         private void Update()
         {
+            //Don't move camera while interacting with UI
+            if (EventSystem.current.IsPointerOverGameObject()) { return; }
+
             if (this.FollowingTarget) { FollowTarget(); }
             else { Move(); }
 
