@@ -13,4 +13,4 @@ Concordia University, Montreal, Canada
 
 =============================================================================================================================
 
-All Rights Reserved © Team D.E.S.
+All Rights Reserved © D.E.S. Games
