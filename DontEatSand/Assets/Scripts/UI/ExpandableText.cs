@@ -6,13 +6,14 @@ namespace DontEatSand.UI
     /// <summary>
     /// Allows switching between two label texts and to bold style on toggle events
     /// </summary>
-    [DisallowMultipleComponent, RequireComponent(typeof(Text), typeof(Toggle))]
+    [DisallowMultipleComponent, RequireComponent(typeof(Toggle))]
     public class ExpandableText : MonoBehaviour
     {
         #region Fields
         //Inspector fields
         [SerializeField]
         private string normalText, toggledText; //Normal/toggled text
+        [SerializeField]
         private Text label;                     //Text component
         #endregion
 
@@ -43,9 +44,8 @@ namespace DontEatSand.UI
         #endregion
 
         #region Functions
-        private void Awake()
+        private void Start()
         {
-            this.label = GetComponent<Text>();
             this.label.text = this.normalText;
             GetComponent<Toggle>().onValueChanged.AddListener(OnToggle);
         }

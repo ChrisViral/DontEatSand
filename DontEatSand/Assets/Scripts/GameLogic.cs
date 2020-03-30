@@ -2,7 +2,6 @@
 using DontEatSand.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityScene = UnityEngine.SceneManagement.Scene;
 
 namespace DontEatSand
 {
@@ -63,6 +62,15 @@ namespace DontEatSand
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the master volume of the game
+        /// </summary>
+        public static float MasterVolume
+        {
+            get => AudioListener.volume;
+            internal set => AudioListener.volume = Mathf.Clamp01(value);
+        }
         #endregion
 
         #region Static methods
@@ -121,7 +129,7 @@ namespace DontEatSand
         /// </summary>
         /// <param name="scene">Loaded scene</param>
         /// <param name="mode">Load mode</param>
-        private void OnSceneLoaded(UnityScene scene, LoadSceneMode mode)
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             //Get scene from build index
             GameScenes loadedScene = (GameScenes)scene.buildIndex;
@@ -158,7 +166,7 @@ namespace DontEatSand
         protected override void OnAwake()
         {
             //Opening message
-            this.Log("Running Viral Curse v" + GameVersion.VersionString);
+            this.Log("Running Don't Eat Sand v" + GameVersion.VersionString);
 
             //Add scene load event
             SceneManager.sceneLoaded += OnSceneLoaded;
