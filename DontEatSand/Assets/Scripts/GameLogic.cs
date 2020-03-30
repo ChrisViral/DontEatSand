@@ -62,6 +62,15 @@ namespace DontEatSand
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the master volume of the game
+        /// </summary>
+        public static float MasterVolume
+        {
+            get => AudioListener.volume;
+            internal set => AudioListener.volume = Mathf.Clamp01(value);
+        }
         #endregion
 
         #region Static methods
