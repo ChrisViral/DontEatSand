@@ -1,2 +1,3 @@
+Copyright (C) 2020 D.E.S. Games
 
-Copyright (C) 2020 Christophe Savard
+All Rights Reserved
