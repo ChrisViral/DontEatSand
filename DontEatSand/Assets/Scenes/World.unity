@@ -906,16 +906,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameLogic
       objectReference: {fileID: 0}
-    - target: {fileID: 3931593007019582752, guid: 05a601c2eb3e14242acdd3903cb2f309,
-        type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
-    - target: {fileID: 3931593007019582752, guid: 05a601c2eb3e14242acdd3903cb2f309,
-        type: 3}
-      propertyPath: m_TagString
-      value: GameController
-      objectReference: {fileID: 0}
     - target: {fileID: 3931593007019582767, guid: 05a601c2eb3e14242acdd3903cb2f309,
         type: 3}
       propertyPath: m_LocalPosition.x

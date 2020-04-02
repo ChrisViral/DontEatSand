@@ -1,0 +1,44 @@
+[
+	{
+		"Name": "Melee",
+		"Description": "yeet",
+		"Type": "COMBAT",
+		"SandCost": 100,
+		"CandyCost": 5
+	},
+	{
+		"Name": "Ranged",
+		"Description": "oh",
+		"Type": "RANGED",
+		"SandCost": 120,
+		"CandyCost": 5
+	},
+	{
+		"Name": "Tank",
+		"Description": "eh",
+		"Type": "COMBAT",
+		"SandCost": 200,
+		"CandyCost": 8
+	},
+	{
+		"Name": "Healer",
+		"Description": "oh ah ah",
+		"Type": "HEALER",
+		"SandCost": 150,
+		"CandyCost": 10
+	},
+	{
+		"Name": "Worker",
+		"Description": "ting tang",
+		"Type": "WORKER",
+		"SandCost": 50,
+		"CandyCost": 2
+	},
+	{
+		"Name": "Candy Factory",
+		"Description": "walla walla bing bang",
+		"Type": "BUILDING",
+		"SandCost": 50,
+		"CandyCost": 2
+	}
+]

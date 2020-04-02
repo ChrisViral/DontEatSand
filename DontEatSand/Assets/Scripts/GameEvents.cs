@@ -161,10 +161,9 @@ namespace DontEatSand
         public static GameEvent<GameScenes, GameScenes> OnSceneLoaded { get; } = new GameEvent<GameScenes, GameScenes>();
 
         /// <summary>
-        /// Event fired when the user controlled player takes damage<para/>
-        /// Param{<see cref="int"/>} damage: The amount of damage taken
+        /// Event fired when the Unit Database is loaded
         /// </summary>
-        public static GameEvent<int> OnPlayerDamage { get; } = new GameEvent<int>();
+        public static GameEvent OnUnitDatabaseLoaded { get; } = new GameEvent();
         #endregion
     }
 }
