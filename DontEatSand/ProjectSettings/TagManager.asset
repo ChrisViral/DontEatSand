@@ -15,10 +15,10 @@ TagManager:
   - 
   - 
   - Ground
-  - Building
-  - Resources
-  - 
-  - 
+  - Visible Building
+  - Visible Resource
+  - Invisible Building
+  - Invisible Resource
   - 
   - 
   - 

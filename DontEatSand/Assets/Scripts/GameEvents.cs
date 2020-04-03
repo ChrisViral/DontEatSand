@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using DontEatSand.Entities;
+using DontEatSand.Entities.Buildings;
 
 namespace DontEatSand
 {
@@ -164,6 +166,24 @@ namespace DontEatSand
         /// Event fired when the Unit Database is loaded
         /// </summary>
         public static GameEvent OnUnitDatabaseLoaded { get; } = new GameEvent();
+
+        /// <summary>
+        /// Event fired when the total amount of candy available changes<para/>
+        /// Param{<see cref="int"/>} amount: Amount of candy added or subtracted
+        /// </summary>
+        public static GameEvent<int> OnCandyMaxChanged { get; } = new GameEvent<int>();
+
+        /// <summary>
+        /// Event fired when the sand amount changes<para/>
+        /// Param{<see cref="int"/>} amount: Amount of sand added or removed
+        /// </summary>
+        public static GameEvent<int> OnSandChanged { get; } = new GameEvent<int>();
+
+        /// <summary>
+        /// Event fired when the candy amount changes<para/>
+        /// Param{<see cref="int"/>} amount: Amount of candy added or removed
+        /// </summary>
+        public static GameEvent<int> OnCandyChanged { get; } = new GameEvent<int>();
         #endregion
     }
 }

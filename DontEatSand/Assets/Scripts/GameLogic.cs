@@ -71,6 +71,11 @@ namespace DontEatSand
             get => AudioListener.volume;
             internal set => AudioListener.volume = Mathf.Clamp01(value);
         }
+
+        /// <summary>
+        /// The current player
+        /// </summary>
+        public static Player Player { get; private set; }
         #endregion
 
         #region Static methods
@@ -147,9 +152,16 @@ namespace DontEatSand
             }
 
             //Make sure the game does not stay paused in the menu
-            if (loadedScene == GameScenes.MENU)
+            switch (loadedScene)
             {
-                IsPaused = false;
+                case GameScenes.MENU:
+                    Player = null;
+                    if (IsPaused) { IsPaused = false; }
+                    break;
+
+                case GameScenes.WORLD:
+                    Player = FindObjectOfType<Player>();
+                    break;
             }
 
             //Log scene change
