@@ -1,36 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace DontEatSand
+namespace DontEatSand.UI
 {
     public class TooltipChange : MonoBehaviour
     {
-
-        #region Properties
-
+        #region Fields
         [SerializeField]
-        private Text name;
+        private Text unitName;
         [SerializeField]
         private Text cost;
         [SerializeField]
         private Text description;
-
         #endregion
 
+        #region Methods
         /// <summary>
         /// Changes the tooltip info given a certain key
         /// </summary>
-        /// <param name="name">Key of the unit/building to look up in the database</param>
+        /// <param name="key">Key of the unit/building to look up in the database</param>
         public void ChangeTooltip(string key)
         {
             UnitInfo unitInfo = UnitDatabase.GetInfo(key);
-            name.text = unitInfo.Name;
-            cost.text = unitInfo.CandyCost.ToString();
-            description.text = unitInfo.Description;
+            this.unitName.text = unitInfo.Name;
+            this.cost.text = unitInfo.CandyCost.ToString();
+            this.description.text = unitInfo.Description;
         }
-    
+        #endregion
     }
 }
 
