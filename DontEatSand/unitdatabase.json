@@ -28,6 +28,13 @@
 		"CandyCost": 10
 	},
 	{
+		"Name": "Scout",
+		"Description": "oh ah ah",
+		"Type": "COMBAT",
+		"SandCost": 150,
+		"CandyCost": 10
+	},
+	{
 		"Name": "Worker",
 		"Description": "ting tang",
 		"Type": "WORKER",
@@ -40,5 +47,5 @@
 		"Type": "BUILDING",
 		"SandCost": 50,
 		"CandyCost": 2
-	}
+	},
 ]
