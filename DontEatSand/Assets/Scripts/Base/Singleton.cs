@@ -44,9 +44,7 @@ namespace DontEatSand.Base
             Instance = this as T;
             if (this.Immortal)
             {
-                //If Immortal, make sure it does not get unloaded during scene changes
-                Transform parent = this.transform.parent;
-                DontDestroyOnLoad(parent == null ? this.gameObject : parent.gameObject);
+                DontDestroyOnLoad(this.gameObject);
             }
 
             //Call children Awake()

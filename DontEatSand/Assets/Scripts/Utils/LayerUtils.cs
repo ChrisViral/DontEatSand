@@ -9,11 +9,16 @@ namespace DontEatSand.Utils
     /// </summary>
     public enum Layers
     {
-        DEFAULT        = 0,
-        TRANSPARENT_FX = 1,
-        IGNORE_RAYCAST = 2,
-        WATER          = 4,
-        UI             = 5
+        DEFAULT            = 0,
+        TRANSPARENT_FX     = 1,
+        IGNORE_RAYCAST     = 2,
+        WATER              = 4,
+        UI                 = 5,
+        GROUND             = 8,
+        VISIBLE_BUILDING   = 9,
+        VISIBLE_RESOURCE   = 10,
+        INVISIBLE_BUILDING = 11,
+        INVISIBLE_RESOURCE = 12
     }
 
     /// <summary>

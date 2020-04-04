@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text;
 using UnityEngine;
 
 namespace DontEatSand.Utils
@@ -9,6 +8,13 @@ namespace DontEatSand.Utils
     /// </summary>
     public static class DESUtils
     {
+        #region Constants
+        /// <summary>
+        /// Location of the Unit Database file
+        /// </summary>
+        public static string DatabaseLocation { get; } = Path.Combine(Application.dataPath, "../unitdatabase.json");
+        #endregion
+
         #region Static methods
         /// <summary>
         /// Clamps a given Vector2 between a set of minimum and maximum values
