@@ -47,7 +47,7 @@ namespace DontEatSand.Entities.Buildings
                     GameEvents.OnCandyChanged.Invoke(info.CandyCost);
                 }
                 //Spawn entity
-                Entity spawned = Instantiate(unit, this.spawnLocation.position, unit.Rotation, this.spawnParent);
+                Entity spawned = Instantiate(unit, this.spawnLocation.position, unit.transform.rotation, this.spawnParent);
                 spawned.Player = GameLogic.Player;
             }
         }
