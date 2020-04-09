@@ -20,7 +20,7 @@ namespace DontEatSand
     /// </summary>
     /// <inheritdoc/>
     [RequireComponent(typeof(AudioSource))]
-    public class GameLogic : Singleton<GameLogic>
+    public class GameLogic : SingletonPunCallbacks<GameLogic>
     {
         #region Fields
         //Inspector fields
@@ -50,13 +50,9 @@ namespace DontEatSand
                 //Check if the value has changed
                 if (isPaused != value)
                 {
-                    //Set value and stop Unity time
                     isPaused = value;
-                    Time.timeScale = isPaused ? 0f : 1f;
-
                     //Log current state
                     Instance.Log($"Game {(isPaused ? "paused" : "unpaused")}");
-
                     //Fire pause event
                     GameEvents.OnPause.Invoke(isPaused);
                 }

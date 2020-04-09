@@ -82,7 +82,7 @@ namespace RTSCam
             }
 
             GUILayout.Label("Follow target", EditorStyles.boldLabel);
-            this.Camera.targetFollow = EditorGUILayout.ObjectField("Target to follow: ", this.Camera.targetFollow, typeof(Transform), true) as Transform;
+            this.Camera.Target = EditorGUILayout.ObjectField("Target to follow: ", this.Camera.Target, typeof(Transform), true) as Transform;
             this.Camera.targetOffset = EditorGUILayout.Vector3Field("Target offset: ", this.Camera.targetOffset);
             this.Camera.followingSpeed = EditorGUILayout.FloatField("Following speed: ", this.Camera.followingSpeed);
         }

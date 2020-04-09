@@ -1,23 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using DontEatSand;
 
 
 namespace DontEatSand.UI
 {
     public class UpdateCounter : MonoBehaviour
     {
-        private int sandCount;
-        private int maxCandyCount;
-        private int usedCandyCount;
-
+        #region Fields
         [SerializeField]
         private Text sandCounter;
         [SerializeField]
         private Text candyCounter;
-        
+        private int sandCount;
+        private int maxCandyCount;
+        private int usedCandyCount;
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Change in candy total
         /// </summary>
@@ -25,7 +24,7 @@ namespace DontEatSand.UI
         private void OnCandyMaxChanged(int amount)
         {
             this.maxCandyCount += amount;
-            this.candyCounter.text = string.Format("{0}/{1}", usedCandyCount, maxCandyCount);
+            this.candyCounter.text = $"{this.usedCandyCount}/{this.maxCandyCount}";
         }
         /// <summary>
         /// Change in sand amount
@@ -34,7 +33,7 @@ namespace DontEatSand.UI
         private void OnSandChanged(int amount)
         {
             this.sandCount += amount;
-            this.sandCounter.text = sandCount.ToString();
+            this.sandCounter.text = this.sandCount.ToString();
         }
 
         /// <summary>
@@ -44,12 +43,11 @@ namespace DontEatSand.UI
         private void OnCandyChanged(int amount)
         {
             this.usedCandyCount += amount;
-            this.candyCounter.text = string.Format("{0}/{1}", usedCandyCount, maxCandyCount);;
+            this.candyCounter.text = $"{this.usedCandyCount}/{this.maxCandyCount}";
         }
-
+        #endregion
 
         #region Functions
-
         private void Awake()
         {
             GameEvents.OnCandyMaxChanged.AddListener(OnCandyMaxChanged);
@@ -60,12 +58,12 @@ namespace DontEatSand.UI
         private void Start()
         {
             Debug.Log(GameLogic.Player.Sand);
-            sandCount = GameLogic.Player.Sand;
-            maxCandyCount = GameLogic.Player.MaxCandy;
-            usedCandyCount = GameLogic.Player.UsedCandy;
+            this.sandCount = GameLogic.Player.Sand;
+            this.maxCandyCount = GameLogic.Player.MaxCandy;
+            this.usedCandyCount = GameLogic.Player.UsedCandy;
 
-            sandCounter.text = sandCount.ToString();
-            candyCounter.text = string.Format("{0}/{1}", usedCandyCount, maxCandyCount);
+            this.sandCounter.text = this.sandCount.ToString();
+            this.candyCounter.text = $"{this.usedCandyCount}/{this.maxCandyCount}";
 
         }
 
@@ -76,9 +74,7 @@ namespace DontEatSand.UI
             GameEvents.OnSandChanged.RemoveListener(OnSandChanged);
             GameEvents.OnCandyChanged.RemoveListener(OnCandyChanged);
         }
-
         #endregion
-
     }
 }
 

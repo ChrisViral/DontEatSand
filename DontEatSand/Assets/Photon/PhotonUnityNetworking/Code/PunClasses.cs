@@ -143,7 +143,7 @@ namespace Photon.Pun
     ///
     /// To be able to enable a GameObject, Instantiate must return an inactive object.
     ///
-    /// Before PUN "destroys" GameObjects, it will disable them. 
+    /// Before PUN "destroys" GameObjects, it will disable them.
     ///
     /// If a component implements IPunInstantiateMagicCallback, PUN will call OnPhotonInstantiate
     /// when the networked object gets instantiated. If no components implement this on a prefab,
@@ -210,7 +210,7 @@ namespace Photon.Pun
     ///
     /// Do not add <b>new</b> <code>MonoBehaviour.OnEnable</code> or <code>MonoBehaviour.OnDisable</code>
     /// Instead, you should override those and call <code>base.OnEnable</code> and <code>base.OnDisable</code>.
-    /// 
+    ///
     /// Visual Studio and MonoDevelop should provide the list of methods when you begin typing "override".
     /// <b>Your implementation does not have to call "base.method()".</b>
     ///
@@ -953,7 +953,7 @@ namespace Photon.Pun
     {
         /// <summary>Contains a GameObject per prefabId, to speed up instantiation.</summary>
         public readonly Dictionary<string, GameObject> ResourceCache = new Dictionary<string, GameObject>();
-        
+
         /// <summary>Returns an inactive instance of a networked GameObject, to be used by PUN.</summary>
         /// <param name="prefabId">String identifier for the networked object.</param>
         /// <param name="position">Location of the new object.</param>

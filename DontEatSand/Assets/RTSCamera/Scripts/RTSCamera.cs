@@ -102,10 +102,16 @@ namespace RTSCam
         #endregion
 
         #region Properties
+        [SerializeField]
+        private Transform target;
         /// <summary>
         /// Target to follow
         /// </summary>
-        public Transform Target { get; set; }
+        public Transform Target
+        {
+            get => this.target;
+            set => this.target = value;
+        }
 
         /// <summary>
         /// If we are following a target
