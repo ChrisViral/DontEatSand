@@ -1,5 +1,6 @@
 ﻿using DontEatSand.Base;
 using DontEatSand.Utils;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,7 +21,7 @@ namespace DontEatSand
     /// </summary>
     /// <inheritdoc/>
     [RequireComponent(typeof(AudioSource))]
-    public class GameLogic : Singleton<GameLogic>
+    public class GameLogic : SingletonPunCallbacks<GameLogic>
     {
         #region Fields
         //Inspector fields
@@ -50,13 +51,9 @@ namespace DontEatSand
                 //Check if the value has changed
                 if (isPaused != value)
                 {
-                    //Set value and stop Unity time
                     isPaused = value;
-                    Time.timeScale = isPaused ? 0f : 1f;
-
                     //Log current state
                     Instance.Log($"Game {(isPaused ? "paused" : "unpaused")}");
-
                     //Fire pause event
                     GameEvents.OnPause.Invoke(isPaused);
                 }
@@ -73,9 +70,9 @@ namespace DontEatSand
         }
 
         /// <summary>
-        /// The current player
+        /// The current rtsPlayer
         /// </summary>
-        public static Player Player { get; private set; }
+        public static RTSPlayer RTSPlayer { get; private set; }
         #endregion
 
         #region Static methods
@@ -83,7 +80,20 @@ namespace DontEatSand
         /// Loads a given scene
         /// </summary>
         /// <param name="scene">Scene to load</param>
-        internal static void LoadScene(GameScenes scene) => SceneManager.LoadScene((int)scene);
+        internal static void LoadScene(GameScenes scene)
+        {
+            //If networked, load through Photon
+            if (PhotonNetwork.IsConnected)
+            {
+                //Only loads the scene if on master client
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    PhotonNetwork.LoadLevel((int)scene);
+                }
+            }
+            //If not networked, load scene normally
+            else { SceneManager.LoadScene((int)scene); }
+        }
 
         /// <summary>
         /// Reloads the current scene
@@ -119,6 +129,10 @@ namespace DontEatSand
         /// </summary>
         public static void StopMusic() => Instance.source.Stop();
 
+        /// <summary>
+        /// Sets the music to the specified clip
+        /// </summary>
+        /// <param name="clip">Clip to change the music to</param>
         public static void SetMusic(AudioClip clip) => Instance.source.clip = clip;
 
         /// <summary>
@@ -155,12 +169,12 @@ namespace DontEatSand
             switch (loadedScene)
             {
                 case GameScenes.MENU:
-                    Player = null;
+                    RTSPlayer = null;
                     if (IsPaused) { IsPaused = false; }
                     break;
 
                 case GameScenes.WORLD:
-                    Player = FindObjectOfType<Player>();
+                    RTSPlayer = FindObjectOfType<RTSPlayer>();
                     break;
             }
 
@@ -182,6 +196,10 @@ namespace DontEatSand
 
             //Add scene load event
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            //Setup PhotonNetwork
+            PhotonNetwork.GameVersion = GameVersion.VersionString;
+            PhotonNetwork.AutomaticallySyncScene = true;
 
             //Setup audio
             this.source = GetComponent<AudioSource>();

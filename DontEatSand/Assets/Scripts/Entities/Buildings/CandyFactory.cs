@@ -11,12 +11,12 @@ namespace DontEatSand.Entities.Buildings
 
         #region Methods
         /// <summary>
-        /// When the player is set
+        /// When the rtsPlayer is set
         /// </summary>
         protected override void PlayerSet()
         {
-            //If the player set isn't null, add to it's max candy available
-            if (this.Player != null)
+            //If the rtsPlayer set isn't null, add to it's max candy available
+            if (this.RTSPlayer != null)
             {
                 GameEvents.OnCandyMaxChanged.Invoke(this.candyGiven);
             }
@@ -27,7 +27,7 @@ namespace DontEatSand.Entities.Buildings
         private void OnDestroy()
         {
             //When destroyed, remove the candy given
-            if (this.Player != null)
+            if (this.RTSPlayer != null)
             {
                 GameEvents.OnCandyMaxChanged.Invoke(-this.candyGiven);
             }

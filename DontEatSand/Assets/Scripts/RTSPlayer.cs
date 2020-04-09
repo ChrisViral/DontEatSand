@@ -3,31 +3,31 @@
 namespace DontEatSand
 {
     /// <summary>
-    /// RTS Player class
+    /// RTS RTSPlayer class
     /// </summary>
     [DisallowMultipleComponent]
-    public class Player : MonoBehaviour
+    public class RTSPlayer : MonoBehaviour
     {
         #region Fields
-        [SerializeField, Tooltip("The amount of sand the player starts with")]
+        [SerializeField, Tooltip("The amount of sand the rtsPlayer starts with")]
         private int startingSand = 500;
-        [SerializeField, Tooltip("The amount of candy available from the player's main base")]
+        [SerializeField, Tooltip("The amount of candy available from the rtsPlayer's main base")]
         private int baseCandy = 30;
         #endregion
 
         #region Properties
         /// <summary>
-        /// Total sand the player has available
+        /// Total sand the rtsPlayer has available
         /// </summary>
         public int Sand { get; private set; }
 
         /// <summary>
-        /// Max candy at the player's disposition
+        /// Max candy at the rtsPlayer's disposition
         /// </summary>
         public int MaxCandy { get; private set; }
 
         /// <summary>
-        /// Candy used by the player's unit
+        /// Candy used by the rtsPlayer's unit
         /// </summary>
         public int UsedCandy { get; private set; }
 

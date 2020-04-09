@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using DontEatSand.Utils;
+using Photon.Pun;
+using UnityEngine;
 
 namespace DontEatSand.Entities
 {
     [DisallowMultipleComponent, RequireComponent(typeof(Rigidbody), typeof(Collider))]
-    public abstract class Entity : MonoBehaviour
+    public abstract class Entity : MonoBehaviourPun
     {
         #region Fields
         [SerializeField]
@@ -18,16 +20,16 @@ namespace DontEatSand.Entities
         /// </summary>
         public string EntityName => this.entityName;
 
-        private Player player;
+        private RTSPlayer rtsPlayer;
         /// <summary>
-        /// The Player owning this entity
+        /// The RTSPlayer owning this entity
         /// </summary>
-        public Player Player
+        public RTSPlayer RTSPlayer
         {
-            get => this.player;
+            get => this.rtsPlayer;
             set
             {
-                this.player = value;
+                this.rtsPlayer = value;
                 PlayerSet();
             }
         }
@@ -64,12 +66,24 @@ namespace DontEatSand.Entities
         {
             int prev = this.Health;
             this.Health = Mathf.Clamp(this.Health - amount, 0, this.maxHealth);
+            if (PhotonNetwork.IsConnected)
+            {
+                //Make sure to broadcast if networked
+                this.photonView.RPC(nameof(ReceiveDamage), RpcTarget.Others, amount);
+            }
             if (this.Health == 0)
             {
-                Destroy(this);
+                PhotonUtils.Destroy(this);
             }
             return prev - this.Health;
         }
+
+        /// <summary>
+        /// Received a certain amount of damage from the network
+        /// </summary>
+        /// <param name="amount">Amount of damage to receive</param>
+        [PunRPC]
+        private void ReceiveDamage(int amount) => this.Health = Mathf.Clamp(this.Health - amount, 0, this.maxHealth);
 
         /// <summary>
         /// Awake function, use this instead of Awake() to avoid overriding default behaviour
@@ -77,7 +91,7 @@ namespace DontEatSand.Entities
         protected virtual void OnAwake() { }
 
         /// <summary>
-        /// Called when the player owning this entity is set
+        /// Called when the rtsPlayer owning this entity is set
         /// </summary>
         protected virtual void PlayerSet() { }
         #endregion

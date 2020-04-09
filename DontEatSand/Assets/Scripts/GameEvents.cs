@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DontEatSand.Entities;
-using DontEatSand.Entities.Buildings;
 
 namespace DontEatSand
 {
