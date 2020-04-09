@@ -4,15 +4,24 @@ using UnityEngine.EventSystems;
 //ReSharper disable once CheckNamespace
 namespace RTSCam
 {
-    [RequireComponent(typeof(Camera)), AddComponentMenu("RTS Camera")]
+    /// <summary>
+    /// RTS camera component
+    /// </summary>
+    [DisallowMultipleComponent, RequireComponent(typeof(Camera)), AddComponentMenu("RTS Camera")]
     public class RTSCamera : MonoBehaviour
     {
         #region Constants
         /// <summary>
         /// Minimum detected movement
         /// </summary>
-        private const float EPSILON = 0.001f;
+        private const float TOLERANCE = 0.001f;
+        /// <summary>
+        /// Minimum tilt angle of the camera
+        /// </summary>
         private const float MIN_TILT = 30f;
+        /// <summary>
+        /// Maximum tilt angle of the camera
+        /// </summary>
         private const float MAX_TILT = 75f;
         #endregion
 
@@ -70,7 +79,6 @@ namespace RTSCam
         public float limitY = 50f; //Z limit of map
 
         //Targeting
-        public Transform targetFollow; //Target to follow
         public Vector3 targetOffset;
 
         //Input
@@ -91,21 +99,32 @@ namespace RTSCam
         public KeyCode rotateLeftKey = KeyCode.Z;
         public bool useMouseRotation = true;
         public KeyCode mouseRotationKey = KeyCode.Mouse1;
-
-        //UI Detection
-        private bool cameraDisabled;
         #endregion
 
         #region Properties
         /// <summary>
+        /// Target to follow
+        /// </summary>
+        public Transform Target { get; set; }
+
+        /// <summary>
         /// If we are following a target
         /// </summary>
-        public bool FollowingTarget => this.targetFollow != null;
+        public bool FollowingTarget => this.Target;
 
+        /// <summary>
+        /// Keyboard movement input
+        /// </summary>
         private Vector2 KeyboardInput => this.useKeyboardInput ? new Vector2(Input.GetAxis(this.horizontalAxis), Input.GetAxis(this.verticalAxis)) : Vector2.zero;
 
+        /// <summary>
+        /// Scroll wheel input
+        /// </summary>
         private float ScrollWheel => Input.GetAxis(this.zoomingAxis);
 
+        /// <summary>
+        /// Zoom direction
+        /// </summary>
         private int ZoomDirection
         {
             get
@@ -131,6 +150,9 @@ namespace RTSCam
             }
         }
 
+        /// <summary>
+        /// Rotation direction
+        /// </summary>
         private int RotationDirection
         {
             get
@@ -156,12 +178,14 @@ namespace RTSCam
 
         #region Methods
         /// <summary>
-        /// Move camera with keyboard or with screen edge
+        /// Move the camera around the world
         /// </summary>
-        private void Move()
+        /// <returns>If the camera has moved from user input at all</returns>
+        private bool Move()
         {
             //For translation movement, we want to move the parent
             Transform parent = this.transform.parent;
+            Vector3 originalPos = parent.position;
             if (this.useKeyboardInput)
             {
                 Vector3 desiredMove = new Vector3(this.KeyboardInput.x, 0, this.KeyboardInput.y);
@@ -194,7 +218,7 @@ namespace RTSCam
                 parent.Translate(desiredMove, Space.Self);
             }
 
-            if(this.usePanning && Input.GetKey(this.panningKey) && MouseAxis.magnitude >= EPSILON)
+            if(this.usePanning && Input.GetKey(this.panningKey) && MouseAxis.magnitude >= TOLERANCE)
             {
                 Vector3 desiredMove = new Vector3(-MouseAxis.x, 0, -MouseAxis.y);
 
@@ -205,10 +229,13 @@ namespace RTSCam
 
                 parent.Translate(desiredMove, Space.Self);
             }
+
+            //Check if we've moved at all
+            return Vector3.Distance(originalPos, parent.position) > TOLERANCE;
         }
 
         /// <summary>
-        /// Calculate height
+        /// Height/zoom adjustments
         /// </summary>
         private void HeightCalculation()
         {
@@ -227,7 +254,7 @@ namespace RTSCam
         }
 
         /// <summary>
-        /// Rotate camera
+        /// Rotation adjustments of the camera
         /// </summary>
         private void Rotation()
         {
@@ -254,16 +281,16 @@ namespace RTSCam
         }
 
         /// <summary>
-        /// Follow target if target != null
+        /// Target following
         /// </summary>
         private void FollowTarget()
         {
-            Vector3 pos = this.transform.position, targetPos = this.targetFollow.position;
+            Vector3 pos = this.transform.position, targetPos = this.Target.position;
             this.transform.position = Vector3.MoveTowards(pos, new Vector3(targetPos.x, pos.y, targetPos.z) + this.targetOffset, Time.deltaTime * this.followingSpeed);
         }
 
         /// <summary>
-        /// Limit camera position
+        /// Limits camera position to specified boundaries
         /// </summary>
         private void LimitPosition()
         {
@@ -273,17 +300,6 @@ namespace RTSCam
             Vector3 pos = parent.position;
             parent.position = new Vector3(Mathf.Clamp(pos.x, -this.limitX, this.limitX), pos.y, Mathf.Clamp(pos.z, -this.limitY, this.limitY));
         }
-
-        /// <summary>
-        /// Set the target
-        /// </summary>
-        /// <param name="target">New target to follow</param>
-        public void SetTarget(Transform target) => this.targetFollow = target;
-
-        /// <summary>
-        /// Reset the target to null
-        /// </summary>
-        public void ResetTarget() => this.targetFollow = null;
         #endregion
 
         #region Functions
@@ -298,14 +314,28 @@ namespace RTSCam
             this.zoomPos = Mathf.InverseLerp(this.minOrtho, this.maxOrtho, this.camera.orthographicSize);
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             //Don't move camera while interacting with UI
             if (EventSystem.current.IsPointerOverGameObject()) { return; }
 
             if (this.FollowingTarget) { FollowTarget(); }
-            else { Move(); }
 
+            if (Move())
+            {
+                //If moved while following target, stop
+                if (this.FollowingTarget)
+                {
+                    this.Target = null;
+                }
+            }
+            else if (this.FollowingTarget)
+            {
+                //Follow target if needed
+                FollowTarget();
+            }
+
+            //Do regular calculations
             HeightCalculation();
             Rotation();
             LimitPosition();
