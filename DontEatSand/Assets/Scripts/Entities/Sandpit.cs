@@ -1,9 +1,13 @@
 ﻿using System;
 using DontEatSand.Base;
+using Photon.Pun;
 using UnityEngine;
 
 namespace DontEatSand.Entities
 {
+    /// <summary>
+    /// Wet sand deposit
+    /// </summary>
     public class Sandpit : Discoverable
     {
         #region Properties
@@ -25,8 +29,20 @@ namespace DontEatSand.Entities
         {
             request = Math.Max(request, this.availableSand);
             this.availableSand -= request;
+            //If networked, make sure to send over the eaten up sand
+            if (PhotonNetwork.IsConnected)
+            {
+                this.photonView.RPC(nameof(ReceiveHarvested), RpcTarget.Others,  request);
+            }
             return request;
         }
+
+        /// <summary>
+        /// Removes the specified amount of sand
+        /// </summary>
+        /// <param name="amount">Amount to remove</param>
+        [PunRPC]
+        private void ReceiveHarvested(int amount) => this.availableSand = Mathf.Max(0, this.availableSand - amount);
         #endregion
     }
 }

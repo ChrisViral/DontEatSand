@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using DontEatSand.Utils;
 using UnityEngine;
 
 namespace DontEatSand.Entities.Buildings
@@ -35,7 +36,7 @@ namespace DontEatSand.Entities.Buildings
             UnitInfo info = UnitDatabase.GetInfo(unit.EntityName);
 
             //Check if we have the resources to create it
-            if (GameLogic.Player.CheckResourcesAvailable(info.SandCost, info.CandyCost))
+            if (GameLogic.RTSPlayer.CheckResourcesAvailable(info.SandCost, info.CandyCost))
             {
                 //Request resources
                 if (info.SandCost > 0)
@@ -47,8 +48,7 @@ namespace DontEatSand.Entities.Buildings
                     GameEvents.OnCandyChanged.Invoke(info.CandyCost);
                 }
                 //Spawn entity
-                Entity spawned = Instantiate(unit, this.spawnLocation.position, unit.transform.rotation, this.spawnParent);
-                spawned.Player = GameLogic.Player;
+                PhotonUtils.Instantiate(unit, this.spawnLocation.position, unit.transform.rotation, this.spawnParent).RTSPlayer = GameLogic.RTSPlayer;
             }
         }
         #endregion

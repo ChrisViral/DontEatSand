@@ -57,10 +57,10 @@ namespace DontEatSand.UI
 
         private void Start()
         {
-            Debug.Log(GameLogic.Player.Sand);
-            this.sandCount = GameLogic.Player.Sand;
-            this.maxCandyCount = GameLogic.Player.MaxCandy;
-            this.usedCandyCount = GameLogic.Player.UsedCandy;
+            Debug.Log(GameLogic.RTSPlayer.Sand);
+            this.sandCount = GameLogic.RTSPlayer.Sand;
+            this.maxCandyCount = GameLogic.RTSPlayer.MaxCandy;
+            this.usedCandyCount = GameLogic.RTSPlayer.UsedCandy;
 
             this.sandCounter.text = this.sandCount.ToString();
             this.candyCounter.text = $"{this.usedCandyCount}/{this.maxCandyCount}";

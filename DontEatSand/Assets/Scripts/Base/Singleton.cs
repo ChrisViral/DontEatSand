@@ -23,7 +23,7 @@ namespace DontEatSand.Base
         /// <summary>
         /// If this Singleton instance persists through scenes
         /// </summary>
-        protected virtual bool Immortal => true;
+        protected virtual bool Immortal { get; } = true;
         #endregion
 
         #region Virtual methods
@@ -171,8 +171,7 @@ namespace DontEatSand.Base
             if (this.Immortal)
             {
                 //Make sure we have a unique PhotonView since this object will persist through scenes
-                PhotonView pv = this.gameObject.AddComponent<PhotonView>();
-                pv.ViewID = lastID--;
+                this.gameObject.AddComponent<PhotonView>().ViewID = lastID--;
             }
         }
 
