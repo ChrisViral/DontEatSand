@@ -405,7 +405,8 @@ MonoBehaviour:
   entityName: Castle
   spawnLocation: {fileID: 6470261023472025558}
   spawnParent: {fileID: 0}
-  units: []
+  units:
+  - {fileID: 3688593179271540715, guid: 5156917229bb0c4479860d2293b9ea7d, type: 3}
 --- !u!1 &1771349538429861813
 GameObject:
   m_ObjectHideFlags: 0
