@@ -659,6 +659,51 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1787472482}
     m_Modifications:
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2068746287}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Connect
+      objectReference: {fileID: 0}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2068746287}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Connect
+      objectReference: {fileID: 0}
+    - target: {fileID: 1493259670625973791, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 1493259671190115465, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
       propertyPath: m_AnchorMin.x
@@ -752,32 +797,32 @@ PrefabInstance:
     - target: {fileID: 3050649220078387972, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3050649220078387972, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3050649220078387972, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3050649220078387972, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3050649220078387972, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3050649220078387972, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3050649220078387972, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
         type: 3}
@@ -802,3 +847,24 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2068746284}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2068746286 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6444724882512413335, guid: 20c2e445d479ab04a85d4e5af4cd7cbb,
+    type: 3}
+  m_PrefabInstance: {fileID: 2068746284}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2068746287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068746286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a398f3403387342bdeafdd8abda43a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlPanel: {fileID: 0}
+  progressLabel: {fileID: 0}
+  maxPlayersPerRoom: 2
