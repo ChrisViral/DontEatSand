@@ -9,7 +9,9 @@ namespace DontEatSand.UI
         [SerializeField]
         private Text unitName;
         [SerializeField]
-        private Text cost;
+        private Text sandCost;
+        [SerializeField]
+        private Text candyCost;
         [SerializeField]
         private Text description;
         #endregion
@@ -23,7 +25,8 @@ namespace DontEatSand.UI
         {
             UnitInfo unitInfo = UnitDatabase.GetInfo(key);
             this.unitName.text = unitInfo.Name;
-            this.cost.text = unitInfo.CandyCost.ToString();
+            this.sandCost.text = string.Format("Sand: {0}", unitInfo.SandCost);
+            this.candyCost.text = string.Format("Candy: {0}", unitInfo.CandyCost);
             this.description.text = unitInfo.Description;
         }
         #endregion
