@@ -15,9 +15,9 @@ namespace DontEatSand.Utils
         WATER              = 4,
         UI                 = 5,
         GROUND             = 8,
-        VISIBLE_BUILDING   = 9,
+        VISIBLE_UNIT       = 9,
         VISIBLE_RESOURCE   = 10,
-        INVISIBLE_BUILDING = 11,
+        INVISIBLE_UNIT     = 11,
         INVISIBLE_RESOURCE = 12
     }
 
@@ -155,6 +155,12 @@ namespace DontEatSand.Utils
         /// <param name="b">Second layer</param>
         /// <returns>The bitwise OR mask of both layers</returns>
         public static int operator |(int a, Layer b) => a | b.Mask;
+
+        /// <summary>
+        /// Casts the layer to it's integer layer number
+        /// </summary>
+        /// <param name="layer">Layer to cast</param>
+        public static implicit operator int(Layer layer) => layer.Value;
 
         /// <summary>
         /// Casts this layer to it's mask value

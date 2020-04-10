@@ -1,10 +1,12 @@
-﻿using DontEatSand.Utils;
+﻿using DontEatSand.Base;
+using DontEatSand.Extensions;
+using DontEatSand.Utils;
 using Photon.Pun;
 using UnityEngine;
 
 namespace DontEatSand.Entities
 {
-    [DisallowMultipleComponent, RequireComponent(typeof(Rigidbody), typeof(Collider))]
+    [DisallowMultipleComponent, RequireComponent(typeof(Collider))]
     public abstract class Entity : MonoBehaviourPun
     {
         #region Fields
@@ -20,19 +22,10 @@ namespace DontEatSand.Entities
         /// </summary>
         public string EntityName => this.entityName;
 
-        private RTSPlayer rtsPlayer;
         /// <summary>
-        /// The RTSPlayer owning this entity
+        /// The UnitInfo associated to this entity
         /// </summary>
-        public RTSPlayer RTSPlayer
-        {
-            get => this.rtsPlayer;
-            set
-            {
-                this.rtsPlayer = value;
-                PlayerSet();
-            }
-        }
+        public UnitInfo Info { get; private set; }
 
         /// <summary>
         /// The Rigidbody associated to this entity
@@ -89,18 +82,23 @@ namespace DontEatSand.Entities
         /// Awake function, use this instead of Awake() to avoid overriding default behaviour
         /// </summary>
         protected virtual void OnAwake() { }
-
-        /// <summary>
-        /// Called when the rtsPlayer owning this entity is set
-        /// </summary>
-        protected virtual void PlayerSet() { }
         #endregion
 
         #region Functions
         private void Awake()
         {
             this.Rigidbody = GetComponent<Rigidbody>();
+            if (UnitDatabase.TryGetInfo(this.entityName, out UnitInfo info))
+            {
+                this.Info = info;
+            }
             this.Health = this.maxHealth;
+
+            //If controllable, destroy the discoverable component
+            if (this.IsControllable())
+            {
+                Destroy(GetComponent<Discoverable>());
+            }
             OnAwake();
         }
         #endregion

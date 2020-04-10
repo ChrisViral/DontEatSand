@@ -15,9 +15,9 @@ TagManager:
   - 
   - 
   - Ground
-  - Visible Building
+  - Visible Unit
   - Visible Resource
-  - Invisible Building
+  - Invisible Unit
   - Invisible Resource
   - 
   - 

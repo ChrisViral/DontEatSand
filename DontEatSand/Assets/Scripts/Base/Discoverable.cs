@@ -1,7 +1,6 @@
 ﻿using DontEatSand.Utils;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace DontEatSand.Base
 {
@@ -9,7 +8,7 @@ namespace DontEatSand.Base
     public class Discoverable : MonoBehaviourPun
     {
         #region Fields
-        [SerializeField, Tooltip("The layer to switch to"), FormerlySerializedAs("switchLayer")]
+        [SerializeField, Tooltip("The layer to switch to")]
         private Layers invisibleLayer = Layers.DEFAULT;
         [SerializeField, Tooltip("If the discovery is permanent or not")]
         private bool permanent;
@@ -18,7 +17,7 @@ namespace DontEatSand.Base
         #endregion
 
         #region Properties
-        private bool visible;
+        private bool visible = true;
         /// <summary>
         /// If the object is currently visible or not
         /// </summary>
@@ -31,7 +30,7 @@ namespace DontEatSand.Base
                 {
                     GameObject go = this.gameObject;
                     Layer temp = LayerUtils.GetLayer(go.layer);
-                    go.layer = this.otherLayer.Value;
+                    go.ChangeLayerRecursively(this.otherLayer);
                     this.otherLayer = temp;
                     this.visible = value;
                 }
@@ -40,10 +39,15 @@ namespace DontEatSand.Base
         #endregion
 
         #region Functions
-        private void Awake() => this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
+        private void Start()
+        {
+            this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
+            this.Visible = false;
+        }
 
         private void OnTriggerEnter(Collider other)
         {
+            this.Log(other.name);
             if (this.permanent)
             {
                 //If invisible, make visible

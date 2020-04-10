@@ -13,10 +13,10 @@ namespace DontEatSand.Entities.Buildings
         /// <summary>
         /// When the rtsPlayer is set
         /// </summary>
-        protected override void PlayerSet()
+        public void FinishedBuilding()
         {
-            //If the rtsPlayer set isn't null, add to it's max candy available
-            if (this.RTSPlayer != null)
+            //If local player, make sure to update the candy
+            if (this.photonView.IsMine)
             {
                 GameEvents.OnCandyMaxChanged.Invoke(this.candyGiven);
             }
@@ -27,7 +27,7 @@ namespace DontEatSand.Entities.Buildings
         private void OnDestroy()
         {
             //When destroyed, remove the candy given
-            if (this.RTSPlayer != null)
+            if (this.photonView.IsMine)
             {
                 GameEvents.OnCandyMaxChanged.Invoke(-this.candyGiven);
             }

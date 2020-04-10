@@ -31,7 +31,8 @@ MonoBehaviour:
   RpcList:
   - ClickRpc
   - DestroyRpc
-  - ReceiveDamage
+  - SetSand
   - ReceiveHarvested
+  - ReceiveDamage
   DisableAutoOpenWizard: 1
   ShowSettings: 0

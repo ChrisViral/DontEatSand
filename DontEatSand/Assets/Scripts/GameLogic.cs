@@ -68,11 +68,6 @@ namespace DontEatSand
             get => AudioListener.volume;
             internal set => AudioListener.volume = Mathf.Clamp01(value);
         }
-
-        /// <summary>
-        /// The current rtsPlayer
-        /// </summary>
-        public static RTSPlayer RTSPlayer { get; private set; }
         #endregion
 
         #region Static methods
@@ -166,16 +161,9 @@ namespace DontEatSand
             }
 
             //Make sure the game does not stay paused in the menu
-            switch (loadedScene)
+            if (loadedScene == GameScenes.MENU && IsPaused)
             {
-                case GameScenes.MENU:
-                    RTSPlayer = null;
-                    if (IsPaused) { IsPaused = false; }
-                    break;
-
-                case GameScenes.WORLD:
-                    RTSPlayer = FindObjectOfType<RTSPlayer>();
-                    break;
+                IsPaused = false;
             }
 
             //Log scene change
