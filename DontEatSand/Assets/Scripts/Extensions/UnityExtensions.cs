@@ -71,12 +71,36 @@ namespace DontEatSand
 
         #region Object extensions
         /// <summary>
-        /// Tests if a raycast hit is on a given layer
+        /// Sets the layer of this object and all it's children
         /// </summary>
-        /// <param name="hit">RaycastHit to test</param>
-        /// <param name="layer">Layer to check</param>
-        /// <returns>If they raycast hit an object on the specified layer or not</returns>
-        public static bool OnLayer(this RaycastHit2D hit, Layer layer) => hit.collider.gameObject.layer == layer.Value;
+        /// <param name="o">Object to change the layer for</param>
+        /// <param name="layer">Layer to switch to</param>
+        public static void ChangeLayerRecursively(this GameObject o, Layer layer)
+        {
+            //Sets in the transform's children
+            void SetChildren(Transform t)
+            {
+                foreach (Transform child in t)
+                {
+                    child.gameObject.layer = layer;
+                    if (child.childCount > 0)
+                    {
+                        SetChildren(child);
+                    }
+                }
+            }
+
+            //Set in the GameObject's children
+            o.layer = layer;
+            foreach (Transform child in o.transform)
+            {
+                child.gameObject.layer = layer;
+                if (child.childCount > 0)
+                {
+                    SetChildren(child);
+                }
+            }
+        }
 
         /// <summary>
         /// Tries to get a component from the GameObject, and stores it in the out parameter

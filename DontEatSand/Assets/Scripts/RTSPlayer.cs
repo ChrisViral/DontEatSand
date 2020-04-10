@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DontEatSand.Base;
+using UnityEngine;
 
 namespace DontEatSand
 {
@@ -6,7 +7,7 @@ namespace DontEatSand
     /// RTS RTSPlayer class
     /// </summary>
     [DisallowMultipleComponent]
-    public class RTSPlayer : MonoBehaviour
+    public class RTSPlayer : Singleton<RTSPlayer>
     {
         #region Fields
         [SerializeField, Tooltip("The amount of sand the rtsPlayer starts with")]
@@ -35,6 +36,11 @@ namespace DontEatSand
         /// Available candy for extra unit creation
         /// </summary>
         public int AvailableCandy => this.MaxCandy - this.UsedCandy;
+
+        /// <summary>
+        /// Make sure this Singleton is not immortal
+        /// </summary>
+        protected override bool Immortal { get; } = false;
         #endregion
 
         #region Methods
@@ -66,7 +72,7 @@ namespace DontEatSand
         #endregion
 
         #region Functions
-        private void Awake()
+        protected override void OnAwake()
         {
             //Setup
             this.Sand = this.startingSand;
