@@ -38,6 +38,7 @@ namespace DontEatSand
 
             }
 
+            //Detect mouse right click
             if (Input.GetMouseButtonDown(1))
             {
                 this.mousePosition = Input.mousePosition;
@@ -46,9 +47,16 @@ namespace DontEatSand
                 //Shoot the ray
                 if (Physics.Raycast(camRay, out this.hit))
                 {
+                    Vector3 averagePosition = Vector3.zero;
                     foreach (UnitController unit in this.selectedUnits)
                     {
-                        unit.MoveUnit(this.hit.point);
+                        averagePosition += unit.transform.position;
+                    }
+
+                    averagePosition = averagePosition / this.selectedUnits.Count;
+                    foreach (UnitController unit in this.selectedUnits)
+                    {
+                        unit.MoveUnit(this.hit.point, averagePosition);
                     }
                 }
 
