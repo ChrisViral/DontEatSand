@@ -48,13 +48,13 @@ namespace DontEatSand
                 if (Physics.Raycast(camRay, out this.hit))
                 {
                     Vector3 averagePosition = Vector3.zero;
-                    foreach (UnitController unit in this.selectedUnits)
+                    foreach (Unit unit in this.selectedUnits)
                     {
                         averagePosition += unit.transform.position;
                     }
 
-                    averagePosition = averagePosition / this.selectedUnits.Count;
-                    foreach (UnitController unit in this.selectedUnits)
+                    averagePosition /= this.selectedUnits.Count;
+                    foreach (Unit unit in this.selectedUnits)
                     {
                         unit.MoveUnit(this.hit.point, averagePosition);
                     }

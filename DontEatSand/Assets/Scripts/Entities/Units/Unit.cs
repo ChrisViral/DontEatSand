@@ -9,6 +9,10 @@ namespace DontEatSand.Entities.Units
     [RequireComponent(typeof(NavMeshAgent), typeof(Rigidbody))]
     public class Unit : Entity
     {
+        #region Constants
+        private const float OFFSET_MAGNITUDE = 5f;
+        #endregion
+
         #region Fields
         private NavMeshAgent agent;
         #endregion
@@ -30,6 +34,25 @@ namespace DontEatSand.Entities.Units
                 this.Target = null;
                 this.agent.SetDestination(value);
             }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Moves unit to destination offset by the average position of the cluster
+        /// if the unit is too far off of the cluster, it will simply move to the target location without an offset
+        /// </summary>
+        /// <param name="dest">Destination point user clicked</param>
+        /// <param name="averagePosition">Average position of cluster</param>
+        public void MoveUnit(Vector3 dest, Vector3 averagePosition)
+        {
+            Vector3 positionDiff = this.transform.position - averagePosition;
+            if (positionDiff.magnitude > OFFSET_MAGNITUDE)
+            {
+                positionDiff = Vector3.zero;
+            }
+
+            this.Destination = dest + positionDiff;
         }
         #endregion
 
