@@ -185,19 +185,19 @@ namespace DontEatSand
         public static GameEvent<int> OnCandyChanged { get; } = new GameEvent<int>();
 
         /// <summary>
-        /// Fired when a unit is added to this player's build queue
+        /// Fired when a unit is added to this player's build queue<para/>
         /// Param{<see cref="UnitInfo"/>} unit: The unit added to the queue
         /// </summary>
         public static GameEvent<UnitInfo> OnUnitAddedToQueue { get; } = new GameEvent<UnitInfo>();
 
         /// <summary>
-        /// Fired when a unit is removed from the player's build queue
+        /// Fired when a unit is removed from the player's build queue<para/>
         /// Param{<see cref="int"/>} index: Index in the queue of the unit being removed
         /// </summary>
         public static GameEvent<int> OnUnitRemovedFromQueue { get; } = new GameEvent<int>();
 
         /// <summary>
-        /// Fired when a unit is created
+        /// Fired when a unit is created<para/>
         /// Param{<see cref="Unit"/>} unit: The created unit
         /// </summary>
         public static GameEvent<Unit> OnUnitCreated { get; } = new GameEvent<Unit>();
@@ -207,6 +207,12 @@ namespace DontEatSand
         /// Param{<see cref="Unit"/>} unit: The destroyed unit
         /// </summary>
         public static GameEvent<Unit> OnUnitDestroyed { get; } = new GameEvent<Unit>();
+
+        /// <summary>
+        /// Fired when the unit selection from the player has changed<para/>
+        /// Param{<see cref="SelectionType"/>} type: The type of selection in effect
+        /// </summary>
+        public static GameEvent<SelectionType> OnSelectionChanged { get; } = new GameEvent<SelectionType>();
         #endregion
     }
 }

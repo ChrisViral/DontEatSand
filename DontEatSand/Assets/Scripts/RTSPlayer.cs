@@ -10,6 +10,16 @@ using UnityEngine;
 namespace DontEatSand
 {
     /// <summary>
+    /// Types of possible screen selections
+    /// </summary>
+    public enum SelectionType
+    {
+        NONE,
+        UNITS,
+        OTHER
+    }
+
+    /// <summary>
     /// RTS RTSPlayer class
     /// </summary>
     [DisallowMultipleComponent]
@@ -139,6 +149,20 @@ namespace DontEatSand
         /// </summary>
         public List<Unit> SelectedUnits { get; private set; } = new List<Unit>();
 
+        private SelectionType selectionType;
+        /// <summary>
+        /// Type of screen selection for this player
+        /// </summary>
+        public SelectionType SelectionType
+        {
+            get => this.selectionType;
+            set
+            {
+                this.selectionType = value;
+                GameEvents.OnSelectionChanged.Invoke(value);
+            }
+        }
+
         /// <summary>
         /// Make sure this Singleton is not immortal
         /// </summary>
@@ -234,12 +258,14 @@ namespace DontEatSand
                         //Make sure to ignore already selected units
                         withinRect.ExceptWith(this.SelectedUnits);
                         this.SelectedUnits.AddRange(withinRect);
+                        this.selectionType = SelectionType.UNITS;
                     }
                     else
                     {
                         //Otherwise switch out and clear previous
                         this.SelectedUnits.Where(s => !withinRect.Contains(s)).ForEach(u => u.IsSelected = false);
                         this.SelectedUnits = new List<Unit>(withinRect);
+                        this.selectionType = SelectionType.UNITS;
                     }
 
                     //Clear out single selected if necessary
@@ -259,6 +285,7 @@ namespace DontEatSand
                 {
                     //Else, single selectable object
                     this.Selected = currentlyHovered;
+                    this.SelectionType = currentlyHovered == null ? SelectionType.NONE : SelectionType.OTHER;
                     //Clear out group selected if necessary
                     if (this.SelectedUnits.Count > 0)
                     {
