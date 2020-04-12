@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 57e84f4e9179a4f4fbd996255c689c3b
+guid: 19935f4dc49fc4e21be18f2c157671bd
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable: []
@@ -37,7 +37,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
-    useSRGBMaterialColor: 0
+    useSRGBMaterialColor: 1
     sortHierarchyByName: 1
     importVisibility: 0
     importBlendShapes: 0
@@ -68,7 +68,11 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips:
-  - 298e78e7d22c58e4cb64610cd4b72900
+  - d05d7aded1c24994aa86b201bb7f7e88
+  - 71180b0d2969d4dada56e52aec91f37b
+  - 348dc068b100c08409840d1ae05314b7
+  - 02ffbea42544541478a987980ec796a2
+  - 3e4d1c3d214bb70438a1abe41ae3c3e5
   importAnimation: 0
   copyAvatar: 1
   humanDescription:
