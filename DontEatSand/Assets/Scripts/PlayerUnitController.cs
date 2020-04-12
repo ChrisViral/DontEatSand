@@ -9,7 +9,7 @@ namespace DontEatSand
         private Camera cam;
         private RaycastHit hit;
         private Vector3 mousePosition;
-        private readonly List<UnitController> selectedUnits = new List<UnitController>();
+        private readonly List<Unit> selectedUnits = new List<Unit>();
 
         // Start is called before the first frame update
         private void Start() => this.cam = GameObject.Find("RTSCamera").GetComponent<Camera>();
@@ -28,7 +28,7 @@ namespace DontEatSand
                 {
                     if (this.hit.transform.CompareTag("target"))
                     {
-                        SelectUnit(this.hit.transform.GetComponent<UnitController>());
+                        SelectUnit(this.hit.transform.GetComponent<Unit>());
                     }
                     else
                     {
@@ -38,6 +38,7 @@ namespace DontEatSand
 
             }
 
+            //Detect mouse right click
             if (Input.GetMouseButtonDown(1))
             {
                 this.mousePosition = Input.mousePosition;
@@ -46,16 +47,23 @@ namespace DontEatSand
                 //Shoot the ray
                 if (Physics.Raycast(camRay, out this.hit))
                 {
-                    foreach (UnitController unit in this.selectedUnits)
+                    Vector3 averagePosition = Vector3.zero;
+                    foreach (Unit unit in this.selectedUnits)
                     {
-                        unit.MoveUnit(this.hit.point);
+                        averagePosition += unit.transform.position;
+                    }
+
+                    averagePosition /= this.selectedUnits.Count;
+                    foreach (Unit unit in this.selectedUnits)
+                    {
+                        unit.MoveUnit(this.hit.point, averagePosition);
                     }
                 }
 
             }
         }
 
-        private void SelectUnit(UnitController unit)
+        private void SelectUnit(Unit unit)
         {
             if (!this.selectedUnits.Contains(unit))
             {

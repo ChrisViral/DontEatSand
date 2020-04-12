@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DontEatSand.Entities.Units;
 
 namespace DontEatSand
 {
@@ -182,6 +183,30 @@ namespace DontEatSand
         /// Param{<see cref="int"/>} amount: Amount of candy added or removed
         /// </summary>
         public static GameEvent<int> OnCandyChanged { get; } = new GameEvent<int>();
+
+        /// <summary>
+        /// Fired when a unit is added to this player's build queue
+        /// Param{<see cref="UnitInfo"/>} unit: The unit added to the queue
+        /// </summary>
+        public static GameEvent<UnitInfo> OnUnitAddedToQueue { get; } = new GameEvent<UnitInfo>();
+
+        /// <summary>
+        /// Fired when a unit is removed from the player's build queue
+        /// Param{<see cref="int"/>} index: Index in the queue of the unit being removed
+        /// </summary>
+        public static GameEvent<int> OnUnitRemovedFromQueue { get; } = new GameEvent<int>();
+
+        /// <summary>
+        /// Fired when a unit is created
+        /// Param{<see cref="Unit"/>} unit: The created unit
+        /// </summary>
+        public static GameEvent<Unit> OnUnitCreated { get; } = new GameEvent<Unit>();
+
+        /// <summary>
+        /// Fired when a unit is destroyed
+        /// Param{<see cref="Unit"/>} unit: The destroyed unit
+        /// </summary>
+        public static GameEvent<Unit> OnUnitDestroyed { get; } = new GameEvent<Unit>();
         #endregion
     }
 }

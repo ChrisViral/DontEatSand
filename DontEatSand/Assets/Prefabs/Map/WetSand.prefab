@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3296059266467015865}
   - component: {fileID: 1756526977815414805}
   - component: {fileID: 8454361113988580602}
+  - component: {fileID: -8029186013620758912}
   m_Layer: 10
   m_Name: WetSand
   m_TagString: Untagged
@@ -59,9 +60,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85986293305e422793e3d681f403a7c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  switchLayer: 10
+  invisibleLayer: 12
   permanent: 1
   availableSand: 1000
+--- !u!114 &-8029186013620758912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2010485222477422250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &3187723715316358943
 GameObject:
   m_ObjectHideFlags: 0

@@ -46,6 +46,11 @@ namespace DontEatSand
         /// Candy cost of the unit
         /// </summary>
         public int CandyCost { get; }
+
+        /// <summary>
+        /// The time required to build this unit
+        /// </summary>
+        public float BuildTime { get; }
         #endregion
 
         #region Constructors
@@ -57,14 +62,16 @@ namespace DontEatSand
         /// <param name="type">Type of Unit</param>
         /// <param name="sandCost">Sand cost of the Unit</param>
         /// <param name="candyCost">Candy cost of the Unit</param>
+        /// <param name="buildTime">The build time of the Unit</param>
         [JsonConstructor]
-        public UnitInfo(string name, string description, UnitType type, int sandCost, int candyCost)
+        public UnitInfo(string name, string description, UnitType type, int sandCost, int candyCost, float buildTime)
         {
             this.Name = name;
             this.Description = description;
             this.Type = type;
             this.SandCost = sandCost;
             this.CandyCost = candyCost;
+            this.BuildTime = buildTime;
         }
         #endregion
     }
