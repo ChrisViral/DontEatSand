@@ -56,7 +56,7 @@ namespace DontEatSand.UI
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
                 newIcon.GetComponent<Button>().onClick.AddListener(delegate{DisplaySingleUnitInfo(unit);});
                 iconsList.Add(newIcon);
-                newIcon.transform.SetParent(multiUnitParent.transform);
+                //newIcon.transform.SetParent(multiUnitParent.transform);
             }
 
             // Space them out
@@ -95,7 +95,7 @@ namespace DontEatSand.UI
                 }
                 if(child.name == "Health")
                 {
-                    child.GetComponent<Text>().text = $"HEALTH: {unit.Health}";
+                    child.GetComponent<DisplayHealth>().SetUnitToDisplay(unit);
                 }
                 if(child.name == "Description")
                 {
