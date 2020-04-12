@@ -67,7 +67,7 @@ namespace DontEatSand.Entities.Units
             }
         }
 
-        private void Destroy()
+        private void OnDestroy()
         {
             //Notify of death and give back sand
             GameEvents.OnUnitDestroyed.Invoke(this);

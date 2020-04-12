@@ -1,5 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using DontEatSand.Entities;
+using DontEatSand.Entities.Units;
+using DontEatSand.Utils;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 //ReSharper disable once CheckNamespace
 namespace RTSCam
@@ -99,6 +105,7 @@ namespace RTSCam
         public KeyCode rotateLeftKey = KeyCode.Z;
         public bool useMouseRotation = true;
         public KeyCode mouseRotationKey = KeyCode.Mouse1;
+        private LayerMask clickMask;
         #endregion
 
         #region Properties
@@ -178,6 +185,23 @@ namespace RTSCam
                 }
 
                 return 0;
+            }
+        }
+
+        /// <summary>
+        /// Returns the Selectable object under the mouse cursor
+        /// </summary>
+        public ISelectable Selected
+        {
+            get
+            {
+                //Check if we hit anything
+                if (Physics.Raycast(this.camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, this.clickMask, QueryTriggerInteraction.Ignore))
+                {
+                    //If we did, check for a selectable in the parent or current object
+                    return hit.transform.GetComponent<ISelectable>() ?? hit.transform.GetComponentInParent<ISelectable>();
+                }
+                return null;
             }
         }
         #endregion
@@ -306,10 +330,22 @@ namespace RTSCam
             Vector3 pos = parent.position;
             parent.position = new Vector3(Mathf.Clamp(pos.x, -this.limitX, this.limitX), pos.y, Mathf.Clamp(pos.z, -this.limitY, this.limitY));
         }
+
+        /// <summary>
+        /// Enumerates all the units within a given rect
+        /// </summary>
+        /// <param name="rect">Rect to check</param>
+        /// <param name="units">Units to check for</param>
+        /// <returns>A sequence of all the units within the rect</returns>
+        public IEnumerable<Unit> GetWithinRect(Rect rect, IEnumerable<Unit> units) => units.Where(unit => rect.Contains(this.camera.WorldToScreenPoint(unit.Position)));
         #endregion
 
         #region Functions
-        private void Awake() => this.camera = GetComponent<Camera>();
+        private void Awake()
+        {
+            this.camera = GetComponent<Camera>();
+            this.clickMask = LayerUtils.GetMask(Layers.DEFAULT, Layers.GROUND, Layers.VISIBLE_UNIT, Layers.VISIBLE_RESOURCE);
+        }
 
         private void Start()
         {

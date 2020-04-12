@@ -7,11 +7,16 @@ using UnityEngine;
 namespace DontEatSand.Entities
 {
     [DisallowMultipleComponent, RequireComponent(typeof(Collider))]
-    public abstract class Entity : MonoBehaviourPun
+    public abstract class Entity : MonoBehaviourPun, ISelectable
     {
         #region Fields
         [SerializeField]
         private int maxHealth = 200;
+        [SerializeField]
+        private Renderer selectionIndicator;
+        [SerializeField]
+        private Color selectedColour = Color.green, enemyColour = Color.red, hoveredColour = Color.blue;
+        private Color activeColour;
         #endregion
 
         #region Properties
@@ -46,6 +51,74 @@ namespace DontEatSand.Entities
         /// The current health of this entity
         /// </summary>
         public int Health { get; protected set; }
+
+        private bool isSelected;
+        /// <summary>
+        /// If this Entity is currently selected or not
+        /// </summary>
+        public bool IsSelected
+        {
+            get => this.isSelected;
+            set
+            {
+                //On value change
+                if (this.isSelected != value)
+                {
+                    this.isSelected = value;
+                    if (this.isSelected)
+                    {
+                        //If selected, activate and colour
+                        this.selectionIndicator.gameObject.SetActive(true);
+                        this.selectionIndicator.material.color = this.activeColour;
+                    }
+                    else
+                    {
+                        if (this.isHovered)
+                        {
+                            //If not active but hovered, set as hovered colour
+                            this.selectionIndicator.material.color = this.hoveredColour;
+                        }
+                        else
+                        {
+                            //If not hovered, turn off
+                            this.selectionIndicator.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool isHovered;
+        /// <summary>
+        /// If this Entity is currently being hovered or not
+        /// </summary>
+        public bool IsHovered
+        {
+            get => this.isHovered;
+            set
+            {
+                //On value change
+                if (this.isHovered != value)
+                {
+                    this.isHovered = value;
+                    //Only update if not selected
+                    if (!this.IsSelected)
+                    {
+                        if (this.isHovered)
+                        {
+                            //If hovered, turn on and colour
+                            this.selectionIndicator.gameObject.SetActive(true);
+                            this.selectionIndicator.material.color = this.hoveredColour;
+                        }
+                        else
+                        {
+                            //Else turn off
+                            this.selectionIndicator.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Methods
@@ -93,6 +166,11 @@ namespace DontEatSand.Entities
                 this.Info = info;
             }
             this.Health = this.maxHealth;
+
+            //Setup selection indicator
+            this.activeColour = this.IsControllable() ? this.selectedColour : this.enemyColour;
+            this.selectionIndicator.material.color = this.activeColour;
+            this.selectionIndicator.gameObject.SetActive(false);
 
             //If controllable, destroy the discoverable component
             if (this.IsControllable())
