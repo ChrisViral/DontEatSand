@@ -8,8 +8,15 @@ namespace DontEatSand.Entities
     /// <summary>
     /// Wet sand deposit
     /// </summary>
-    public class Sandpit : Discoverable
+    public class Sandpit : Discoverable, ISelectable
     {
+        #region Fields
+        [SerializeField]
+        private Renderer selectionIndicator;
+        [SerializeField]
+        private Color selectedColour = Color.green, hoveredColour = Color.blue;
+        #endregion
+
         #region Properties
         [SerializeField]
         private int availableSand = 1000;
@@ -17,6 +24,74 @@ namespace DontEatSand.Entities
         /// Available sand in this pit
         /// </summary>
         public int AvailableSand => this.availableSand;
+
+        private bool isSelected;
+        /// <summary>
+        /// If this Sandpit is currently selected or not
+        /// </summary>
+        public bool IsSelected
+        {
+            get => this.isSelected;
+            set
+            {
+                //On value change
+                if (this.isSelected != value)
+                {
+                    this.isSelected = value;
+                    if (this.isSelected)
+                    {
+                        //If selected, activate and colour
+                        this.selectionIndicator.gameObject.SetActive(true);
+                        this.selectionIndicator.material.color = this.selectedColour;
+                    }
+                    else
+                    {
+                        if (this.isHovered)
+                        {
+                            //If not active but hovered, set as hovered colour
+                            this.selectionIndicator.material.color = this.hoveredColour;
+                        }
+                        else
+                        {
+                            //If not hovered, turn off
+                            this.selectionIndicator.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool isHovered;
+        /// <summary>
+        /// If this Sandpit is currently being hovered or not
+        /// </summary>
+        public bool IsHovered
+        {
+            get => this.isHovered;
+            set
+            {
+                //On value change
+                if (this.isHovered != value)
+                {
+                    this.isHovered = value;
+                    //Only update if not selected
+                    if (!this.IsSelected)
+                    {
+                        if (this.isHovered)
+                        {
+                            //If hovered, turn on and colour
+                            this.selectionIndicator.gameObject.SetActive(true);
+                            this.selectionIndicator.material.color = this.hoveredColour;
+                        }
+                        else
+                        {
+                            //Else turn off
+                            this.selectionIndicator.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Methods

@@ -56,7 +56,7 @@ namespace DontEatSand
         {
             //Load the Json
             string text = File.ReadAllText(DESUtils.DatabaseLocation);
-            List<UnitInfo> info = JsonConvert.DeserializeObject<List<UnitInfo>>(text);
+            UnitInfo[] info = JsonConvert.DeserializeObject<UnitInfo[]>(text);
             //Setup the database
             Database = new ReadOnlyDictionary<string, UnitInfo>(info.ToDictionary(u => u.Name, u => u));
             Count = Database.Count;

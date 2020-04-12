@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using DontEatSand.Entities;
 using DontEatSand.Entities.Units;
+using UnityEngine;
 
 namespace DontEatSand
 {
@@ -185,19 +187,19 @@ namespace DontEatSand
         public static GameEvent<int> OnCandyChanged { get; } = new GameEvent<int>();
 
         /// <summary>
-        /// Fired when a unit is added to this player's build queue
+        /// Fired when a unit is added to this player's build queue<para/>
         /// Param{<see cref="UnitInfo"/>} unit: The unit added to the queue
         /// </summary>
         public static GameEvent<UnitInfo> OnUnitAddedToQueue { get; } = new GameEvent<UnitInfo>();
 
         /// <summary>
-        /// Fired when a unit is removed from the player's build queue
+        /// Fired when a unit is removed from the player's build queue<para/>
         /// Param{<see cref="int"/>} index: Index in the queue of the unit being removed
         /// </summary>
         public static GameEvent<int> OnUnitRemovedFromQueue { get; } = new GameEvent<int>();
 
         /// <summary>
-        /// Fired when a unit is created
+        /// Fired when a unit is created<para/>
         /// Param{<see cref="Unit"/>} unit: The created unit
         /// </summary>
         public static GameEvent<Unit> OnUnitCreated { get; } = new GameEvent<Unit>();
@@ -207,6 +209,19 @@ namespace DontEatSand
         /// Param{<see cref="Unit"/>} unit: The destroyed unit
         /// </summary>
         public static GameEvent<Unit> OnUnitDestroyed { get; } = new GameEvent<Unit>();
+
+        /// <summary>
+        /// Fired when the unit selection from the player has changed<para/>
+        /// Param{<see cref="SelectionType"/>} type: The type of selection in effect
+        /// </summary>
+        public static GameEvent<SelectionType> OnSelectionChanged { get; } = new GameEvent<SelectionType>();
+
+        /// <summary>
+        /// Fired when an action is requested from the currently selected units<para/>
+        /// Param{<see cref="Vector3"/>} position: Position of the action<para/>
+        /// Param{<see cref="ISelectable"/> target: Target of the action, if any
+        /// </summary>
+        public static GameEvent<Vector3, ISelectable> OnActionRequested { get; } = new GameEvent<Vector3, ISelectable>();
         #endregion
     }
 }
