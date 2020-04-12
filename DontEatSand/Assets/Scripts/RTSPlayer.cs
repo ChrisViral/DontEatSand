@@ -199,11 +199,9 @@ namespace DontEatSand
         /// <summary>
         /// Selects units and other objects from the screen using the mouse
         /// </summary>
-        private void SelectFromScreen()
+        /// <param name="currentlyHovered">The currently hovered selectable object</param>
+        private void SelectFromScreen(ISelectable currentlyHovered)
         {
-                        //Get currently hovered
-            ISelectable currentlyHovered = this.camera.Selected;
-
             if (Input.GetMouseButtonDown(0))
             {
                 //Begin drag
@@ -216,7 +214,7 @@ namespace DontEatSand
                 //End drag
                 this.selection.gameObject.SetActive(false);
                 //Get all selectable units
-                List<Unit> withinRect = this.camera.GetWithinRect(this.Selection, this.units).ToList();
+                HashSet<Unit> withinRect = new HashSet<Unit>(this.camera.GetWithinRect(this.Selection, this.units));
 
                 //If there are non, check for single click
                 if (withinRect.Count == 0 && currentlyHovered is Unit unit && unit.IsControllable())
@@ -229,16 +227,19 @@ namespace DontEatSand
                 {
                     //Make sure to mark new ones as selected
                     withinRect.ForEach(u => u.IsSelected = true);
+
                     //If pressing ctrl, add to list
                     if (Input.GetKey(KeyCode.LeftControl))
                     {
+                        //Make sure to ignore already selected units
+                        withinRect.ExceptWith(this.SelectedUnits);
                         this.SelectedUnits.AddRange(withinRect);
                     }
                     else
                     {
                         //Otherwise switch out and clear previous
-                        this.SelectedUnits.ForEach(u => u.IsSelected = false);
-                        this.SelectedUnits = withinRect;
+                        this.SelectedUnits.Where(s => !withinRect.Contains(s)).ForEach(u => u.IsSelected = false);
+                        this.SelectedUnits = new List<Unit>(withinRect);
                     }
 
                     //Clear out single selected if necessary
@@ -291,6 +292,15 @@ namespace DontEatSand
             //If no units are selected, make sure anything hovered is highlighted
             this.Hovered = this.selection.gameObject.activeSelf && this.inBox.Count > 0 ? null : currentlyHovered;
         }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="currentlyHovered">The currently hovered selectable object</param>
+        private void ProcessActions(ISelectable currentlyHovered)
+        {
+
+        }
         #endregion
 
         #region Functions
@@ -299,6 +309,7 @@ namespace DontEatSand
             //Setup
             this.Sand = this.startingSand;
             this.MaxCandy = this.baseCandy;
+            //ReSharper disable once PossibleNullReferenceException
             this.camera = Camera.main.GetComponent<RTSCamera>();
 
             //Event registering
@@ -319,7 +330,12 @@ namespace DontEatSand
 
         private void Update()
         {
-            SelectFromScreen();
+            //Get currently hovered object
+            ISelectable currentlyHovered = this.camera.Selected;
+            //Do selection
+            SelectFromScreen(currentlyHovered);
+            //Do movement
+            ProcessActions(currentlyHovered);
         }
 
         private void OnDestroy()
