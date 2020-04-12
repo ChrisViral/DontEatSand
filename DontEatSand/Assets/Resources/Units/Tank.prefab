@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 5675329360157725675}
   - component: {fileID: 2349788687319004778}
   - component: {fileID: -7800005990814345576}
-  - component: {fileID: 6150184132002735074}
+  - component: {fileID: 774335538979036503}
+  - component: {fileID: -4419991329003275427}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -149,7 +150,29 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
---- !u!114 &6150184132002735074
+--- !u!195 &774335538979036503
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5675329360157725685}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &-4419991329003275427
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,9 +181,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5675329360157725685}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 055c6f451bf0abf4593f6745b0f7f62c, type: 3}
+  m_Script: {fileID: 11500000, guid: f712dc3ce764e5a4abd1feb2ddc5dd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
   entityName: Tank
-  icon: {fileID: 21300000, guid: 282d2b374cc59754e809bfe800bd38b7, type: 3}
+  Icon: {fileID: 21300000, guid: 282d2b374cc59754e809bfe800bd38b7, type: 3}

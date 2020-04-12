@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 1228936513121908723}
   - component: {fileID: 4526768623996335937}
   - component: {fileID: -8480643430785152044}
-  - component: {fileID: -2293545094048636071}
+  - component: {fileID: -2238142595218506769}
+  - component: {fileID: -8605845613799446086}
   m_Layer: 0
   m_Name: Scout
   m_TagString: Untagged
@@ -149,7 +150,29 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
---- !u!114 &-2293545094048636071
+--- !u!195 &-2238142595218506769
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228936513121908717}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &-8605845613799446086
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,9 +181,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1228936513121908717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 055c6f451bf0abf4593f6745b0f7f62c, type: 3}
+  m_Script: {fileID: 11500000, guid: f712dc3ce764e5a4abd1feb2ddc5dd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
   entityName: Scout
-  icon: {fileID: 21300000, guid: 853eb772e23bf154c87f172cfbcde9e1, type: 3}
+  Icon: {fileID: 21300000, guid: 853eb772e23bf154c87f172cfbcde9e1, type: 3}

@@ -20,6 +20,11 @@ namespace DontEatSand.Entities.Units
         public Transform Target { get; set; }
 
         /// <summary>
+        /// Sprite representing this unit
+        /// </summary>
+        public Sprite Icon;
+
+        /// <summary>
         /// Destination of this unit
         /// </summary>
         public Vector3 Destination

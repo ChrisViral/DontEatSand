@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DontEatSand.Entities;
+using DontEatSand.Entities.Units;
 
 namespace DontEatSand.UI
 {
@@ -22,7 +22,7 @@ namespace DontEatSand.UI
         private GameObject singleUnitParent;
 
         [SerializeField]
-        private List<TestUnit> list;
+        private List<Unit> list;
 
         [SerializeField]
         private Transform multiIconAnchor;
@@ -38,7 +38,7 @@ namespace DontEatSand.UI
         /// Given a list of units, display their information in the management menu
         /// </summary>
         /// <param name="units"></param>
-        public List<GameObject> GetUnitsWithButtons(List<TestUnit> units)
+        public List<GameObject> GetUnitsWithButtons(List<Unit> units)
         {
             List<GameObject> iconsList = new List<GameObject>();
             
@@ -49,10 +49,10 @@ namespace DontEatSand.UI
             }
             
             // Create button objects for each unit
-            foreach(TestUnit unit in units)
+            foreach(Unit unit in units)
             {
                 GameObject newIcon = Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity, multiUnitParent.transform);
-                newIcon.GetComponent<Image>().sprite = unit.icon;
+                newIcon.GetComponent<Image>().sprite = unit.Icon;
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
                 newIcon.GetComponent<Button>().onClick.AddListener(delegate{DisplaySingleUnitInfo(unit);});
                 iconsList.Add(newIcon);
@@ -82,7 +82,7 @@ namespace DontEatSand.UI
         /// Given a unit, display its info in the single unit info menu
         /// </summary>
         /// <param name="unit"></param>
-        public void DisplaySingleUnitInfo(TestUnit unit)
+        public void DisplaySingleUnitInfo(Unit unit)
         {
             multiUnitParent.SetActive(false);
             singleUnitParent.SetActive(true);

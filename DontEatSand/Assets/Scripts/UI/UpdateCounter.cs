@@ -57,7 +57,6 @@ namespace DontEatSand.UI
 
         private void Start()
         {
-            this.Log(RTSPlayer.Instance.Sand);
             this.sandCount = RTSPlayer.Instance.Sand;
             this.maxCandyCount = RTSPlayer.Instance.MaxCandy;
             this.usedCandyCount = RTSPlayer.Instance.UsedCandy;
