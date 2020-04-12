@@ -12,7 +12,7 @@ namespace DontEatSand
         WORKER,
         COMBAT,
         RANGED,
-        HEALER,
+        SUPPORT,
         BUILDING
     }
 

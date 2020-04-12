@@ -10,7 +10,7 @@
 	},
 	{
 		"Name": "Ranged",
-		"Description": "oh",
+		"Description": "yote",
 		"Type": "RANGED",
 		"SandCost": 120,
 		"CandyCost": 5,
@@ -19,7 +19,7 @@
 	},
 	{
 		"Name": "Tank",
-		"Description": "eh",
+		"Description": "oh",
 		"Type": "COMBAT",
 		"SandCost": 200,
 		"CandyCost": 8,
@@ -28,8 +28,8 @@
 	},
 	{
 		"Name": "Healer",
-		"Description": "oh ah ah",
-		"Type": "HEALER",
+		"Description": "eh",
+		"Type": "SUPPORT",
 		"SandCost": 150,
 		"CandyCost": 10,
 		"BuildTime": 7,
@@ -38,14 +38,14 @@
 	{
 		"Name": "Scout",
 		"Description": "oh ah ah",
-		"Type": "COMBAT",
+		"Type": "SUPPORT",
 		"SandCost": 150,
 		"CandyCost": 10,
 		"BuildTime": 3,
 		"Icon": "icon_scout"
 	},
 	{
-		"Name": "Worker",
+		"Name": "Farmer",
 		"Description": "ting tang",
 		"Type": "WORKER",
 		"SandCost": 50,
