@@ -41,18 +41,18 @@ namespace DontEatSand.UI
         public List<GameObject> GetUnitsWithButtons(List<Unit> units)
         {
             List<GameObject> iconsList = new List<GameObject>();
-            
+
             // Return an empty list if there are no units selected
             if(units == null)
             {
                 return iconsList;
             }
-            
+
             // Create button objects for each unit
             foreach(Unit unit in units)
             {
                 GameObject newIcon = Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity, multiUnitParent.transform);
-                newIcon.GetComponent<Image>().sprite = unit.Icon;
+                newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
                 newIcon.GetComponent<Button>().onClick.AddListener(delegate{DisplaySingleUnitInfo(unit);});
                 iconsList.Add(newIcon);
@@ -69,7 +69,7 @@ namespace DontEatSand.UI
                 {
                     yPos += buttonPrefab.GetComponent<RectTransform>().rect.height + ICON_GAP;
                 }
-                
+
                 icon.GetComponent<RectTransform>().localPosition += newPos;
                 count++;
             }
@@ -102,7 +102,7 @@ namespace DontEatSand.UI
                     child.GetComponent<Text>().text = unitInfo.Description;
                 }
             }
-            
+
         }
 
     }

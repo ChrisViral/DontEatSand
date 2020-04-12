@@ -5,7 +5,8 @@
 		"Type": "COMBAT",
 		"SandCost": 100,
 		"CandyCost": 5,
-		"BuildTime": 5
+		"BuildTime": 5,
+		"Icon": "icon_melee"
 	},
 	{
 		"Name": "Ranged",
@@ -13,7 +14,8 @@
 		"Type": "RANGED",
 		"SandCost": 120,
 		"CandyCost": 5,
-		"BuildTime": 5
+		"BuildTime": 5,
+		"Icon": "icon_ranged"
 	},
 	{
 		"Name": "Tank",
@@ -21,7 +23,8 @@
 		"Type": "COMBAT",
 		"SandCost": 200,
 		"CandyCost": 8,
-		"BuildTime": 8
+		"BuildTime": 8,
+		"Icon": "icon_tank"
 	},
 	{
 		"Name": "Healer",
@@ -29,7 +32,8 @@
 		"Type": "HEALER",
 		"SandCost": 150,
 		"CandyCost": 10,
-		"BuildTime": 7
+		"BuildTime": 7,
+		"Icon": "icon_healer"
 	},
 	{
 		"Name": "Scout",
@@ -37,7 +41,8 @@
 		"Type": "COMBAT",
 		"SandCost": 150,
 		"CandyCost": 10,
-		"BuildTime": 3
+		"BuildTime": 3,
+		"Icon": "icon_scout"
 	},
 	{
 		"Name": "Worker",
@@ -45,7 +50,8 @@
 		"Type": "WORKER",
 		"SandCost": 50,
 		"CandyCost": 2,
-		"BuildTime": 3
+		"BuildTime": 3,
+		"Icon": "icon_farmer"
 	},
 	{
 		"Name": "Candy Factory",
@@ -53,6 +59,7 @@
 		"Type": "BUILDING",
 		"SandCost": 50,
 		"CandyCost": 2,
-		"BuildTime": 20
+		"BuildTime": 20,
+		"Icon": ""
 	},
 ]

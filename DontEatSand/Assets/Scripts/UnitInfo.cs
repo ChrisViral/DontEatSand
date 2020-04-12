@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using UnityEngine;
 
 namespace DontEatSand
 {
@@ -51,6 +52,11 @@ namespace DontEatSand
         /// The time required to build this unit
         /// </summary>
         public float BuildTime { get; }
+
+        /// <summary>
+        /// This unit's icon
+        /// </summary>
+        public Sprite Icon { get; }
         #endregion
 
         #region Constructors
@@ -63,8 +69,9 @@ namespace DontEatSand
         /// <param name="sandCost">Sand cost of the Unit</param>
         /// <param name="candyCost">Candy cost of the Unit</param>
         /// <param name="buildTime">The build time of the Unit</param>
+        /// <param name="icon">Name of the UI icon for this unit</param>
         [JsonConstructor]
-        public UnitInfo(string name, string description, UnitType type, int sandCost, int candyCost, float buildTime)
+        public UnitInfo(string name, string description, UnitType type, int sandCost, int candyCost, float buildTime, string icon)
         {
             this.Name = name;
             this.Description = description;
@@ -72,6 +79,7 @@ namespace DontEatSand
             this.SandCost = sandCost;
             this.CandyCost = candyCost;
             this.BuildTime = buildTime;
+            this.Icon = string.IsNullOrEmpty(icon) ? null : Resources.Load<Sprite>(icon);
         }
         #endregion
     }
