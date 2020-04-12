@@ -136,6 +136,7 @@ namespace DontEatSand.Entities.Buildings
             }
             else
             {
+                //ReSharper disable PossibleNullReferenceException
                 //Traverse list to find node
                 LinkedListNode<(Unit, UnitInfo info)> toRemove = this.buildQueue.First.Next;
                 for (int i = 1; i < index; i++)
@@ -145,6 +146,7 @@ namespace DontEatSand.Entities.Buildings
 
                 removed = toRemove.Value.info;
                 this.buildQueue.Remove(toRemove);
+                //ReSharper enable PossibleNullReferenceException
             }
 
             //Give back resources
