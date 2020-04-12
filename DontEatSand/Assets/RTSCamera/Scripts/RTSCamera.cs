@@ -189,6 +189,11 @@ namespace RTSCam
         }
 
         /// <summary>
+        /// Position of the mouse in the 3D world
+        /// </summary>
+        public Vector3 MouseWorldPosition => this.camera.ScreenToWorldPoint(MouseInput);
+
+        /// <summary>
         /// Returns the Selectable object under the mouse cursor
         /// </summary>
         public ISelectable Selected
@@ -196,7 +201,7 @@ namespace RTSCam
             get
             {
                 //Check if we hit anything
-                if (Physics.Raycast(this.camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 200f, this.clickMask, QueryTriggerInteraction.Ignore))
+                if (Physics.Raycast(this.camera.ScreenPointToRay(MouseInput), out RaycastHit hit, 200f, this.clickMask, QueryTriggerInteraction.Ignore))
                 {
                     //If we did, check for a selectable in the parent or current object
                     return hit.transform.GetComponent<ISelectable>() ?? hit.transform.GetComponentInParent<ISelectable>();

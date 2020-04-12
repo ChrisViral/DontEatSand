@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using DontEatSand.Entities;
 using DontEatSand.Entities.Units;
+using UnityEngine;
 
 namespace DontEatSand
 {
@@ -213,6 +215,13 @@ namespace DontEatSand
         /// Param{<see cref="SelectionType"/>} type: The type of selection in effect
         /// </summary>
         public static GameEvent<SelectionType> OnSelectionChanged { get; } = new GameEvent<SelectionType>();
+
+        /// <summary>
+        /// Fired when an action is requested from the currently selected units<para/>
+        /// Param{<see cref="Vector3"/>} position: Position of the action<para/>
+        /// Param{<see cref="ISelectable"/> target: Target of the action, if any
+        /// </summary>
+        public static GameEvent<Vector3, ISelectable> OnActionRequested { get; } = new GameEvent<Vector3, ISelectable>();
         #endregion
     }
 }

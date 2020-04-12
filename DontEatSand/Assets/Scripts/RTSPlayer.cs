@@ -25,6 +25,13 @@ namespace DontEatSand
     [DisallowMultipleComponent]
     public class RTSPlayer : Singleton<RTSPlayer>
     {
+        #region Constants
+        /// <summary>
+        /// The maximum time for a mouse down-up sequence for actions to be registered
+        /// </summary>
+        private const float CLICK_TIME = 0.5f;
+        #endregion
+
         #region Fields
         [SerializeField, Tooltip("The amount of sand the rtsPlayer starts with")]
         private int startingSand = 500;
@@ -36,6 +43,7 @@ namespace DontEatSand
         private readonly LinkedList<Unit> units = new LinkedList<Unit>();
         private Vector2 startPoint, endPoint;
         private HashSet<Unit> inBox = new HashSet<Unit>();
+        private float rightClickTime;
         #endregion
 
         #region Properties
@@ -321,12 +329,18 @@ namespace DontEatSand
         }
 
         /// <summary>
-        ///
+        /// Processes any player actions
         /// </summary>
         /// <param name="currentlyHovered">The currently hovered selectable object</param>
         private void ProcessActions(ISelectable currentlyHovered)
         {
-
+            //Get mouse original time down
+            if (Input.GetMouseButtonDown(1)) { this.rightClickTime = Time.time; }
+            else if (Input.GetMouseButtonUp(1) && Time.time - this.rightClickTime <= CLICK_TIME && this.SelectedUnits.Count > 0)
+            {
+                //Fire the action request
+                GameEvents.OnActionRequested.Invoke(this.camera.MouseWorldPosition, currentlyHovered);
+            }
         }
         #endregion
 
