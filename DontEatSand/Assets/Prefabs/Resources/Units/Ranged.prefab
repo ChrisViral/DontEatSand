@@ -13,10 +13,11 @@ GameObject:
   - component: {fileID: 3672609434523126901}
   - component: {fileID: 3672609434523126900}
   - component: {fileID: 3672609434523126903}
-  - component: {fileID: 474737628398025924}
-  - component: {fileID: 5583783634323048864}
-  - component: {fileID: 2884861184110106351}
-  m_Layer: 9
+  - component: {fileID: 2214381397212879334}
+  - component: {fileID: 8222113239690780143}
+  - component: {fileID: 3529029323450243019}
+  - component: {fileID: 4863427457936102074}
+  m_Layer: 0
   m_Name: Ranged
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +113,44 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!195 &474737628398025924
+--- !u!114 &2214381397212879334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3672609434523126889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 8222113239690780143}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8222113239690780143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3672609434523126889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+--- !u!195 &3529029323450243019
 NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,21 +172,7 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &5583783634323048864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3672609434523126889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dec7f44c94f49acae499aade8f78f06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  invisibleLayer: 11
-  permanent: 0
---- !u!114 &2884861184110106351
+--- !u!114 &4863427457936102074
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,4 +185,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
-  entityName: 
+  entityName: Ranged
+  Icon: {fileID: 21300000, guid: db6eecd68076dbb439ab8d6c4df54ed0, type: 3}

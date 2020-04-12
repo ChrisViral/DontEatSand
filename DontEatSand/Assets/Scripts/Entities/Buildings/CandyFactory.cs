@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DontEatSand.Extensions;
+using UnityEngine;
 
 namespace DontEatSand.Entities.Buildings
 {
@@ -16,7 +17,7 @@ namespace DontEatSand.Entities.Buildings
         public void FinishedBuilding()
         {
             //If local player, make sure to update the candy
-            if (this.photonView.IsMine)
+            if (this.IsControllable())
             {
                 GameEvents.OnCandyMaxChanged.Invoke(this.candyGiven);
             }
@@ -27,7 +28,7 @@ namespace DontEatSand.Entities.Buildings
         private void OnDestroy()
         {
             //When destroyed, remove the candy given
-            if (this.photonView.IsMine)
+            if (this.IsControllable())
             {
                 GameEvents.OnCandyMaxChanged.Invoke(-this.candyGiven);
             }

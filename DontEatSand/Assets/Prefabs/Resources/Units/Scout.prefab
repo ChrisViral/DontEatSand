@@ -13,10 +13,11 @@ GameObject:
   - component: {fileID: 1228936513121908721}
   - component: {fileID: 1228936513121908720}
   - component: {fileID: 1228936513121908723}
-  - component: {fileID: 71544852246238704}
-  - component: {fileID: 856850152422777470}
-  - component: {fileID: 8143850278447826411}
-  m_Layer: 9
+  - component: {fileID: 4526768623996335937}
+  - component: {fileID: -8480643430785152044}
+  - component: {fileID: -2238142595218506769}
+  - component: {fileID: -8605845613799446086}
+  m_Layer: 0
   m_Name: Scout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +113,44 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!195 &71544852246238704
+--- !u!114 &4526768623996335937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228936513121908717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: -8480643430785152044}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &-8480643430785152044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228936513121908717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+--- !u!195 &-2238142595218506769
 NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,21 +172,7 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &856850152422777470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1228936513121908717}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dec7f44c94f49acae499aade8f78f06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  invisibleLayer: 11
-  permanent: 0
---- !u!114 &8143850278447826411
+--- !u!114 &-8605845613799446086
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,4 +185,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 200
-  entityName: 
+  entityName: Scout
+  Icon: {fileID: 21300000, guid: 853eb772e23bf154c87f172cfbcde9e1, type: 3}
