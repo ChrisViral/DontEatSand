@@ -12,7 +12,12 @@ namespace DontEatSand.Utils
         /// <summary>
         /// Location of the Unit Database file
         /// </summary>
-        public static string DatabaseLocation { get; } = Path.Combine(Application.dataPath, "../unitdatabase.json");
+        public static string DatabaseLocation { get; } = Path.Combine(Application.dataPath, "unitdatabase.json");
+
+        /// <summary>
+        /// Location of the Unit BehaviourTree file
+        /// </summary>
+        public static string BehaviourTreeLocation { get; } = Path.Combine(Application.dataPath, "unit-behaviour.xml");
         #endregion
 
         #region Static methods

@@ -5,7 +5,6 @@ using DontEatSand.Entities.Units;
 using DontEatSand.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 //ReSharper disable once CheckNamespace
 namespace RTSCam
@@ -201,7 +200,7 @@ namespace RTSCam
             get
             {
                 //Check if we hit anything
-                if (Physics.Raycast(this.camera.ScreenPointToRay(MouseInput), out RaycastHit hit, 200f, this.clickMask, QueryTriggerInteraction.Ignore))
+                if (Physics.Raycast(this.camera.ScreenPointToRay(MouseInput), out RaycastHit hit, 400f, this.clickMask, QueryTriggerInteraction.Ignore))
                 {
                     //If we did, check for a selectable in the parent or current object
                     return hit.transform.GetComponent<ISelectable>() ?? hit.transform.GetComponentInParent<ISelectable>();

@@ -191,7 +191,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1235040000852895753}
-  m_Mesh: {fileID: -1760711487321341110, guid: 3306f05259878aa44abf385ce466841f, type: 3}
+  m_Mesh: {fileID: -1760711487321341110, guid: 2389441666d7440e0aceef77186bc062, type: 3}
 --- !u!23 &1604314888887369451
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1153,7 +1153,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5358022407090331362}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.039546225, y: -0.22184399, z: -0.19390212}
+  m_LocalPosition: {x: -0.039546225, y: -1.21, z: 0.15}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children:
   - {fileID: 3788970441261262940}
@@ -1324,7 +1324,7 @@ GameObject:
   - component: {fileID: 3615247661950806070}
   - component: {fileID: 8889817388401914727}
   - component: {fileID: 7821623313103129417}
-  - component: {fileID: 440969845932084731}
+  - component: {fileID: 7515763080588948642}
   m_Layer: 9
   m_Name: castle1
   m_TagString: Untagged
@@ -1354,7 +1354,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6572780590983825460}
-  m_Mesh: {fileID: 4113999240307657450, guid: 3306f05259878aa44abf385ce466841f, type: 3}
+  m_Mesh: {fileID: 4113999240307657450, guid: 2389441666d7440e0aceef77186bc062, type: 3}
 --- !u!23 &7821623313103129417
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1393,8 +1393,8 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &440969845932084731
-MeshCollider:
+--- !u!65 &7515763080588948642
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1403,10 +1403,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: -1
-  m_Mesh: {fileID: 4113999240307657450, guid: 3306f05259878aa44abf385ce466841f, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.017, y: 0.013, z: 0.015}
+  m_Center: {x: 0, y: 0.0013000002, z: 0.007}
 --- !u!1 &6722869006865446250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1509,7 +1508,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2141126444061931668}
-  - component: {fileID: 8567027702144308559}
   m_Layer: 9
   m_Name: teacherThrone
   m_TagString: Untagged
@@ -1534,25 +1532,6 @@ Transform:
   m_Father: {fileID: 3615247661950806070}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!95 &8567027702144308559
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7237829878134467151}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: f425a8de32e85364c82f3258b6567e42, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7378687511017996828
 GameObject:
   m_ObjectHideFlags: 0
