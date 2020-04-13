@@ -80,7 +80,6 @@ namespace DontEatSand.UI.Game
             {
                  float timeToBuild = currentlyBuilding.Value.info.BuildTime;
                  Image icon = currentlyBuilding.Value.icon.transform.GetChild(0).GetComponent<Image>();
-                 
                  icon.fillAmount -= Time.deltaTime / timeToBuild;
             }
         }
