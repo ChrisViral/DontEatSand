@@ -546,6 +546,12 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 0
     Name: Throwing
+  - Type: 4
+    SynchronizeType: 0
+    Name: Building
+  - Type: 4
+    SynchronizeType: 0
+    Name: Digging
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -1099,7 +1105,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 8868680844060856072, guid: f505f45e57641403086298a9e5db84f4, type: 3}
+  m_Mesh: {fileID: 8868680844060856072, guid: c4c4d4dec55fc47ffb1799c18207f5fa, type: 3}
   m_Bones:
   - {fileID: 3946192128314825876}
   - {fileID: 7954515348737513080}
