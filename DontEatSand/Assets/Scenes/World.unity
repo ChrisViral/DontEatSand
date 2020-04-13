@@ -326,7 +326,7 @@ PrefabInstance:
     - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
         type: 3}
       propertyPath: lastTab
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
         type: 3}
@@ -362,6 +362,16 @@ PrefabInstance:
         type: 3}
       propertyPath: panningSpeed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: mouseRotationSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: rotationSped
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4129347733721034048, guid: 0d17ea15291c1244c872ed0e93991e64,
         type: 3}
