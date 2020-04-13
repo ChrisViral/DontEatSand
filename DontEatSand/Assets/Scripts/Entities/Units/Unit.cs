@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using BTCoroutine = System.Collections.Generic.IEnumerator<BTNodeResult>;
 
 namespace DontEatSand.Entities.Units
 {
@@ -15,6 +16,8 @@ namespace DontEatSand.Entities.Units
 
         #region Fields
         private NavMeshAgent agent;
+
+        private BehaviorTree bt;
         #endregion
 
         #region Properties
@@ -35,6 +38,21 @@ namespace DontEatSand.Entities.Units
                 this.agent.SetDestination(value);
             }
         }
+
+        /// <summary>
+        /// Flag dictating if the unit is following an order
+        /// </summary>
+        public bool hasOrderFlag { get; set; }
+
+        /// <summary>
+        /// Flag dictating if an enemy is within the aggro range
+        /// </summary>
+        public bool isEnemySeenFlag { get; set; }
+
+        /// <summary>
+        /// Flag dictating if the enemy is under attack
+        /// </summary>
+        public bool isUnderAttackFlag { get; set; }
         #endregion
 
         #region Methods
@@ -57,7 +75,13 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Functions
-        protected override void OnAwake() => this.agent = GetComponent<NavMeshAgent>();
+        protected override void OnAwake()
+        {
+            this.agent = GetComponent<NavMeshAgent>();
+
+            InitBT();
+            bt.Start();
+        }
 
         private void Update()
         {
@@ -72,6 +96,111 @@ namespace DontEatSand.Entities.Units
             //Notify of death and give back sand
             GameEvents.OnUnitDestroyed.Invoke(this);
             GameEvents.OnCandyChanged.Invoke(-this.Info.CandyCost);
+        }
+        #endregion
+
+        #region BehaviourTree
+        /// <summary>
+        /// Get the behaviour tree from the xml file
+        /// </summary>
+        private void InitBT()
+        {
+            bt = new BehaviorTree(Application.dataPath + "/Script/unit-behavior.xml", this);
+        }
+
+        /// <summary>
+        /// Get the flag for the condition hasOrderFlag
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("has-order")]
+        public bool hasOrder()
+        {
+            return hasOrderFlag;
+        }
+
+        /// <summary>
+        /// Get the flag for the condition isEnemySeenFlag
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("enemy-seen")]
+        public bool isEnemySeen()
+        {
+            return isEnemySeenFlag;
+        }
+
+        /// <summary>
+        /// Get the flag for the condition isUnderAttackFlag
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("under-attack")]
+        public bool isUnderAttack()
+        {
+            return isUnderAttackFlag;
+        }
+
+        /// <summary>
+        /// Routine for the followOrder leaf
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("follow-order")]
+        public BTCoroutine followOrderRoutine()
+        {
+            /*
+            * !isOrderCommanded
+            *       yield return BTNodeResult.Fail
+            * isOrderFinished
+            *      yield return BTNodeResult.Success;
+            * else
+            *      
+            */
+
+            yield return BTNodeResult.NotFinished;
+        }
+
+        /// <summary>
+        /// Routine for the attack leaf
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("attack")]
+        public BTCoroutine attackRoutine()
+        {
+            /*
+            * isAttackMode
+            * 
+            * enemy in aggro?
+            *   move to closest enemy in aggro range
+            *   attack unit 
+            *   yield return BTNodeResult.NotFinished;
+            * 
+            * 
+            * isDefenseMode
+            * 
+            * store original position
+            * received damage within last 2 seconds?
+            *   move to attacking unit
+            *   attack unit
+            *   yield return BTNodeResult.NotFinished;
+            * 
+            * 
+            * If no enemy in aggro
+            * 
+            *   if dist current to original pos > aggro range, return to original pos
+            *      yield return BTNodeResult.Success;
+            * 
+            *      
+            */
+
+            yield return BTNodeResult.NotFinished;
+        }
+
+        /// <summary>
+        /// Routine for the idle leaf
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("idle")]
+        public BTCoroutine WanderRoutine()
+        {
+            yield return BTNodeResult.Success;
         }
         #endregion
     }
