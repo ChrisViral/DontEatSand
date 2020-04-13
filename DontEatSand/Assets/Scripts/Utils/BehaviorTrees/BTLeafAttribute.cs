@@ -1,21 +1,16 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
+﻿using System;
 
-using Random = UnityEngine.Random;
-using Coroutine = System.Collections.IEnumerator;
-using BTCoroutine = System.Collections.Generic.IEnumerator<BTNodeResult>;
-
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-public class BTLeafAttribute : Attribute
+namespace DontEatSand.Utils.BehaviorTrees
 {
-    public string LeafName { get; private set; }
-
-    public BTLeafAttribute(string leafName)
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    public class BTLeafAttribute : Attribute
     {
-        LeafName = leafName;
+        #region Properties
+        public string LeafName { get; }
+        #endregion
+
+        #region Constructors
+        public BTLeafAttribute(string leafName) => this.LeafName = leafName;
+        #endregion
     }
 }

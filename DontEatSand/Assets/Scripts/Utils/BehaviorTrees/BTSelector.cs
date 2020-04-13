@@ -1,51 +1,45 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
 
-using Random = UnityEngine.Random;
-using Coroutine = System.Collections.IEnumerator;
-using BTCoroutine = System.Collections.Generic.IEnumerator<BTNodeResult>;
-
-public class BTSelector : BTNode
+namespace DontEatSand.Utils.BehaviorTrees
 {
-    private BTNode[] subNodes;
-
-    public BTSelector(IEnumerable<BTNode> subNodes)
+    public class BTSelector : BTNode
     {
-        this.subNodes = subNodes.ToArray();
-    }
+        #region Fields
+        private readonly BTNode[] subNodes;
+        #endregion
 
-    public BTSelector(params BTNode[] subNodes)
-    {
-        this.subNodes = subNodes;
-    }
+        #region Constructors
+        public BTSelector(params BTNode[] subNodes) => this.subNodes = subNodes;
 
-    public override BTCoroutine Procedure()
-    {
-        foreach (BTNode node in subNodes)
+        public BTSelector(IEnumerable<BTNode> subNodes) : this(subNodes.ToArray()) { }
+        #endregion
+
+        #region Methods
+        public override BTCoroutine Procedure()
         {
-            BTCoroutine routine = node.Procedure();
-
-            while (routine.MoveNext())
+            foreach (BTNode node in this.subNodes)
             {
-                BTNodeResult result = routine.Current;
+                BTCoroutine routine = node.Procedure();
 
-                if (result == BTNodeResult.Success)
+                while (routine.MoveNext())
                 {
-                    yield return BTNodeResult.Success;
-                    yield break;
-                }
-                else
-                {
-                    yield return BTNodeResult.NotFinished; 
-                    
-                    if (result == BTNodeResult.Failure)
-                        break;
+                    BTNodeResult result = routine.Current;
+
+                    if (result == BTNodeResult.SUCCESS)
+                    {
+                        yield return BTNodeResult.SUCCESS;
+                        yield break;
+                    }
+
+                    yield return BTNodeResult.NOT_FINISHED;
+                    if (result == BTNodeResult.FAILURE) break;
                 }
             }
-        }
 
-        yield return BTNodeResult.Failure;
+            yield return BTNodeResult.FAILURE;
+        }
+        #endregion
     }
 }

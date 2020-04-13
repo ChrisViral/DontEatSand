@@ -1,36 +1,37 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
 
-using Random = UnityEngine.Random;
-using Coroutine = System.Collections.IEnumerator;
-using BTCoroutine = System.Collections.Generic.IEnumerator<BTNodeResult>;
-
-public class BTNotNode : BTNode
+namespace DontEatSand.Utils.BehaviorTrees
 {
-    private BTNode childNode;
-
-    public BTNotNode(BTNode childNode)
+    public class BTNotNode : BTNode
     {
-        this.childNode = childNode;
-    }
+        #region Fields
+        private readonly BTNode childNode;
+        #endregion
 
-    public override BTCoroutine Procedure()
-    {
-        BTCoroutine routine = childNode.Procedure();
+        #region Constructors
+        public BTNotNode(BTNode childNode) => this.childNode = childNode;
+        #endregion
 
-        while (routine.MoveNext())
+        #region Methods
+        public override BTCoroutine Procedure()
         {
-            BTNodeResult result = routine.Current;
+            BTCoroutine routine = this.childNode.Procedure();
 
-            if (result == BTNodeResult.NotFinished)
-                yield return BTNodeResult.NotFinished;
-            else
+            while (routine.MoveNext())
             {
-                yield return result == BTNodeResult.Failure ? BTNodeResult.Success : BTNodeResult.Failure;
-                yield break;
+                BTNodeResult result = routine.Current;
+
+                if (result == BTNodeResult.NOT_FINISHED)
+                {
+                    yield return BTNodeResult.NOT_FINISHED;
+                }
+                else
+                {
+                    yield return result == BTNodeResult.FAILURE ? BTNodeResult.SUCCESS : BTNodeResult.FAILURE;
+                    yield break;
+                }
             }
         }
+        #endregion
     }
 }

@@ -1,23 +1,23 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
 
-using Random = UnityEngine.Random;
-using Coroutine = System.Collections.IEnumerator;
-using BTCoroutine = System.Collections.Generic.IEnumerator<BTNodeResult>;
-
-public class BTLeafNode : BTNode
+namespace DontEatSand.Utils.BehaviorTrees
 {
-    private Func<BTCoroutine> actionFunc;
-
-    public BTLeafNode(Func<BTCoroutine> actionFunc)
+    public class BTLeafNode : BTNode
     {
-        this.actionFunc = actionFunc;
-    }
+        #region Fields
+        private readonly Func<BTCoroutine> actionFunc;
+        #endregion
 
-    public override BTCoroutine Procedure()
-    {
-        return actionFunc();
+        #region Constructors
+        public BTLeafNode(Func<BTCoroutine> actionFunc) => this.actionFunc = actionFunc;
+        #endregion
+
+        #region Methods
+        public override BTCoroutine Procedure()
+        {
+            return this.actionFunc();
+        }
+        #endregion
     }
 }

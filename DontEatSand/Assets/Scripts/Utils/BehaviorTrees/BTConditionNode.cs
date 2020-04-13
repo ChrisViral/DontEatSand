@@ -1,23 +1,23 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
 
-using Random = UnityEngine.Random;
-using Coroutine = System.Collections.IEnumerator;
-using BTCoroutine = System.Collections.Generic.IEnumerator<BTNodeResult>;
-
-public class BTConditionNode : BTNode 
+namespace DontEatSand.Utils.BehaviorTrees
 {
-    private Func<bool> condition;
-
-    public BTConditionNode(Func<bool> condition)
+    public class BTConditionNode : BTNode
     {
-        this.condition = condition;
-    }
+        #region Fields
+        private readonly Func<bool> condition;
+        #endregion
 
-    public override BTCoroutine Procedure()
-    {
-        yield return condition() ? BTNodeResult.Success : BTNodeResult.Failure;
+        #region Constructors
+        public BTConditionNode(Func<bool> condition) => this.condition = condition;
+        #endregion
+
+        #region Methods
+        public override BTCoroutine Procedure()
+        {
+            yield return this.condition() ? BTNodeResult.SUCCESS : BTNodeResult.FAILURE;
+        }
+        #endregion
     }
 }

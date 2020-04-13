@@ -1,13 +1,11 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
 
-using Random = UnityEngine.Random;
-using Coroutine = System.Collections.IEnumerator;
-using BTCoroutine = System.Collections.Generic.IEnumerator<BTNodeResult>;
-
-public abstract class BTNode
+namespace DontEatSand.Utils.BehaviorTrees
 {
-    public abstract BTCoroutine Procedure();
+    public abstract class BTNode
+    {
+        #region Abstract methods
+        public abstract BTCoroutine Procedure();
+        #endregion
+    }
 }
