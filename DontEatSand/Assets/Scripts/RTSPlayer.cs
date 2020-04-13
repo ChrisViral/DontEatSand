@@ -266,14 +266,14 @@ namespace DontEatSand
                         //Make sure to ignore already selected units
                         withinRect.ExceptWith(this.SelectedUnits);
                         this.SelectedUnits.AddRange(withinRect);
-                        this.selectionType = SelectionType.UNITS;
+                        this.SelectionType = SelectionType.UNITS;
                     }
                     else
                     {
                         //Otherwise switch out and clear previous
                         this.SelectedUnits.Where(s => !withinRect.Contains(s)).ForEach(u => u.IsSelected = false);
                         this.SelectedUnits = new List<Unit>(withinRect);
-                        this.selectionType = SelectionType.UNITS;
+                        this.SelectionType = SelectionType.UNITS;
                     }
 
                     //Clear out single selected if necessary
