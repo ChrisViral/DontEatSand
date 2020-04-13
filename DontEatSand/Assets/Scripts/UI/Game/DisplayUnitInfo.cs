@@ -10,12 +10,6 @@ namespace DontEatSand.UI.Game
     /// </summary>
     public class DisplayUnitInfo : MonoBehaviour
     {
-        #region Constants
-        /// <summary>
-        /// Gap between icons
-        /// </summary>
-        private const float ICON_GAP = 6f;
-        #endregion
 
         #region Fields
         [SerializeField]
@@ -54,9 +48,17 @@ namespace DontEatSand.UI.Game
         {
             this.multiUnitParent.SetActive(true);
             this.singleUnitParent.SetActive(false);
+            
+            // First, clear all the children in the parent transform
+            foreach(Transform child in multiUnitParent.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
 
+            // Then, create a new list
             List<GameObject> iconsList = new List<GameObject>();
 
+            // Populate the list with buttons
             foreach(Unit unit in units)
             {
                 GameObject newIcon = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform);
@@ -64,23 +66,8 @@ namespace DontEatSand.UI.Game
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
                 newIcon.GetComponent<Button>().onClick.AddListener(() => DisplaySingleUnitInfo(unit));
                 iconsList.Add(newIcon);
-            }
 
-            //TODO: Use an auto-layout function, you really shouldn't have to space them manually
-            //Space them out
-            int count = 0;
-            foreach(GameObject icon in iconsList)
-            {
-                float yPos = 0f;
-                Vector3 newPos = new Vector3((this.buttonPrefab.GetComponent<RectTransform>().rect.width + ICON_GAP) * count, yPos, 0f);
-                if(newPos.x >= this.multiUnitParent.GetComponent<RectTransform>().rect.width)
-                {
-                    //TODO: You're not using this yPos after?
-                    yPos += this.buttonPrefab.GetComponent<RectTransform>().rect.height + ICON_GAP;
-                }
-
-                icon.GetComponent<RectTransform>().localPosition += newPos;
-                count++;
+                // TODO: show unit health bars
             }
 
         }
@@ -100,9 +87,12 @@ namespace DontEatSand.UI.Game
                 {
                     child.GetComponent<Text>().text = unitInfo.Name;
                 }
-                if(child.name == "Health")
+                if(child.name == "Icon")
                 {
-                    child.GetComponent<DisplayHealth>().UnitToDisplay = unit;
+                    child.GetComponent<Image>().sprite = unitInfo.Icon;
+                    // Display health
+                    // TODO: divide health by max health
+                    child.GetChild(1).GetComponent<Image>().fillAmount = unit.Health / 200f;
                 }
                 if(child.name == "Description")
                 {

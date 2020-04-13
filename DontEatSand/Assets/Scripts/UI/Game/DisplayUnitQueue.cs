@@ -32,28 +32,10 @@ namespace DontEatSand.UI.Game
 
             newUnit.GetComponent<Image>().sprite = unitInfo.Icon;
             newUnit.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
-            newUnit.GetComponent<Button>().onClick.AddListener(delegate{RemoveUnitFromQueue(newUnit);});
+            newUnit.GetComponent<Button>().onClick.AddListener(() => RemoveUnitFromQueue(newUnit));
 
             // Add the unit to the queue visually
             this.unitQueue.AddLast((unitInfo, newUnit));
-            UpdateIconPositions();
-        }
-
-        private void OnUnitRemovedFromQueue(int index)
-        {
-            int count = 0;
-            var node = this.unitQueue.First;
-            while(node != null)
-            {
-                var nextNode = node.Next;
-                count++;
-                if (count == index)
-                {
-                    this.unitQueue.Remove(node);
-                }
-                node = nextNode;
-            }
-            UpdateIconPositions();
         }
 
         private void OnUnitCreated(Unit unit)
@@ -61,18 +43,6 @@ namespace DontEatSand.UI.Game
             LinkedListNode<(UnitInfo, GameObject icon)> toRemove = this.unitQueue.First;
             this.unitQueue.Remove(toRemove);
             Destroy(toRemove.Value.icon);
-            UpdateIconPositions();
-        }
-
-        private void UpdateIconPositions()
-        {
-            int count = 0;
-            foreach((UnitInfo info, GameObject unit) in this.unitQueue)
-            {
-                count++;
-                float xPos = this.buttonPrefab.GetComponent<RectTransform>().rect.width + ICON_GAP;
-                unit.GetComponent<RectTransform>().localPosition = new Vector3(-(xPos) * count, 0f, 0f);
-            }
         }
 
         private void RemoveUnitFromQueue(GameObject iconToRemove)
@@ -86,7 +56,6 @@ namespace DontEatSand.UI.Game
                 {
                     this.unitQueue.Remove(node);
                     Destroy(node.Value.icon);
-                    UpdateIconPositions();
                     break;
                 }
                 count++;
@@ -101,7 +70,6 @@ namespace DontEatSand.UI.Game
         private void Awake()
         {
             GameEvents.OnUnitAddedToQueue.AddListener(OnUnitAddedToQueue);
-            //GameEvents.OnUnitRemovedFromQueue.AddListener(OnUnitRemovedFromQueue);
             GameEvents.OnUnitCreated.AddListener(OnUnitCreated);
         }
 
@@ -110,9 +78,10 @@ namespace DontEatSand.UI.Game
             LinkedListNode<(UnitInfo info, GameObject icon)> currentlyBuilding = this.unitQueue.First;
             if(currentlyBuilding != null)
             {
-                 UnityEngine.Debug.Log("currently building");
                  float timeToBuild = currentlyBuilding.Value.info.BuildTime;
-                 currentlyBuilding.Value.icon.transform.GetChild(0).GetComponent<Image>().fillAmount -= Time.deltaTime/timeToBuild;
+                 Image icon = currentlyBuilding.Value.icon.transform.GetChild(0).GetComponent<Image>();
+                 
+                 icon.fillAmount -= Time.deltaTime / timeToBuild;
             }
         }
         #endregion
