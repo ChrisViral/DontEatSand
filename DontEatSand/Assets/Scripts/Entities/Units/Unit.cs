@@ -1,7 +1,8 @@
-﻿using DontEatSand.Utils.BehaviorTrees;
+﻿using DontEatSand.Utils;
+using DontEatSand.Utils.BehaviourTrees;
 using UnityEngine;
 using UnityEngine.AI;
-using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
+using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
 namespace DontEatSand.Entities.Units
 {
@@ -18,7 +19,7 @@ namespace DontEatSand.Entities.Units
         #region Fields
         private NavMeshAgent agent;
 
-        private BehaviorTree bt;
+        private BehaviourTree bt;
         #endregion
 
         #region Properties
@@ -80,7 +81,7 @@ namespace DontEatSand.Entities.Units
         {
             this.agent = GetComponent<NavMeshAgent>();
 
-            this.bt = new BehaviorTree(Application.dataPath + "/Script/unit-behavior.xml", this);
+            this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
             this.bt.Start();
         }
 

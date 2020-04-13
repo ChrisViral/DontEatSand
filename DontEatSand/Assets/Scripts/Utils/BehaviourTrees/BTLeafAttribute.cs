@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DontEatSand.Utils.BehaviorTrees
+namespace DontEatSand.Utils.BehaviourTrees
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class BTLeafAttribute : Attribute

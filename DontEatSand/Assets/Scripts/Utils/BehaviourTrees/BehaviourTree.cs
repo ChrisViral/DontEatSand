@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using UnityEngine;
-using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
+using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
-namespace DontEatSand.Utils.BehaviorTrees
+namespace DontEatSand.Utils.BehaviourTrees
 {
     public enum BTNodeResult
     {
@@ -16,12 +16,18 @@ namespace DontEatSand.Utils.BehaviorTrees
         FAILURE
     }
 
-    public sealed class BehaviorTree
+    public sealed class BehaviourTree
     {
         #region Constants
         private static readonly Type LeafAttributeType = typeof(BTLeafAttribute);
         private static readonly Type BoolType = typeof(bool);
         private static readonly Type CoroutineType = typeof(BTCoroutine);
+        private static readonly XmlReaderSettings XMLSettings = new XmlReaderSettings
+        {
+            IgnoreComments = true,
+            ConformanceLevel = ConformanceLevel.Fragment,
+            ValidationType = ValidationType.None
+        };
         #endregion
 
         #region Fields
@@ -31,42 +37,36 @@ namespace DontEatSand.Utils.BehaviorTrees
         #endregion
 
         #region Constructors
-        public BehaviorTree(BTNode rootNode, MonoBehaviour parent)
+        public BehaviourTree(BTNode rootNode, MonoBehaviour parent)
         {
             this.rootNode = rootNode;
             this.parent = parent;
         }
 
-        public BehaviorTree(string xmlPath, MonoBehaviour parent)
+        public BehaviourTree(string xmlPath, MonoBehaviour parent)
         {
-            XmlReaderSettings settings = new XmlReaderSettings
-            {
-                IgnoreComments = true,
-                ConformanceLevel = ConformanceLevel.Fragment,
-                ValidationType = ValidationType.None
-
-            };
-
             this.parent = parent;
-            using (XmlReader reader = XmlReader.Create(xmlPath, settings))
+            using (XmlReader reader = XmlReader.Create(xmlPath, XMLSettings))
             {
                 XDocument doc = XDocument.Load(reader);
-                if (doc.Root?.Name.ToString().ToLowerInvariant() != "behavior-tree") throw new XmlException("Behavior tree root node not found");
-                if (!doc.Root.Elements().Any()) throw new XmlException("The behavior tree is empty!");
-                if (doc.Root.Elements().Count() > 1) throw new XmlException("The behavior tree must have only one node at the top level");
+                if (doc.Root?.Name.ToString().ToLowerInvariant() != "behaviour-tree") throw new XmlException("Behaviour tree root node not found");
+
+                XElement[] rootElements = doc.Root.Elements().ToArray();
+                if (rootElements.Length == 0) throw new XmlException("The behaviour tree is empty!");
+                if (rootElements.Length > 1) throw new XmlException("The behaviour tree must have only one node at the top level");
 
                 LoadParentLeafFunctions(out Dictionary<string, MethodInfo> leaves, out Dictionary<string, MethodInfo> conditions);
-                this.rootNode = ParseXmlElement(doc.Root.Elements().First(), leaves, conditions);
+                this.rootNode = ParseXmlElement(rootElements[0], leaves, conditions);
             }
         }
         #endregion
 
         #region Methods
-        public void Start() => this.coroutineHandle = this.parent.StartCoroutine(BehaviorCoroutine());
+        public void Start() => this.coroutineHandle = this.parent.StartCoroutine(BehaviourCoroutine());
 
         public void Stop() => this.parent.StopCoroutine(this.coroutineHandle);
 
-        private IEnumerator<YieldInstruction> BehaviorCoroutine()
+        private IEnumerator<YieldInstruction> BehaviourCoroutine()
         {
             while (true)
             {
@@ -164,7 +164,7 @@ namespace DontEatSand.Utils.BehaviorTrees
                     return new BTLeafNode(() => (BTCoroutine)leafFunctions[name].Invoke(this.parent, null));
 
                 default:
-                    throw new XmlException($"Unknown behavior tree node type: '{nodeType}");
+                    throw new XmlException($"Unknown behaviour tree node type: '{nodeType}");
 
             }
         }

@@ -1,6 +1,6 @@
-﻿using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviorTrees.BTNodeResult>;
+﻿using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
-namespace DontEatSand.Utils.BehaviorTrees
+namespace DontEatSand.Utils.BehaviourTrees
 {
     public class BTNotNode : BTNode
     {
