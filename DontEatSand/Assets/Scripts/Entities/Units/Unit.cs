@@ -1,4 +1,5 @@
-﻿using DontEatSand.Utils;
+﻿using DontEatSand.Extensions;
+using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,7 +10,7 @@ namespace DontEatSand.Entities.Units
     /// <summary>
     /// Unit base class
     /// </summary>
-    [RequireComponent(typeof(NavMeshAgent), typeof(Rigidbody))]
+    [RequireComponent(typeof(Rigidbody))]
     public class Unit : Entity
     {
         #region Constants
@@ -79,10 +80,16 @@ namespace DontEatSand.Entities.Units
         #region Functions
         protected override void OnAwake()
         {
-            this.agent = GetComponent<NavMeshAgent>();
-
-            this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
-            this.bt.Start();
+            if (this.IsControllable())
+            {
+                this.agent = GetComponent<NavMeshAgent>();
+                this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
+                this.bt.Start();
+            }
+            else
+            {
+                Destroy(GetComponent<NavMeshAgent>());
+            }
         }
 
         private void Update()

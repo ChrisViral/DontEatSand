@@ -396,7 +396,12 @@ MonoBehaviour:
   spawnLocation: {fileID: 6470261023472025558}
   buildQueueMaxSize: 20
   units:
-  - {fileID: 3688593179271540715, guid: 5156917229bb0c4479860d2293b9ea7d, type: 3}
+  - {fileID: 1879311527327809461, guid: 16e9fcf1a2592d946b363e4ecd8c11f4, type: 3}
+  - {fileID: 1248447881997185239, guid: 85178e34428db1e47ab42aea443ff5fc, type: 3}
+  - {fileID: 1002939832855367107, guid: 1b9a60d768e864b41b2b2b6959317727, type: 3}
+  - {fileID: 6615926672073944476, guid: 21d22a4c96d2fd24dbc2053b3f6a83b5, type: 3}
+  - {fileID: 1099417551836660902, guid: 95dce1feadf9b8b4c9827ea16ca0b416, type: 3}
+  - {fileID: 5432988861882460651, guid: 89edbbcc3167f5a4e8bda75e0dfdbc18, type: 3}
 --- !u!114 &-6357668719210200010
 MonoBehaviour:
   m_ObjectHideFlags: 0
