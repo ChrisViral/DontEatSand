@@ -21,42 +21,60 @@ namespace DontEatSand.UI
         [SerializeField]
         private GameObject singleUnitParent;
 
-        [SerializeField]
-        private List<Unit> list;
-
-        [SerializeField]
-        private Transform multiIconAnchor;
-
         private float ICON_GAP = 6f;
 
-        private void Start()
+        private void Awake()
         {
-            List<GameObject> iconsList = GetUnitsWithButtons(list);
+            GameEvents.OnSelectionChanged.AddListener(DisplaySelectedUnitInfo);
+        }
+
+        private void Update()
+        {
+            // Debug.Log(RTSPlayer.Instance.SelectedUnits.Count);
+        }
+
+        private void DisplaySelectedUnitInfo(SelectionType selection)
+        {
+            Debug.Log(selection);
+            // Do nothing if nothing is selected
+            if(selection == SelectionType.NONE || selection == SelectionType.OTHER)
+            {
+                return;
+            }
+
+            if(selection == SelectionType.UNITS)
+            {
+                List<Unit> units = RTSPlayer.Instance.SelectedUnits;
+                if(units.Count > 1)
+                {
+                    DisplayMultipleUnitInfo(units);
+                }
+                else if (units.Count == 1)
+                {
+                    DisplaySingleUnitInfo(units[0]);
+                }
+            }
         }
 
         /// <summary>
         /// Given a list of units, display their information in the management menu
         /// </summary>
         /// <param name="units"></param>
-        public List<GameObject> GetUnitsWithButtons(List<Unit> units)
+        public void DisplayMultipleUnitInfo(List<Unit> units)
         {
+            multiUnitParent.SetActive(true);
+            singleUnitParent.SetActive(false);
+            
             List<GameObject> iconsList = new List<GameObject>();
 
-            // Return an empty list if there are no units selected
-            if(units == null)
-            {
-                return iconsList;
-            }
-
-            // Create button objects for each unit
             foreach(Unit unit in units)
             {
                 GameObject newIcon = Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity, multiUnitParent.transform);
                 newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
                 newIcon.GetComponent<Button>().onClick.AddListener(delegate{DisplaySingleUnitInfo(unit);});
+                
                 iconsList.Add(newIcon);
-                newIcon.transform.SetParent(multiUnitParent.transform);
             }
 
             // Space them out
@@ -74,12 +92,10 @@ namespace DontEatSand.UI
                 count++;
             }
 
-            return iconsList;
-
         }
 
         /// <summary>
-        /// Given a unit, display its info in the single unit info menu
+        /// Given a single unit, display its info in the single unit info menu
         /// </summary>
         /// <param name="unit"></param>
         public void DisplaySingleUnitInfo(Unit unit)
@@ -95,7 +111,7 @@ namespace DontEatSand.UI
                 }
                 if(child.name == "Health")
                 {
-                    child.GetComponent<Text>().text = $"HEALTH: {unit.Health}";
+                    child.GetComponent<DisplayHealth>().SetUnitToDisplay(unit);
                 }
                 if(child.name == "Description")
                 {
