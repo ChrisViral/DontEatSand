@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace DontEatSand.UI
+namespace DontEatSand.UI.Game
 {
     public class TooltipChange : MonoBehaviour
     {

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using DontEatSand.Base;
-using DontEatSand.UI;
 using DontEatSand.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DontEatSand
+namespace DontEatSand.UI
 {
     [RequireComponent(typeof(Canvas))]
     public class DebugWindow : Singleton<DebugWindow>

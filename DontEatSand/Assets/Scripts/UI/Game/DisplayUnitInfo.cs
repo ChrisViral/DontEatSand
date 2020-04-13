@@ -1,47 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using DontEatSand.Entities.Units;
 using UnityEngine;
 using UnityEngine.UI;
-using DontEatSand.Entities.Units;
 
-namespace DontEatSand.UI
+namespace DontEatSand.UI.Game
 {
     /// <summary>
     /// Display selected units' health and icons in the management menu (middle)
     /// </summary>
     public class DisplayUnitInfo : MonoBehaviour
     {
+        #region Constants
+        /// <summary>
+        /// Gap between icons
+        /// </summary>
+        private const float ICON_GAP = 6f;
+        #endregion
 
+        #region Fields
         [SerializeField]
         private GameObject buttonPrefab;
-
         [SerializeField]
         private GameObject multiUnitParent;
-
         [SerializeField]
         private GameObject singleUnitParent;
+        #endregion
 
-        private float ICON_GAP = 6f;
-
-        private void Awake()
-        {
-            GameEvents.OnSelectionChanged.AddListener(DisplaySelectedUnitInfo);
-        }
-
-        private void Update()
-        {
-            // Debug.Log(RTSPlayer.Instance.SelectedUnits.Count);
-        }
-
+        #region Methods
         private void DisplaySelectedUnitInfo(SelectionType selection)
         {
             Debug.Log(selection);
-            // Do nothing if nothing is selected
-            if(selection == SelectionType.NONE || selection == SelectionType.OTHER)
-            {
-                return;
-            }
 
+            //Only listen to unit calls
             if(selection == SelectionType.UNITS)
             {
                 List<Unit> units = RTSPlayer.Instance.SelectedUnits;
@@ -62,30 +52,31 @@ namespace DontEatSand.UI
         /// <param name="units"></param>
         public void DisplayMultipleUnitInfo(List<Unit> units)
         {
-            multiUnitParent.SetActive(true);
-            singleUnitParent.SetActive(false);
-            
+            this.multiUnitParent.SetActive(true);
+            this.singleUnitParent.SetActive(false);
+
             List<GameObject> iconsList = new List<GameObject>();
 
             foreach(Unit unit in units)
             {
-                GameObject newIcon = Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity, multiUnitParent.transform);
+                GameObject newIcon = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform);
                 newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
-                newIcon.GetComponent<Button>().onClick.AddListener(delegate{DisplaySingleUnitInfo(unit);});
-                
+                newIcon.GetComponent<Button>().onClick.AddListener(() => DisplaySingleUnitInfo(unit));
                 iconsList.Add(newIcon);
             }
 
-            // Space them out
+            //TODO: Use an auto-layout function, you really shouldn't have to space them manually
+            //Space them out
             int count = 0;
             foreach(GameObject icon in iconsList)
             {
                 float yPos = 0f;
-                Vector3 newPos = new Vector3((buttonPrefab.GetComponent<RectTransform>().rect.width + ICON_GAP) * count, yPos, 0f);
-                if(newPos.x >= multiUnitParent.GetComponent<RectTransform>().rect.width)
+                Vector3 newPos = new Vector3((this.buttonPrefab.GetComponent<RectTransform>().rect.width + ICON_GAP) * count, yPos, 0f);
+                if(newPos.x >= this.multiUnitParent.GetComponent<RectTransform>().rect.width)
                 {
-                    yPos += buttonPrefab.GetComponent<RectTransform>().rect.height + ICON_GAP;
+                    //TODO: You're not using this yPos after?
+                    yPos += this.buttonPrefab.GetComponent<RectTransform>().rect.height + ICON_GAP;
                 }
 
                 icon.GetComponent<RectTransform>().localPosition += newPos;
@@ -100,10 +91,10 @@ namespace DontEatSand.UI
         /// <param name="unit"></param>
         public void DisplaySingleUnitInfo(Unit unit)
         {
-            multiUnitParent.SetActive(false);
-            singleUnitParent.SetActive(true);
+            this.multiUnitParent.SetActive(false);
+            this.singleUnitParent.SetActive(true);
             UnitInfo unitInfo = UnitDatabase.GetInfo(unit.EntityName);
-            foreach(Transform child in singleUnitParent.transform)
+            foreach(Transform child in this.singleUnitParent.transform)
             {
                 if(child.name == "Title")
                 {
@@ -111,16 +102,21 @@ namespace DontEatSand.UI
                 }
                 if(child.name == "Health")
                 {
-                    child.GetComponent<DisplayHealth>().SetUnitToDisplay(unit);
+                    child.GetComponent<DisplayHealth>().UnitToDisplay = unit;
                 }
                 if(child.name == "Description")
                 {
                     child.GetComponent<Text>().text = unitInfo.Description;
                 }
             }
-
         }
+        #endregion
 
+        #region Functions
+        private void Awake() => GameEvents.OnSelectionChanged.AddListener(DisplaySelectedUnitInfo);
+
+        private void OnDestroy() => GameEvents.OnSelectionChanged.RemoveListener(DisplaySelectedUnitInfo);
+        #endregion
     }
 }
 
