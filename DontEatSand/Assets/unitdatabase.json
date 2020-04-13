@@ -18,8 +18,8 @@
     "Icon": "icon_ranged"
   },
   {
-    "Name": "Tank",
-    "Description": "Melee range. Good at hitting hard. Too dumb to go down easy.",
+    "Name": "Bully",
+    "Description": "Melee range. Just wants to steal lunch money. Can be tricked into helping.",
     "Type": "COMBAT",
     "SandCost": 200,
     "CandyCost": 8,
@@ -28,7 +28,7 @@
   },
   {
     "Name": "Healer",
-    "Description": "Area of Effect. Keeps kids alive longer to suffer more.",
+    "Description": "Area of Effect. Can't fight, but keeps kids alive longer to suffer more.",
     "Type": "SUPPORT",
     "SandCost": 150,
     "CandyCost": 10,
@@ -36,8 +36,8 @@
     "Icon": "icon_healer"
   },
   {
-    "Name": "Scout",
-    "Description": "Good at snooping. Keep them busy so they don't report you.",
+    "Name": "Snitch",
+    "Description": "Can't fight, but good at snooping. Keep them busy so they don't report you.",
     "Type": "SUPPORT",
     "SandCost": 150,
     "CandyCost": 10,
@@ -46,7 +46,7 @@
   },
   {
     "Name": "Farmer",
-    "Description": "Has a shovel. Can collect sand. Possibly useful.",
+    "Description": "Can't fight, but has a shovel to collect sand. Possibly useful.",
     "Type": "WORKER",
     "SandCost": 50,
     "CandyCost": 2,
