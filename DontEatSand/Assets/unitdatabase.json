@@ -1,7 +1,7 @@
 [
   {
-    "Name": "Melee",
-    "Description": "yeet",
+    "Name": "Soldier",
+    "Description": "Melee range. Kinda stupid. Useful cannon fodder.",
     "Type": "COMBAT",
     "SandCost": 100,
     "CandyCost": 5,
@@ -9,8 +9,8 @@
     "Icon": "icon_melee"
   },
   {
-    "Name": "Ranged",
-    "Description": "yote",
+    "Name": "Ranger",
+    "Description": "Ranged range. Good at throwing stuff.",
     "Type": "RANGED",
     "SandCost": 120,
     "CandyCost": 5,
@@ -19,7 +19,7 @@
   },
   {
     "Name": "Tank",
-    "Description": "oh",
+    "Description": "Melee range. Good at hitting hard. Too dumb to go down easy.",
     "Type": "COMBAT",
     "SandCost": 200,
     "CandyCost": 8,
@@ -28,7 +28,7 @@
   },
   {
     "Name": "Healer",
-    "Description": "eh",
+    "Description": "Area of Effect. Keeps kids alive longer to suffer more.",
     "Type": "SUPPORT",
     "SandCost": 150,
     "CandyCost": 10,
@@ -37,7 +37,7 @@
   },
   {
     "Name": "Scout",
-    "Description": "oh ah ah",
+    "Description": "Good at snooping. Keep them busy so they don't report you.",
     "Type": "SUPPORT",
     "SandCost": 150,
     "CandyCost": 10,
@@ -46,7 +46,7 @@
   },
   {
     "Name": "Farmer",
-    "Description": "ting tang",
+    "Description": "Has a shovel. Can collect sand. Possibly useful.",
     "Type": "WORKER",
     "SandCost": 50,
     "CandyCost": 2,
@@ -55,7 +55,7 @@
   },
   {
     "Name": "Candy Factory",
-    "Description": "walla walla bing bang",
+    "Description": "Place to store candy you bribe your kid army with.",
     "Type": "BUILDING",
     "SandCost": 50,
     "CandyCost": 2,
