@@ -763,7 +763,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 68353882, guid: a64a740ca4bd1fc42abd7f264d15f5f5, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 637066664, guid: a64a740ca4bd1fc42abd7f264d15f5f5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 637066664, guid: a64a740ca4bd1fc42abd7f264d15f5f5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 904853661, guid: a64a740ca4bd1fc42abd7f264d15f5f5, type: 3}
       propertyPath: m_IsActive
@@ -795,6 +803,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6983105209616050287, guid: e0c6ededdb525f3438f18f89a5aa903f,
         type: 3}
+    - target: {fileID: 1722128764936650583, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: greenHealth
+      value: 
+      objectReference: {fileID: 1745659738}
     - target: {fileID: 4807619275692805792, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -900,6 +913,36 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6388686668953202563, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6388686668953202563, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6388686668953202563, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6388686668953202563, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6388686668953202563, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 26
+      objectReference: {fileID: 0}
+    - target: {fileID: 6388686668953202563, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -26
+      objectReference: {fileID: 0}
     - target: {fileID: 7532104148850240531, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -940,6 +983,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameUI
       objectReference: {fileID: 0}
+    - target: {fileID: 8166973157146151484, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a64a740ca4bd1fc42abd7f264d15f5f5, type: 3}
 --- !u!224 &1745659736 stripped
@@ -956,7 +1004,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1745659738 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 68353882, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+  m_CorrespondingSourceObject: {fileID: 1722128765727642577, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
     type: 3}
   m_PrefabInstance: {fileID: 1745659735}
   m_PrefabAsset: {fileID: 0}
@@ -984,26 +1032,6 @@ MonoBehaviour:
   m_Spacing: {x: 6, y: 6}
   m_Constraint: 0
   m_ConstraintCount: 2
---- !u!114 &1745659741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1745659738}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!1 &1756615315
 GameObject:
   m_ObjectHideFlags: 0

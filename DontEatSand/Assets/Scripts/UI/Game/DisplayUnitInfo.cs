@@ -21,6 +21,10 @@ namespace DontEatSand.UI.Game
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Handles displaying menus on unit selection
+        /// </summary>
+        /// <param name="selection"></param>
         private void DisplaySelectedUnitInfo(SelectionType selection)
         {
             Debug.Log(selection);
@@ -62,9 +66,10 @@ namespace DontEatSand.UI.Game
             foreach(Unit unit in units)
             {
                 GameObject newIcon = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform);
-                newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
+                //newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
                 newIcon.GetComponent<Button>().onClick.AddListener(() => DisplaySingleUnitInfo(unit));
+                newIcon.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = unit;
                 iconsList.Add(newIcon);
 
                 // TODO: show unit health bars
@@ -87,12 +92,11 @@ namespace DontEatSand.UI.Game
                 {
                     child.GetComponent<Text>().text = unitInfo.Name;
                 }
-                if(child.name == "Icon")
+                if(child.name == "Entity Icon")
                 {
                     child.GetComponent<Image>().sprite = unitInfo.Icon;
                     // Display health
-                    // TODO: divide health by max health
-                    child.GetChild(1).GetComponent<Image>().fillAmount = unit.Health / 200f;
+                    child.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = unit;
                 }
                 if(child.name == "Description")
                 {

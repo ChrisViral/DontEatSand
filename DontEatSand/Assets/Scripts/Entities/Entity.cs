@@ -53,6 +53,11 @@ namespace DontEatSand.Entities
         /// </summary>
         public int Health { get; protected set; }
 
+        /// <summary>
+        /// The maximum health of this entity
+        /// </summary>
+        public int HealthAmount => this.maxHealth;
+
         private bool isSelected;
         /// <summary>
         /// If this Entity is currently selected or not

@@ -17,10 +17,7 @@ namespace DontEatSand.UI.Game
         #region Fields
         [SerializeField]
         private GameObject buttonPrefab;
-        [SerializeField]
-        private GameObject progressBarPrefab;
-        [SerializeField]
-        private GameObject queueParent;
+
         private readonly LinkedList<(UnitInfo info, GameObject icon)> unitQueue = new LinkedList<(UnitInfo, GameObject)>();
         private float buildTimer;
         #endregion
@@ -28,7 +25,7 @@ namespace DontEatSand.UI.Game
         #region Methods
         private void OnUnitAddedToQueue(UnitInfo unitInfo)
         {
-            GameObject newUnit = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.queueParent.transform);
+            GameObject newUnit = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.transform);
 
             newUnit.GetComponent<Image>().sprite = unitInfo.Icon;
             newUnit.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
