@@ -27,8 +27,6 @@ namespace DontEatSand.UI.Game
         /// <param name="selection"></param>
         private void DisplaySelectedUnitInfo(SelectionType selection)
         {
-            Debug.Log(selection);
-
             //Only listen to unit calls
             if(selection == SelectionType.UNITS)
             {
