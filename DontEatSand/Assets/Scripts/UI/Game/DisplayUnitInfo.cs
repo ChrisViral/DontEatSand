@@ -46,7 +46,12 @@ namespace DontEatSand.UI.Game
             {
                 Entity selected = (Entity) RTSPlayer.Instance.Selected;
                 DisplaySelectedBuildingInfo(selected);
+            }
 
+            if(selection == SelectionType.NONE)
+            {
+                // Hide single unit info display
+                //this.singleUnitParent.SetActive(false);
             }
         }
 
@@ -135,6 +140,7 @@ namespace DontEatSand.UI.Game
                 }
             }
         }
+
         #endregion
 
         #region Functions
