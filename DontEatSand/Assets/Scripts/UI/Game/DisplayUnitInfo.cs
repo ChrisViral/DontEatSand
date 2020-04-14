@@ -2,6 +2,7 @@
 using DontEatSand.Entities.Units;
 using UnityEngine;
 using UnityEngine.UI;
+using DontEatSand.Entities;
 
 namespace DontEatSand.UI.Game
 {
@@ -40,7 +41,39 @@ namespace DontEatSand.UI.Game
                     DisplaySingleUnitInfo(units[0]);
                 }
             }
+            
+            if(selection == SelectionType.OTHER)
+            {
+                Entity selected = (Entity) RTSPlayer.Instance.Selected;
+                DisplaySelectedBuildingInfo(selected);
+
+            }
         }
+
+        private void DisplaySelectedBuildingInfo(Entity building)
+        {
+            this.multiUnitParent.SetActive(false);
+            this.singleUnitParent.SetActive(true);
+            UnitInfo unitInfo = UnitDatabase.GetInfo(building.EntityName);
+            foreach(Transform child in this.singleUnitParent.transform)
+            {
+                if(child.name == "Title")
+                {
+                    child.GetComponent<Text>().text = unitInfo.Name;
+                }
+                if(child.name == "Entity Icon")
+                {
+                    child.GetComponent<Image>().sprite = unitInfo.Icon;
+                    // Display health
+                    child.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = building;
+                }
+                if(child.name == "Description")
+                {
+                    child.GetComponent<Text>().text = unitInfo.Description;
+                }
+            }
+        }
+
 
         /// <summary>
         /// Given a list of units, display their information in the management menu

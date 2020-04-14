@@ -15,11 +15,20 @@ namespace DontEatSand.UI.Game
         {
             entity = GetComponentInParent<Entity>();
             healthFill = GetComponent<Image>();
+            healthFill.enabled = false;
         }
 
         private void Update()
         {
             healthFill.fillAmount = entity.Health / entity.HealthAmount;
+            if (entity.IsSelected)
+            {
+                healthFill.enabled = true;
+            }
+            else
+            {
+                healthFill.enabled = false;
+            }
         }
 
     }
