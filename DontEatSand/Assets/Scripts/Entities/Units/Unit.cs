@@ -15,12 +15,16 @@ namespace DontEatSand.Entities.Units
     {
         #region Constants
         private const float OFFSET_MAGNITUDE = 5f;
+        private enum Mode { ATTACK, DEFEND }
+
         #endregion
 
         #region Fields
         private NavMeshAgent agent;
 
         private BehaviourTree bt;
+
+        private Mode behaviourMode;
         #endregion
 
         #region Properties
@@ -157,7 +161,7 @@ namespace DontEatSand.Entities.Units
         public BTCoroutine AttackRoutine()
         {
             /*
-            * isAttackMode
+            * if(behaviourMode == Mode.ATTACK)
             *
             * enemy in aggro?
             *   move to closest enemy in aggro range
@@ -165,7 +169,7 @@ namespace DontEatSand.Entities.Units
             *   yield return BTNodeResult.NOT_FINISHED;
             *
             *
-            * isDefenseMode
+            * if(behaviourMode == Mode.DEFEND)
             *
             * store original position
             * received damage within last 2 seconds?
