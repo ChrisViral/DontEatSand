@@ -19,6 +19,9 @@ namespace DontEatSand.UI.Game
         #endregion
 
         #region Functions
+        /// <summary>
+        /// Updates the units health and icon based on EntityToDisplay
+        /// </summary>
         private void Update()
         {
             if(this.EntityToDisplay)

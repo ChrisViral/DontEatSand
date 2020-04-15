@@ -55,6 +55,10 @@ namespace DontEatSand.UI.Game
             }
         }
 
+        /// <summary>
+        /// Given a selected building, display its information
+        /// </summary>
+        /// <param name="building"></param>
         private void DisplaySelectedBuildingInfo(Entity building)
         {
             this.multiUnitParent.SetActive(false);

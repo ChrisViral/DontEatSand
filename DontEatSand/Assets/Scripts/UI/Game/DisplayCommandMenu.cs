@@ -9,11 +9,14 @@ namespace DontEatSand.UI
 {
     public class DisplayCommandMenu : MonoBehaviour
     {
+        #region Fields
         [SerializeField]
         private GameObject unitCommands;
         [SerializeField]
         private GameObject castleCommands;
-        
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Shows the commands available based on the selection type
         /// </summary>
@@ -46,9 +49,11 @@ namespace DontEatSand.UI
             unitCommands.SetActive(false);
             castleCommands.SetActive(true);
         }
+        #endregion
 
-
+        #region Functions
         private void Awake() => GameEvents.OnSelectionChanged.AddListener(ShowAvailableCommands);
+        #endregion
     }
 }
 

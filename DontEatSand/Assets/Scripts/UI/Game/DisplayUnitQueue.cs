@@ -7,13 +7,6 @@ namespace DontEatSand.UI.Game
 {
     public class DisplayUnitQueue : MonoBehaviour
     {
-        #region Constants
-        /// <summary>
-        /// Gap between icons
-        /// </summary>
-        private const float ICON_GAP = 6f;
-        #endregion
-
         #region Fields
         [SerializeField]
         private GameObject buttonPrefab;

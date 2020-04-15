@@ -730,6 +730,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1745659735}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1466735673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2028732805, guid: a64a740ca4bd1fc42abd7f264d15f5f5,
+    type: 3}
+  m_PrefabInstance: {fileID: 1745659735}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1745659735
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -741,6 +747,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1988472591, guid: a64a740ca4bd1fc42abd7f264d15f5f5, type: 3}
+      propertyPath: creationQueue
+      value: 
+      objectReference: {fileID: 1466735673}
     - target: {fileID: 2033388641, guid: a64a740ca4bd1fc42abd7f264d15f5f5, type: 3}
       propertyPath: castleCommands
       value: 
