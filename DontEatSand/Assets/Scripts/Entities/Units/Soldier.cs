@@ -1,6 +1,6 @@
 ﻿namespace DontEatSand.Entities.Units
 {
-    public class Tank : Unit
+    public class Soldier : Unit
     {
     }
 }

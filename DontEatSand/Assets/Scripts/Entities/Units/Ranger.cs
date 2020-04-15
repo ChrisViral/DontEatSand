@@ -2,7 +2,7 @@
 
 namespace DontEatSand.Entities.Units
 {
-    public class Ranged : Unit
+    public class Ranger : Unit
     {
         #region Fields
         [SerializeField]

@@ -10,7 +10,7 @@
   },
   {
     "Name": "Ranger",
-    "Description": "Ranged range. Good at throwing stuff.",
+    "Description": "Long range. Good at throwing stuff.",
     "Type": "RANGED",
     "SandCost": 120,
     "CandyCost": 5,
@@ -60,6 +60,15 @@
     "SandCost": 50,
     "CandyCost": 2,
     "BuildTime": 20,
+    "Icon": ""
+  },
+  {
+    "Name": "Castle",
+    "Description": "",
+    "Type": "BUILDING",
+    "SandCost": 0,
+    "CandyCost": 0,
+    "BuildTime": 0,
     "Icon": ""
   }
 ]
