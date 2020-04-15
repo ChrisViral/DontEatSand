@@ -3,6 +3,8 @@ using DontEatSand.Entities.Units;
 using UnityEngine;
 using UnityEngine.UI;
 using DontEatSand.Entities;
+using DontEatSand.Entities.Buildings;
+using DontEatSand.Extensions;
 
 namespace DontEatSand.UI.Game
 {
@@ -19,6 +21,8 @@ namespace DontEatSand.UI.Game
         private GameObject multiUnitParent;
         [SerializeField]
         private GameObject singleUnitParent;
+        [SerializeField]
+        private GameObject queueParent;
         #endregion
 
         #region Methods
@@ -31,6 +35,9 @@ namespace DontEatSand.UI.Game
             //Only listen to unit calls
             if(selection == SelectionType.UNITS)
             {
+                // Hide queue
+                queueParent.SetActive(false);
+
                 List<Unit> units = RTSPlayer.Instance.SelectedUnits;
                 if(units.Count > 1)
                 {
@@ -44,6 +51,11 @@ namespace DontEatSand.UI.Game
             
             if(selection == SelectionType.OTHER)
             {
+                if(RTSPlayer.Instance.Selected is Castle castle && castle.IsControllable())
+                {
+                    // Display queue
+                    queueParent.SetActive(true);
+                }
                 Entity selected = (Entity) RTSPlayer.Instance.Selected;
                 DisplaySelectedBuildingInfo(selected);
             }
