@@ -25,6 +25,8 @@ namespace DontEatSand.Entities.Units
         private BehaviourTree bt;
 
         private Mode behaviourMode;
+
+        private SphereCollider aggroSphere;
         #endregion
 
         #region Properties
@@ -54,7 +56,13 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Flag dictating if an enemy is within the aggro range
         /// </summary>
-        public bool IsEnemySeenFlag { get; set; }
+        public bool IsEnemySeenFlag
+        {
+            get
+            {
+            return aggroSphere.bounds.Contains(Target.position);
+            }
+        }
 
         /// <summary>
         /// Flag dictating if the enemy is under attack
@@ -87,6 +95,7 @@ namespace DontEatSand.Entities.Units
             if (this.IsControllable())
             {
                 this.agent = GetComponent<NavMeshAgent>();
+                this.aggroSphere = GetComponent<SphereCollider>();
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
             }
