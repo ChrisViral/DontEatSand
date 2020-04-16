@@ -8,7 +8,7 @@ namespace DontEatSand.Entities.Units
         /// Animator dig trigger name
         /// </summary>
         private int digTriggerName = Animator.StringToHash("Digging");
-        /// Animator buil trigger name
+        /// Animator build trigger name
         /// </summary>
         private int buildTriggerName = Animator.StringToHash("Building");
         #endregion
