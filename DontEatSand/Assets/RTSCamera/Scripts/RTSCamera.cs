@@ -4,7 +4,6 @@ using DontEatSand.Entities;
 using DontEatSand.Entities.Units;
 using DontEatSand.Utils;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 //ReSharper disable once CheckNamespace
 namespace RTSCam

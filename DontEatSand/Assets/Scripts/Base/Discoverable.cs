@@ -51,11 +51,7 @@ namespace DontEatSand.Base
             if (this.permanent)
             {
                 //If invisible, make visible
-                if (!this.Visible)
-                {
-                    this.gameObject.layer = this.otherLayer.Value;
-                    this.visible = true;
-                }
+                this.Visible = true;
             }
             else
             {
