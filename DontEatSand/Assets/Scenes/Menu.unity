@@ -132,9 +132,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ace3ace5b8904088913e0366f630c501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  volumeSlider: {fileID: 1493259671143267554}
   connectButton: {fileID: 6751626355249422470}
   createButton: {fileID: 6751626356868843215}
   nicknameField: {fileID: 6751626356364747798}
+  roomNameField: {fileID: 6751626355825713521}
   errorText: {fileID: 499905185}
   connectingText: {fileID: 1119840142}
 --- !u!225 &29

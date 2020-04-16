@@ -15,6 +15,14 @@ namespace DontEatSand.UI
         /// </summary>
         private const string DEFAULT_NAME = "Player";
         /// <summary>
+        /// PlayerPrefs volume key
+        /// </summary>
+        private const string VOLUME = "Volume";
+        /// <summary>
+        /// PlayerPrefs room name key
+        /// </summary>
+        private const string ROOM_NAME = "RoomName";
+        /// <summary>
         /// Randomly created room options
         /// </summary>
         private static readonly RoomOptions randomOptions = new RoomOptions { MaxPlayers = GameLogic.MAX_PLAYERS };
@@ -50,15 +58,16 @@ namespace DontEatSand.UI
 
         #region Fields
         [SerializeField]
+        private Slider volumeSlider;
+        [SerializeField]
         private Button connectButton, createButton;
         [SerializeField]
-        private TMP_InputField nicknameField;
+        private TMP_InputField nicknameField, roomNameField;
         [SerializeField]
         private TMP_Text errorText;
         [SerializeField]
         private GameObject connectingText;
         private TMP_Text connectButtonText, createButtonText;
-        private string roomName;
         private Animator animator;
         private bool isConnecting;
         #endregion
@@ -116,13 +125,13 @@ namespace DontEatSand.UI
         public void OptionsBack()
         {
             this.animator.SetBool(optionsParam, false);
-            this.animator.SetBool(menuParam, false);
+            this.animator.SetBool(menuParam, true);
         }
 
         /// <summary>
         /// Joins a named room, or creates it if it does not exist
         /// </summary>
-        public void JoinOrCreateRoom() => PhotonNetwork.JoinOrCreateRoom(this.roomName, createdOptions, null);
+        public void JoinOrCreateRoom() => PhotonNetwork.JoinOrCreateRoom(this.roomNameField.text, createdOptions, null);
 
         /// <summary>
         /// Joins a random room
@@ -138,7 +147,11 @@ namespace DontEatSand.UI
         /// Sets the master volume of the game
         /// </summary>
         /// <param name="volume">New volume to set</param>
-        public void OnVolumeChanged(float volume) => GameLogic.MasterVolume = volume;
+        public void OnVolumeChanged(float volume)
+        {
+            GameLogic.MasterVolume = volume;
+            PlayerPrefs.SetFloat(VOLUME, volume);
+        }
 
         /// <summary>
         /// Updates the nickname
@@ -171,7 +184,7 @@ namespace DontEatSand.UI
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
-                this.roomName = value;
+                PlayerPrefs.SetString(ROOM_NAME, value);
                 if (!this.createButton.interactable)
                 {
                     this.createButton.interactable = true;
@@ -251,6 +264,15 @@ namespace DontEatSand.UI
             this.createButtonText.color = disabledColour;
             this.createButton.interactable = false;
 
+            //Get preferences
+            if (PlayerPrefs.HasKey(VOLUME))
+            {
+                this.volumeSlider.value = PlayerPrefs.GetFloat(VOLUME);
+            }
+            else
+            {
+                PlayerPrefs.SetFloat(VOLUME, 1f);
+            }
             if (PlayerPrefs.HasKey(DEFAULT_NAME))
             {
                 //Fetch previous nickname if one exists
@@ -261,6 +283,10 @@ namespace DontEatSand.UI
                 //Else set the default one
                 PhotonNetwork.NickName = this.nicknameField.text = DEFAULT_NAME;
                 PlayerPrefs.SetString(DEFAULT_NAME, DEFAULT_NAME);
+            }
+            if (PlayerPrefs.HasKey(ROOM_NAME))
+            {
+                this.roomNameField.text = PlayerPrefs.GetString(ROOM_NAME);
             }
         }
         #endregion
