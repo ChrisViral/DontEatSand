@@ -19,7 +19,7 @@ namespace DontEatSand.Entities.Units
 
         #region Fields
         private NavMeshAgent agent;
-
+        private Animator anim;
         private BehaviourTree bt;
         #endregion
 
@@ -83,6 +83,7 @@ namespace DontEatSand.Entities.Units
             if (this.IsControllable())
             {
                 this.agent = GetComponent<NavMeshAgent>();
+                this.anim = GetComponent<Animator>();
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
             }
@@ -98,6 +99,8 @@ namespace DontEatSand.Entities.Units
             {
                 this.agent.destination = this.Target.position;
             }
+            // Send velocity to animator
+            anim.SetFloat("Velocity", this.agent.velocity.magnitude);
         }
 
         private void OnDestroy()
