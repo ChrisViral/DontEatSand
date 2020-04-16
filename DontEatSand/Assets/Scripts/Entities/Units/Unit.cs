@@ -2,6 +2,7 @@
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
@@ -14,19 +15,37 @@ namespace DontEatSand.Entities.Units
     [RequireComponent(typeof(Rigidbody), typeof(Animator))]
     public abstract class Unit : Entity, IComparable<Unit>
     {
-        #region Constants
-        private const float OFFSET_MAGNITUDE = 5f;
-        public enum Mode { ATTACK, DEFEND }
+        /// <summary>
+        /// Unit AI mode
+        /// </summary>
+        public enum Mode
+        {
+            ATTACK,
+            DEFEND
+        }
 
+        #region Constants
+        /// <summary>
+        /// Maximum position offset from the cluster
+        /// </summary>
+        private const float OFFSET_MAGNITUDE = 5f;
+        /// <summary>
+        /// Overlap sphere hit buffer
+        /// </summary>
+        private static readonly Collider[] hits = new Collider[128];
+        /// <summary>
+        /// Velocity animator parameter hash
+        /// </summary>
+        private static readonly int velocityParam = Animator.StringToHash("Velocity");
         #endregion
 
         #region Fields
         public Mode behaviourMode;
-
         protected NavMeshAgent agent;
-        private Animator anim;
+        protected Animator animator;
         private BehaviourTree bt;
         private SphereCollider aggroSphere;
+        private LayerMask unitsMask;
         #endregion
 
         #region Properties
@@ -53,11 +72,10 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         public bool HasOrderFlag
         {
-            get
-            {
-                return agent.pathStatus == NavMeshPathStatus.PathComplete ? false : true;
-            }
-            set { }
+            //Can't be setting to the property and returning an expression
+            //get => this.agent.pathStatus != NavMeshPathStatus.PathComplete;
+            get;
+            set;
         }
 
         /// <summary>
@@ -86,13 +104,13 @@ namespace DontEatSand.Entities.Units
         /// <param name="averagePosition">Average position of cluster</param>
         public void MoveUnit(Vector3 dest, Vector3 averagePosition)
         {
-            HasOrderFlag = true;
+            this.HasOrderFlag = true;
 
             Vector3 positionDiff = this.transform.position - averagePosition;
             if (positionDiff.magnitude > OFFSET_MAGNITUDE)
             {
                 positionDiff = Vector3.zero;
-                HasOrderFlag = false;
+                this.HasOrderFlag = false;
             }
 
             this.Destination = dest + positionDiff;
@@ -105,6 +123,10 @@ namespace DontEatSand.Entities.Units
             return c == 0 ? StringComparer.InvariantCulture.Compare(this.EntityName, other.EntityName) : c;
         }
 
+        /// <summary>
+        /// Attacks the specified target
+        /// </summary>
+        /// <param name="target">Target to attack</param>
         public virtual void Attack(Entity target)
         {
             //Do the animator thingy
@@ -114,22 +136,30 @@ namespace DontEatSand.Entities.Units
         /// Find the closest target to this unit
         /// </summary>
         /// <returns></returns>
-        public Entity FindClosestTarget()
+        private Entity FindClosestTarget()
         {
-            Collider[] targets = Physics.OverlapSphere(this.transform.position, aggroSphere.radius);
+            //Use non allocating, check up to 128 possible targets
+            //NOTE: You really don't want to be doing this, it'd be much better to instead just keep track of who is in range using OnTriggerEnter/Exit
+            int size = Physics.OverlapSphereNonAlloc(this.transform.position, this.aggroSphere.radius, hits, this.unitsMask, QueryTriggerInteraction.Ignore);
+            if (size == 0) return null;
+
+            //Get closest target
             Entity closestTarget = null;
-            float distanceToClosest = float.MaxValue;
-            int i = 0;
-            while(i < targets.Length)
+            Vector3 position = this.transform.position;
+            float distanceToClosest = float.PositiveInfinity;
+            for (int i = 0; i < size; i++)
             {
-                float dist = Vector3.Distance(targets[i].transform.position, this.transform.position);
-                if(dist < distanceToClosest)
+                Collider hit = hits[i];
+                float dist = Vector3.Distance(hit.transform.position, position);
+                //Making sure it's a valid entity target
+                if(dist < distanceToClosest && hit.gameObject.TryGetComponent(out Entity entity) && (!PhotonNetwork.IsConnected || !entity.photonView.IsMine))
                 {
                     distanceToClosest = dist;
-                    closestTarget = targets[i].gameObject.GetComponent<Entity>();
+                    closestTarget = entity;
                 }
             }
 
+            //Return it's entity
             return closestTarget;
         }
 
@@ -170,8 +200,9 @@ namespace DontEatSand.Entities.Units
             if (this.IsControllable())
             {
                 this.agent = GetComponent<NavMeshAgent>();
-                this.anim = GetComponent<Animator>();
+                this.animator = GetComponent<Animator>();
                 this.aggroSphere = GetComponent<SphereCollider>();
+                this.unitsMask = LayerUtils.GetMask(Layers.VISIBLE_UNIT);
                 this.behaviourMode = Mode.DEFEND;
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
@@ -193,8 +224,9 @@ namespace DontEatSand.Entities.Units
                 }
                 OnUpdate();
             }
-            // Send velocity to animator
-            anim.SetFloat("Velocity", this.agent.velocity.magnitude);
+
+            //Send velocity to animator
+            this.animator.SetFloat(velocityParam, this.agent.velocity.magnitude);
         }
 
         private void OnDestroy()
@@ -259,27 +291,27 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("attack")]
         public BTCoroutine AttackRoutine()
         {
-            if (behaviourMode == Mode.ATTACK)
+            if (this.behaviourMode == Mode.ATTACK)
             {
                 if (IsEnemySeen())
                 {
-                    agent.SetDestination(Target.Position);
-                    if (agent.pathStatus == NavMeshPathStatus.PathComplete)
+                    this.agent.SetDestination(this.Target.Position);
+                    if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
                     {
-                        Attack(Target);
+                        Attack(this.Target);
                         yield return BTNodeResult.NOT_FINISHED;
                     }
                 }
             }
 
-            if (behaviourMode == Mode.DEFEND)
+            if (this.behaviourMode == Mode.DEFEND)
             {
                 if(IsUnderAttack())
                 {
-                    agent.SetDestination(Target.Position);
-                    if (agent.pathStatus == NavMeshPathStatus.PathComplete)
+                    this.agent.SetDestination(this.Target.Position);
+                    if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
                     {
-                        Attack(Target);
+                        Attack(this.Target);
                         yield return BTNodeResult.NOT_FINISHED;
                     }
                 }
@@ -295,9 +327,9 @@ namespace DontEatSand.Entities.Units
 
             if(IsUnderAttack())
             {
-                Target = FindClosestTarget();
-                agent.SetDestination(Target.Position);
-                Attack(Target);
+                this.Target = FindClosestTarget();
+                this.agent.SetDestination(this.Target.Position);
+                Attack(this.Target);
                 yield return BTNodeResult.NOT_FINISHED;
             }
 

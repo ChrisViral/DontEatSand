@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using DontEatSand.Entities;
-using DontEatSand.Extensions;
-using DontEatSand.Entities.Buildings;
 
 
 namespace DontEatSand.Entities.Units
@@ -17,21 +14,21 @@ namespace DontEatSand.Entities.Units
             // Attack unit if it's an enemy
             if (target is Entity entity) //&& !entity.IsControllable())
             {
-                HasOrderFlag = true;
-                Target = entity;
-                Attack(Target);
+                this.HasOrderFlag = true;
+                this.Target = entity;
+                Attack(this.Target);
             }
 
             if(target == null) // if unit or building gets destroyed
             {
-                HasOrderFlag = false;
+                this.HasOrderFlag = false;
             }
 
         }
 
         public override void Attack(Entity target)
         {
-            if (agent.pathStatus == NavMeshPathStatus.PathComplete)
+            if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
             {
                 target.Damage(10);
                 if(target is Unit unit) // attacking a unit
