@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Photon.Pun;
+using UnityEngine;
 
 namespace DontEatSand.UI
 {
@@ -24,7 +25,11 @@ namespace DontEatSand.UI
         /// <summary>
         /// Quits to the main menu
         /// </summary>
-        public void Return() => GameLogic.LoadScene(GameScenes.MENU);
+        public void Return()
+        {
+            if (PhotonNetwork.IsConnected) { PhotonNetwork.LeaveRoom(); }
+            else { GameLogic.LoadScene(GameScenes.MENU); }
+        }
         #endregion
 
         #region Functions
