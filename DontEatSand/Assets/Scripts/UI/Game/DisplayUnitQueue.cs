@@ -36,8 +36,12 @@ namespace DontEatSand.UI.Game
                 node = node.Next;
             }
 
-            Destroy(node?.Value.gameObject);
-            GameEvents.OnUnitRemovedFromQueue.Invoke(i);
+            if (node != null)
+            {
+                Destroy(node.Value.gameObject);
+                this.unitQueue.Remove(node);
+                GameEvents.OnUnitRemovedFromQueue.Invoke(i);
+            }
         }
         #endregion
 

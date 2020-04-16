@@ -5,6 +5,7 @@ using DontEatSand.Entities;
 using DontEatSand.Entities.Buildings;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
+using Photon.Pun;
 using RTSCam;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -425,7 +426,10 @@ namespace DontEatSand
             this.MaxCandy = this.baseCandy;
             //ReSharper disable once PossibleNullReferenceException
             this.camera = Camera.main.GetComponent<RTSCamera>();
-            this.Castle = FindObjectsOfType<Castle>()[0];
+            if (!PhotonNetwork.IsConnected)
+            {
+                this.Castle = FindObjectsOfType<Castle>().First(g => g.name == "Sandcastle A");
+            }
 
             //Event registering
             GameEvents.OnCandyMaxChanged.AddListener(OnCandyMaxChanged);

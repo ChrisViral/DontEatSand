@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
@@ -17,7 +16,7 @@ namespace DontEatSand.Entities.Buildings
         [SerializeField]
         private int buildQueueMaxSize = 20;
         private readonly LinkedList<Unit> buildQueue = new LinkedList<Unit>();
-        private readonly Stopwatch buildTimer = new Stopwatch();
+        private readonly Timer buildTimer = new Timer();
         private UnitInfo inProgress;
         #endregion
 
@@ -40,9 +39,9 @@ namespace DontEatSand.Entities.Buildings
         public bool IsBuilding => this.buildQueue.Count > 0;
 
         /// <summary>
-        /// The build completion percentage of the current unit, returns 0 if no unit is being built
+        /// The remaining build time in percent of this unit, 0 if no unit is being made
         /// </summary>
-        public float BuildProgress => this.IsBuilding ? Mathf.Clamp01(Mathf.InverseLerp(0f, this.inProgress.BuildTime, this.buildTimer.ElapsedMilliseconds / 1000f)) : 0f;
+        public float BuildProgress => this.IsBuilding ? 1f - (this.buildTimer.ElapsedSeconds / this.inProgress.BuildTime) : 0f;
         #endregion
 
         #region Methods
@@ -73,7 +72,7 @@ namespace DontEatSand.Entities.Buildings
                 //Request resources
                 if (info.SandCost > 0)
                 {
-                    GameEvents.OnSandChanged.Invoke(info.SandCost);
+                    GameEvents.OnSandChanged.Invoke(-info.SandCost);
                 }
                 if (info.CandyCost > 0)
                 {
@@ -144,7 +143,7 @@ namespace DontEatSand.Entities.Buildings
                 {
                     //If closer to end go backwards
                     toRemove = this.buildQueue.Last.Previous;
-                    for (int i = this.buildQueue.Count - 2; i > index; i++)
+                    for (int i = this.buildQueue.Count - 2; i > index; i--)
                     {
                         toRemove = toRemove.Previous;
                     }
@@ -167,7 +166,7 @@ namespace DontEatSand.Entities.Buildings
             //Give back resources
             if (removed.SandCost > 0)
             {
-                GameEvents.OnSandChanged.Invoke(-removed.SandCost);
+                GameEvents.OnSandChanged.Invoke(removed.SandCost);
             }
             if (removed.CandyCost > 0)
             {

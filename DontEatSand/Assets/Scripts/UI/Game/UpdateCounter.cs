@@ -32,7 +32,7 @@ namespace DontEatSand.UI.Game
         /// <param name="amount">Amount of sand added or removed</param>
         private void OnSandChanged(int amount)
         {
-            this.sandCount -= amount;
+            this.sandCount += amount;
             this.sandCounter.text = this.sandCount.ToString();
         }
 
