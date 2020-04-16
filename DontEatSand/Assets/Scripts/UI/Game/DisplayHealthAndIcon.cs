@@ -1,6 +1,7 @@
 ﻿using DontEatSand.Entities;
 using DontEatSand.Entities.Units;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace DontEatSand.UI.Game
@@ -9,8 +10,10 @@ namespace DontEatSand.UI.Game
     public class DisplayHealthAndIcon : MonoBehaviour
     {
         #region Fields
+        [FormerlySerializedAs("greenHealth"),SerializeField]
+        private Image healthbar;
         [SerializeField]
-        private Image greenHealth;
+        private Color highHealth = Color.green, lowHealth = Color.red;
         private Image icon;
         private Button button;
         private float smoothSpeed;
@@ -89,7 +92,9 @@ namespace DontEatSand.UI.Game
             //Updates the unit's health bar
             if(this.Selected != null)
             {
-                this.greenHealth.fillAmount = Mathf.SmoothDamp(this.greenHealth.fillAmount, this.Amount, ref this.smoothSpeed, 0.2f);
+                float fill = Mathf.SmoothDamp(this.healthbar.fillAmount, this.Amount, ref this.smoothSpeed, 0.2f);
+                this.healthbar.fillAmount = fill;
+                this.healthbar.color = Color.Lerp(this.lowHealth, this.highHealth, fill);
             }
         }
         #endregion
