@@ -64,11 +64,11 @@
   },
   {
     "Name": "Castle",
-    "Description": "",
+    "Description": "big ol' thing",
     "Type": "BUILDING",
     "SandCost": 0,
     "CandyCost": 0,
     "BuildTime": 0,
-    "Icon": ""
+    "Icon": "icon_castle"
   }
 ]
