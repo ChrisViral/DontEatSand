@@ -56,7 +56,7 @@ namespace DontEatSand.Entities
         /// <summary>
         /// The maximum health of this entity
         /// </summary>
-        public int HealthAmount => this.maxHealth;
+        public float HealthAmount => this.Health / (float)this.maxHealth;
 
         private bool isSelected;
         /// <summary>
