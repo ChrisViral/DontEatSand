@@ -58,17 +58,17 @@
     "Description": "Place to store candy you bribe your kid army with.",
     "Type": "BUILDING",
     "SandCost": 50,
-    "CandyCost": 2,
+    "CandyCost": 0,
     "BuildTime": 20,
-    "Icon": ""
+    "Icon": "icon_candyfactory"
   },
   {
     "Name": "Castle",
-    "Description": "",
+    "Description": "big ol' thing",
     "Type": "BUILDING",
     "SandCost": 0,
     "CandyCost": 0,
     "BuildTime": 0,
-    "Icon": ""
+    "Icon": "icon_castle"
   }
 ]

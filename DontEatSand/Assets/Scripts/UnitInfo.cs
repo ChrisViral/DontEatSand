@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ namespace DontEatSand
     /// <summary>
     /// UnitInfo struct
     /// </summary>
-    public readonly struct UnitInfo
+    public readonly struct UnitInfo : IEquatable<UnitInfo>
     {
         #region Properties
         /// <summary>
@@ -81,6 +82,46 @@ namespace DontEatSand
             this.BuildTime = buildTime;
             this.Icon = string.IsNullOrEmpty(icon) ? null : Resources.Load<Sprite>(icon);
         }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Checks if this unit is equal to the other passed unit, check is made from the name
+        /// </summary>
+        /// <param name="other">Other unit to check</param>
+        /// <returns>True if both units are equal, false otherwise</returns>
+        public bool Equals(UnitInfo other) => this.Name == other.Name;
+
+        /// <summary>
+        /// Checks if the passed object is a UnitInfo equal to this one
+        /// </summary>
+        /// <param name="obj">Object to test</param>
+        /// <returns>True if the object is an equal UnitInfo, false otherwise</returns>
+        public override bool Equals(object obj) => obj is UnitInfo other && Equals(other);
+
+        /// <summary>
+        /// This UnitInfo's hashcode, based on it's name
+        /// </summary>
+        /// <returns>The HashCode of this instance</returns>
+        public override int GetHashCode() => unchecked(this.Name?.GetHashCode() ?? 0);
+        #endregion
+
+        #region Opertators
+        /// <summary>
+        /// UnitInfo equality operator, equivalent to <see cref="UnitInfo.Equals(UnitInfo)"/>
+        /// </summary>
+        /// <param name="a">The first unit to test</param>
+        /// <param name="b">The second unit to test</param>
+        /// <returns>If a is equal to b</returns>
+        public static bool operator ==(UnitInfo a, UnitInfo b) => a.Equals(b);
+
+        /// <summary>
+        /// UnitInfo inequality operator, equivalent to !<see cref="UnitInfo.Equals(UnitInfo)"/>
+        /// </summary>
+        /// <param name="a">The first unit to test</param>
+        /// <param name="b">The second unit to test</param>
+        /// <returns>If a is not equal to b</returns>
+        public static bool operator !=(UnitInfo a, UnitInfo b) => !a.Equals(b);
         #endregion
     }
 }

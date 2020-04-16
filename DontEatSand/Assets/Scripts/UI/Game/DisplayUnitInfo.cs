@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DontEatSand.Entities.Units;
 using UnityEngine;
 using UnityEngine.UI;
+using DontEatSand.Entities;
+using DontEatSand.Entities.Buildings;
+using DontEatSand.Extensions;
 
 namespace DontEatSand.UI.Game
 {
@@ -10,12 +14,6 @@ namespace DontEatSand.UI.Game
     /// </summary>
     public class DisplayUnitInfo : MonoBehaviour
     {
-        #region Constants
-        /// <summary>
-        /// Gap between icons
-        /// </summary>
-        private const float ICON_GAP = 6f;
-        #endregion
 
         #region Fields
         [SerializeField]
@@ -24,63 +22,115 @@ namespace DontEatSand.UI.Game
         private GameObject multiUnitParent;
         [SerializeField]
         private GameObject singleUnitParent;
+        [SerializeField]
+        private GameObject queueParent;
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Handles displaying menus on unit selection
+        /// </summary>
+        /// <param name="selection"></param>
         private void DisplaySelectedUnitInfo(SelectionType selection)
         {
-            Debug.Log(selection);
-
             //Only listen to unit calls
             if(selection == SelectionType.UNITS)
             {
-                List<Unit> units = RTSPlayer.Instance.SelectedUnits;
+                // Hide queue
+                queueParent.SetActive(false);
+
+                SortedSet<Unit> units = RTSPlayer.Instance.SelectedUnits;
                 if(units.Count > 1)
                 {
                     DisplayMultipleUnitInfo(units);
                 }
                 else if (units.Count == 1)
                 {
-                    DisplaySingleUnitInfo(units[0]);
+                    DisplaySingleUnitInfo(units.First());
+                }
+            }
+
+            if(selection == SelectionType.OTHER)
+            {
+
+                if(RTSPlayer.Instance.Selected is Castle castle && castle.IsControllable())
+                {
+                    // Display queue
+                    queueParent.SetActive(true);
+                }
+                else
+                {
+                    queueParent.SetActive(false);
+                }
+                Entity selected = (Entity) RTSPlayer.Instance.Selected;
+                DisplaySelectedBuildingInfo(selected);
+            }
+
+            if(selection == SelectionType.NONE)
+            {
+                // Hide single unit info display
+                //this.singleUnitParent.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Given a selected building, display its information
+        /// </summary>
+        /// <param name="building"></param>
+        private void DisplaySelectedBuildingInfo(Entity building)
+        {
+            this.multiUnitParent.SetActive(false);
+            this.singleUnitParent.SetActive(true);
+            UnitInfo unitInfo = UnitDatabase.GetInfo(building.EntityName);
+            foreach(Transform child in this.singleUnitParent.transform)
+            {
+                if(child.name == "Title")
+                {
+                    child.GetComponent<Text>().text = unitInfo.Name;
+                }
+                if(child.name == "Entity Icon")
+                {
+                    child.GetComponent<Image>().sprite = unitInfo.Icon;
+                    // Display health
+                    child.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = building;
+                }
+                if(child.name == "Description")
+                {
+                    child.GetComponent<Text>().text = unitInfo.Description;
                 }
             }
         }
+
 
         /// <summary>
         /// Given a list of units, display their information in the management menu
         /// </summary>
         /// <param name="units"></param>
-        public void DisplayMultipleUnitInfo(List<Unit> units)
+        public void DisplayMultipleUnitInfo(SortedSet<Unit> units)
         {
             this.multiUnitParent.SetActive(true);
             this.singleUnitParent.SetActive(false);
 
+            // First, clear all the children in the parent transform
+            foreach(Transform child in multiUnitParent.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+
+            // Then, create a new list
             List<GameObject> iconsList = new List<GameObject>();
 
+            // Populate the list with buttons
             foreach(Unit unit in units)
             {
                 GameObject newIcon = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform);
-                newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
+                //newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
                 newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
                 newIcon.GetComponent<Button>().onClick.AddListener(() => DisplaySingleUnitInfo(unit));
+                newIcon.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = unit;
                 iconsList.Add(newIcon);
-            }
 
-            //TODO: Use an auto-layout function, you really shouldn't have to space them manually
-            //Space them out
-            int count = 0;
-            foreach(GameObject icon in iconsList)
-            {
-                float yPos = 0f;
-                Vector3 newPos = new Vector3((this.buttonPrefab.GetComponent<RectTransform>().rect.width + ICON_GAP) * count, yPos, 0f);
-                if(newPos.x >= this.multiUnitParent.GetComponent<RectTransform>().rect.width)
-                {
-                    //TODO: You're not using this yPos after?
-                    yPos += this.buttonPrefab.GetComponent<RectTransform>().rect.height + ICON_GAP;
-                }
-
-                icon.GetComponent<RectTransform>().localPosition += newPos;
-                count++;
+                // TODO: show unit health bars
             }
 
         }
@@ -100,9 +150,11 @@ namespace DontEatSand.UI.Game
                 {
                     child.GetComponent<Text>().text = unitInfo.Name;
                 }
-                if(child.name == "Health")
+                if(child.name == "Entity Icon")
                 {
-                    child.GetComponent<DisplayHealth>().UnitToDisplay = unit;
+                    child.GetComponent<Image>().sprite = unitInfo.Icon;
+                    // Display health
+                    child.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = unit;
                 }
                 if(child.name == "Description")
                 {
@@ -110,6 +162,7 @@ namespace DontEatSand.UI.Game
                 }
             }
         }
+
         #endregion
 
         #region Functions

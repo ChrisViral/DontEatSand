@@ -7,11 +7,7 @@ namespace DontEatSand.UI.Game
     {
         #region Fields
         [SerializeField]
-        private Text unitName;
-        [SerializeField]
-        private Text sandCost;
-        [SerializeField]
-        private Text candyCost;
+        private Text title;
         [SerializeField]
         private Text description;
         #endregion
@@ -24,11 +20,21 @@ namespace DontEatSand.UI.Game
         public void ChangeTooltip(string key)
         {
             UnitInfo unitInfo = UnitDatabase.GetInfo(key);
-            this.unitName.text = unitInfo.Name;
-            this.sandCost.text = string.Format("Sand: {0}", unitInfo.SandCost);
-            this.candyCost.text = string.Format("Candy: {0}", unitInfo.CandyCost);
-            this.description.text = unitInfo.Description;
+            this.title.text = unitInfo.Name;
+            this.description.text = $"Sand: {unitInfo.SandCost}\nCandy: {unitInfo.CandyCost}\n{unitInfo.Description}";
         }
+
+        /// <summary>
+        /// Displays a custom title
+        /// </summary>
+        /// <param name="text">Title to display</param>
+        public void CustomTitle(string text) => this.title.text = text;
+
+        /// <summary>
+        /// Displays a custom description
+        /// </summary>
+        /// <param name="desc">Description to display</param>
+        public void CustomDescription(string desc) => this.description.text = desc;
         #endregion
     }
 }
