@@ -14,16 +14,20 @@ namespace DontEatSand.UI.Game
     /// </summary>
     public class DisplayUnitInfo : MonoBehaviour
     {
-
         #region Fields
         [SerializeField]
-        private GameObject buttonPrefab;
+        private DisplayHealthAndIcon buttonPrefab;
         [SerializeField]
         private GameObject multiUnitParent;
         [SerializeField]
         private GameObject singleUnitParent;
         [SerializeField]
         private GameObject queueParent;
+        [SerializeField]
+        private Text title, description;
+        [SerializeField]
+        private DisplayHealthAndIcon icon;
+        private readonly List<DisplayHealthAndIcon> displayed = new List<DisplayHealthAndIcon>(16);
         #endregion
 
         #region Methods
@@ -33,74 +37,51 @@ namespace DontEatSand.UI.Game
         /// <param name="selection"></param>
         private void DisplaySelectedUnitInfo(SelectionType selection)
         {
-            //Only listen to unit calls
-            if(selection == SelectionType.UNITS)
+            switch (selection)
             {
-                // Hide queue
-                queueParent.SetActive(false);
+                //Only listen to unit calls
+                case SelectionType.UNITS:
+                    // Hide queue
+                    this.queueParent.SetActive(false);
 
-                SortedSet<Unit> units = RTSPlayer.Instance.SelectedUnits;
-                if(units.Count > 1)
-                {
-                    DisplayMultipleUnitInfo(units);
-                }
-                else if (units.Count == 1)
-                {
-                    DisplaySingleUnitInfo(units.First());
-                }
-            }
+                    SortedSet<Unit> units = RTSPlayer.Instance.SelectedUnits;
+                    if(units.Count > 1)
+                    {
+                        DisplayMultipleUnitInfo(units);
+                    }
+                    else if (units.Count == 1)
+                    {
+                        DisplaySingleObject(units.First());
+                    }
 
-            if(selection == SelectionType.OTHER)
-            {
+                    break;
 
-                if(RTSPlayer.Instance.Selected is Castle castle && castle.IsControllable())
-                {
-                    // Display queue
-                    queueParent.SetActive(true);
-                }
-                else
-                {
-                    queueParent.SetActive(false);
-                }
-                Entity selected = (Entity) RTSPlayer.Instance.Selected;
-                DisplaySelectedBuildingInfo(selected);
-            }
+                case SelectionType.OTHER:
+                    this.queueParent.SetActive(RTSPlayer.Instance.Selected is Castle castle && castle.IsControllable());
+                    DisplaySingleObject(RTSPlayer.Instance.Selected);
+                    break;
 
-            if(selection == SelectionType.NONE)
-            {
-                // Hide single unit info display
-                //this.singleUnitParent.SetActive(false);
+                case SelectionType.NONE:
+                    //Hide display
+                    this.multiUnitParent.SetActive(false);
+                    this.singleUnitParent.SetActive(false);
+                    this.queueParent.SetActive(false);
+                    break;
             }
         }
 
         /// <summary>
-        /// Given a selected building, display its information
+        /// Given a single selected building or unit, display its information
         /// </summary>
-        /// <param name="building"></param>
-        private void DisplaySelectedBuildingInfo(Entity building)
+        /// <param name="selected">Object to display</param>
+        private void DisplaySingleObject(ISelectable selected)
         {
             this.multiUnitParent.SetActive(false);
             this.singleUnitParent.SetActive(true);
-            UnitInfo unitInfo = UnitDatabase.GetInfo(building.EntityName);
-            foreach(Transform child in this.singleUnitParent.transform)
-            {
-                if(child.name == "Title")
-                {
-                    child.GetComponent<Text>().text = unitInfo.Name;
-                }
-                if(child.name == "Entity Icon")
-                {
-                    child.GetComponent<Image>().sprite = unitInfo.Icon;
-                    // Display health
-                    child.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = building;
-                }
-                if(child.name == "Description")
-                {
-                    child.GetComponent<Text>().text = unitInfo.Description;
-                }
-            }
+            this.title.text = selected.Info.Name;
+            this.description.text = selected.Info.Description;
+            this.icon.Selected = selected;
         }
-
 
         /// <summary>
         /// Given a list of units, display their information in the management menu
@@ -111,58 +92,35 @@ namespace DontEatSand.UI.Game
             this.multiUnitParent.SetActive(true);
             this.singleUnitParent.SetActive(false);
 
-            // First, clear all the children in the parent transform
-            foreach(Transform child in multiUnitParent.transform)
+            //Remove extra icons
+            if (units.Count < this.displayed.Count)
             {
-                GameObject.Destroy(child.gameObject);
-            }
-
-            // Then, create a new list
-            List<GameObject> iconsList = new List<GameObject>();
-
-            // Populate the list with buttons
-            foreach(Unit unit in units)
-            {
-                GameObject newIcon = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform);
-                //newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
-                newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
-                newIcon.GetComponent<Button>().onClick.AddListener(() => DisplaySingleUnitInfo(unit));
-                newIcon.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = unit;
-                iconsList.Add(newIcon);
-
-                // TODO: show unit health bars
-            }
-
-        }
-
-        /// <summary>
-        /// Given a single unit, display its info in the single unit info menu
-        /// </summary>
-        /// <param name="unit"></param>
-        public void DisplaySingleUnitInfo(Unit unit)
-        {
-            this.multiUnitParent.SetActive(false);
-            this.singleUnitParent.SetActive(true);
-            UnitInfo unitInfo = UnitDatabase.GetInfo(unit.EntityName);
-            foreach(Transform child in this.singleUnitParent.transform)
-            {
-                if(child.name == "Title")
+                int i = this.displayed.Count - 1;
+                while (units.Count != this.displayed.Count)
                 {
-                    child.GetComponent<Text>().text = unitInfo.Name;
+                    DisplayHealthAndIcon toRemove = this.displayed[i];
+                    Destroy(toRemove.gameObject);
+                    this.displayed.RemoveAt(i);
                 }
-                if(child.name == "Entity Icon")
+            }
+            //Add missing icons
+            else if (units.Count > this.displayed.Count)
+            {
+                while (units.Count != this.displayed.Count)
                 {
-                    child.GetComponent<Image>().sprite = unitInfo.Icon;
-                    // Display health
-                    child.GetComponent<DisplayHealthAndIcon>().EntityToDisplay = unit;
+                    this.displayed.Add(Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform));
                 }
-                if(child.name == "Description")
+            }
+            //Setup icons
+            if (units.Count != 0)
+            {
+                int i = 0;
+                foreach (Unit u in units)
                 {
-                    child.GetComponent<Text>().text = unitInfo.Description;
+                    this.displayed[i++].Selected = u;
                 }
             }
         }
-
         #endregion
 
         #region Functions

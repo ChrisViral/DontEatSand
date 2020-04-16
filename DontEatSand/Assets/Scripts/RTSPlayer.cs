@@ -2,8 +2,10 @@
 using System.Linq;
 using DontEatSand.Base;
 using DontEatSand.Entities;
+using DontEatSand.Entities.Buildings;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
+using Photon.Pun;
 using RTSCam;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -68,6 +70,11 @@ namespace DontEatSand
         /// Available candy for extra unit creation
         /// </summary>
         public int AvailableCandy => this.MaxCandy - this.UsedCandy;
+
+        /// <summary>
+        /// The castle associated to this player
+        /// </summary>
+        public Castle Castle { get; private set; }
 
         /// <summary>
         /// The current selection Rect
@@ -390,6 +397,25 @@ namespace DontEatSand
                 else { this.clickTime = Time.time; }
             }
         }
+
+        /// <summary>
+        /// Forces the selection of the passed selectable object
+        /// </summary>
+        /// <param name="newSelection"></param>
+        public void ForceSelect(ISelectable newSelection)
+        {
+            //Clear selected units
+            if (this.SelectedUnits.Count > 0)
+            {
+                Unit newUnit = newSelection as Unit;
+                this.SelectedUnits.Where(u => u != newUnit).ForEach(u => u.IsSelected = false);
+                this.SelectedUnits.Clear();
+            }
+
+            //Set selection
+            this.Selected = newSelection;
+            this.SelectionType = newSelection == null ? SelectionType.NONE : SelectionType.OTHER;
+        }
         #endregion
 
         #region Functions
@@ -400,6 +426,10 @@ namespace DontEatSand
             this.MaxCandy = this.baseCandy;
             //ReSharper disable once PossibleNullReferenceException
             this.camera = Camera.main.GetComponent<RTSCamera>();
+            if (!PhotonNetwork.IsConnected)
+            {
+                this.Castle = FindObjectsOfType<Castle>().First(g => g.name == "Sandcastle A");
+            }
 
             //Event registering
             GameEvents.OnCandyMaxChanged.AddListener(OnCandyMaxChanged);

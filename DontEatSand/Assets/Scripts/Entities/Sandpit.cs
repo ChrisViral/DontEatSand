@@ -15,6 +15,7 @@ namespace DontEatSand.Entities
         private Renderer selectionIndicator;
         [SerializeField]
         private Color selectedColour = Color.green, hoveredColour = Color.blue;
+        private float originalSand;
         #endregion
 
         #region Properties
@@ -24,6 +25,11 @@ namespace DontEatSand.Entities
         /// Available sand in this pit
         /// </summary>
         public int AvailableSand => this.availableSand;
+
+        /// <summary>
+        /// Percentage of sand left in the pit
+        /// </summary>
+        public float SandAmount => this.availableSand / this.originalSand;
 
         private bool isSelected;
         /// <summary>
@@ -92,6 +98,12 @@ namespace DontEatSand.Entities
                 }
             }
         }
+
+        private static UnitInfo? info;
+        /// <summary>
+        /// The Sandpit info
+        /// </summary>
+        public UnitInfo Info => (info ?? (info = UnitDatabase.GetInfo("Sandpit"))).Value;
         #endregion
 
         #region Methods
@@ -118,6 +130,10 @@ namespace DontEatSand.Entities
         /// <param name="amount">Amount to remove</param>
         [PunRPC]
         private void ReceiveHarvested(int amount) => this.availableSand = Mathf.Max(0, this.availableSand - amount);
+        #endregion
+
+        #region Functions
+        private void Awake() => this.originalSand = this.availableSand;
         #endregion
     }
 }

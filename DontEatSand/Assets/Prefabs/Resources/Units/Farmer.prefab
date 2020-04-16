@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 45603526}
   - component: {fileID: 45603528}
   - component: {fileID: 45603527}
-  - component: {fileID: 1097739633350705954}
   m_Layer: 9
   m_Name: Health Bar
   m_TagString: Untagged
@@ -74,18 +73,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1097739633350705954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 45603525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 824edbf441d05884aa00974d4174b0e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1234831203
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,6 +653,8 @@ MonoBehaviour:
   enemyColour: {r: 0.7058824, g: 0.007843138, b: 0.007843138, a: 1}
   hoveredColour: {r: 0.24705882, g: 0.38431373, b: 0.9607843, a: 1}
   entityName: Farmer
+  healthbar: {fileID: 45603527}
+  behaviourMode: 0
 --- !u!114 &1879311527327809449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1914,15 +1903,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69e388a88ab2f0c48bd414cfce37297f, type: 3}
---- !u!23 &6113252664747073216 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 5675104014084331680, guid: 69e388a88ab2f0c48bd414cfce37297f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1879311527829718624}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6113252664747073218 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5675104014084331682, guid: 69e388a88ab2f0c48bd414cfce37297f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1879311527829718624}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6113252664747073216 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5675104014084331680, guid: 69e388a88ab2f0c48bd414cfce37297f,
     type: 3}
   m_PrefabInstance: {fileID: 1879311527829718624}
   m_PrefabAsset: {fileID: 0}
