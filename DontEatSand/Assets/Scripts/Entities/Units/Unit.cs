@@ -22,6 +22,7 @@ namespace DontEatSand.Entities.Units
 
         #region Fields
         private NavMeshAgent agent;
+        private Animator anim;
         private BehaviourTree bt;
         private Mode behaviourMode;
         private SphereCollider aggroSphere;
@@ -170,6 +171,7 @@ namespace DontEatSand.Entities.Units
             if (this.IsControllable())
             {
                 this.agent = GetComponent<NavMeshAgent>();
+                this.anim = GetComponent<Animator>();
                 this.aggroSphere = GetComponent<SphereCollider>();
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
@@ -191,6 +193,8 @@ namespace DontEatSand.Entities.Units
                 }
                 OnUpdate();
             }
+            // Send velocity to animator
+            anim.SetFloat("Velocity", this.agent.velocity.magnitude);
         }
 
         private void OnDestroy()
