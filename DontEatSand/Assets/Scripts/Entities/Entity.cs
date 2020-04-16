@@ -27,10 +27,11 @@ namespace DontEatSand.Entities
         /// </summary>
         public string EntityName => this.entityName;
 
+        private UnitInfo? info;
         /// <summary>
         /// The UnitInfo associated to this entity
         /// </summary>
-        public UnitInfo Info { get; private set; }
+        public UnitInfo Info => this.info ?? (this.info = UnitDatabase.GetInfo(this.EntityName)).Value;
 
         /// <summary>
         /// The Rigidbody associated to this entity
@@ -51,6 +52,11 @@ namespace DontEatSand.Entities
         /// The current health of this entity
         /// </summary>
         public int Health { get; protected set; }
+
+        /// <summary>
+        /// The maximum health of this entity
+        /// </summary>
+        public int HealthAmount => this.maxHealth;
 
         private bool isSelected;
         /// <summary>
@@ -161,16 +167,10 @@ namespace DontEatSand.Entities
         private void Awake()
         {
             this.Rigidbody = GetComponent<Rigidbody>();
-            if (UnitDatabase.TryGetInfo(this.entityName, out UnitInfo info))
-            {
-                this.Info = info;
-            }
             this.Health = this.maxHealth;
 
             //Setup selection indicator
             this.activeColour = this.IsControllable() ? this.selectedColour : this.enemyColour;
-            this.selectionIndicator.material.color = this.activeColour;
-            this.selectionIndicator.gameObject.SetActive(false);
 
             //If controllable, destroy the discoverable component
             if (this.IsControllable())

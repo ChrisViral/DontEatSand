@@ -1,4 +1,5 @@
 ﻿using DontEatSand.Base;
+using DontEatSand.UI;
 using DontEatSand.Utils;
 using Photon.Pun;
 using UnityEngine;
@@ -23,6 +24,13 @@ namespace DontEatSand
     [RequireComponent(typeof(AudioSource))]
     public class GameLogic : SingletonPunCallbacks<GameLogic>
     {
+        #region Constants
+        /// <summary>
+        /// The maximum amount of players in a game
+        /// </summary>
+        public const byte MAX_PLAYERS = 2;
+        #endregion
+
         #region Fields
         //Inspector fields
         [SerializeField, Header("Music")]
@@ -31,6 +39,7 @@ namespace DontEatSand
         //Private fields
         private AudioSource source;
         private float baseVolume;
+        private bool loaded;
         #endregion
 
         #region Static properties
@@ -78,7 +87,7 @@ namespace DontEatSand
         internal static void LoadScene(GameScenes scene)
         {
             //If networked, load through Photon
-            if (PhotonNetwork.IsConnected)
+            if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
             {
                 //Only loads the scene if on master client
                 if (PhotonNetwork.IsMasterClient)
@@ -160,10 +169,17 @@ namespace DontEatSand
                 }
             }
 
-            //Make sure the game does not stay paused in the menu
-            if (loadedScene == GameScenes.MENU && IsPaused)
+            if (loadedScene == GameScenes.MENU)
             {
+                //Make sure the game does not stay paused in the menu
                 IsPaused = false;
+
+                //First time loading of the menu
+                if (!this.loaded)
+                {
+                    FindObjectOfType<MainMenu>().SetupMenu();
+                    this.loaded = true;
+                }
             }
 
             //Log scene change
@@ -173,6 +189,16 @@ namespace DontEatSand
 
             //Fire scene load event
             GameEvents.OnSceneLoaded.Invoke(from, loadedScene);
+        }
+        #endregion
+
+        #region Callbacks
+        public override void OnLeftRoom()
+        {
+            //Return to main menu
+            this.Log("Left room, returning to menu...");
+            PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
+            LoadScene(GameScenes.MENU);
         }
         #endregion
 

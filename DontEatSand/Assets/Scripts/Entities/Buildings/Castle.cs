@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using DontEatSand.Entities.Units;
+using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace DontEatSand.Entities.Buildings
         private Transform spawnLocation;
         [SerializeField]
         private int buildQueueMaxSize = 20;
-        private readonly LinkedList<(Unit unit, UnitInfo info)> buildQueue = new LinkedList<(Unit, UnitInfo)>();
+        private readonly LinkedList<Unit> buildQueue = new LinkedList<Unit>();
         private readonly Stopwatch buildTimer = new Stopwatch();
         private UnitInfo inProgress;
         #endregion
@@ -64,7 +65,7 @@ namespace DontEatSand.Entities.Buildings
 
             //Get unit info
             Unit unit = this.units[index];
-            UnitInfo info = UnitDatabase.GetInfo(unit.EntityName);
+            UnitInfo info = unit.Info;
 
             //Check if we have the resources to create it
             if (RTSPlayer.Instance.CheckResourcesAvailable(info.SandCost, info.CandyCost))
@@ -80,7 +81,7 @@ namespace DontEatSand.Entities.Buildings
                 }
 
                 //Add unit to build queue
-                this.buildQueue.AddLast((unit, info));
+                this.buildQueue.AddLast(unit);
                 if (this.buildQueue.Count == 1)
                 {
                     this.buildTimer.Start();
@@ -100,7 +101,7 @@ namespace DontEatSand.Entities.Buildings
             //Check if more units in queue
             if (this.IsBuilding)
             {
-                this.inProgress = this.buildQueue.First.Value.info;
+                this.inProgress = this.buildQueue.First.Value.Info;
                 this.buildTimer.Restart();
             }
             else
@@ -125,26 +126,26 @@ namespace DontEatSand.Entities.Buildings
             UnitInfo removed;
             if (index == 0)
             {
-                removed = this.buildQueue.First.Value.info;
+                removed = this.buildQueue.First.Value.Info;
                 PopQueue();
             }
             else if (index == this.buildQueue.Count - 1)
             {
                 //Optimize if last
-                removed = this.buildQueue.Last.Value.info;
+                removed = this.buildQueue.Last.Value.Info;
                 this.buildQueue.RemoveLast();
             }
             else
             {
                 //ReSharper disable PossibleNullReferenceException
                 //Traverse list to find node
-                LinkedListNode<(Unit, UnitInfo info)> toRemove = this.buildQueue.First.Next;
+                LinkedListNode<Unit> toRemove = this.buildQueue.First.Next;
                 for (int i = 1; i < index; i++)
                 {
                     toRemove = toRemove.Next;
                 }
 
-                removed = toRemove.Value.info;
+                removed = toRemove.Value.Info;
                 this.buildQueue.Remove(toRemove);
                 //ReSharper enable PossibleNullReferenceException
             }
@@ -163,10 +164,14 @@ namespace DontEatSand.Entities.Buildings
         #endregion
 
         #region Functions
-        protected override void OnAwake()
+        protected override void OnAwake() => this.Units = Array.AsReadOnly(this.units);
+
+        private void Start()
         {
-            this.Units = Array.AsReadOnly(this.units);
-            GameEvents.OnUnitRemovedFromQueue.AddListener(OnUnitRemovedFromQueue);
+            if (this.IsControllable())
+            {
+                GameEvents.OnUnitRemovedFromQueue.AddListener(OnUnitRemovedFromQueue);
+            }
         }
 
         private void Update()
@@ -175,7 +180,7 @@ namespace DontEatSand.Entities.Buildings
             if (this.IsBuilding && this.buildTimer.Elapsed.TotalSeconds >= this.inProgress.BuildTime)
             {
                 //Get unit and spawn it
-                (Unit unit, _) = this.buildQueue.First.Value;
+                Unit unit = this.buildQueue.First.Value;
                 Unit clone = PhotonUtils.Instantiate(unit, this.spawnLocation.position, unit.transform.rotation, this.transform.parent);
                 GameEvents.OnUnitCreated.Invoke(clone);
 
@@ -184,7 +189,13 @@ namespace DontEatSand.Entities.Buildings
             }
         }
 
-        private void OnDestroy() => GameEvents.OnUnitRemovedFromQueue.RemoveListener(OnUnitRemovedFromQueue);
+        private void OnDestroy()
+        {
+            if (this.IsControllable())
+            {
+                GameEvents.OnUnitRemovedFromQueue.RemoveListener(OnUnitRemovedFromQueue);
+            }
+        }
         #endregion
     }
 }

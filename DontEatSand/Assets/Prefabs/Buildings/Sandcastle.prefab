@@ -645,14 +645,14 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bb215482a07e9bc48a3c694830a0d419, type: 2}
-  - {fileID: 2100000, guid: 49be16ccc433b5a49a5693e7a7efa6ab, type: 2}
-  - {fileID: 2100000, guid: a26aaf7c13bf926478ccdc2dc3c23cb9, type: 2}
-  - {fileID: 2100000, guid: 0f6e70558704abc4bbafa0ef528100e7, type: 2}
-  - {fileID: 2100000, guid: 0e5e853e0ff51e7478b6d00b4e300962, type: 2}
-  - {fileID: 2100000, guid: 3677efea637c80747beadff8eb5b5569, type: 2}
-  - {fileID: 2100000, guid: 1e7234ede0eb2ea4c81e66b91571926f, type: 2}
-  - {fileID: 2100000, guid: 6ba0f334ab9abde49932003f29e834cb, type: 2}
+  - {fileID: 2100000, guid: 11dbdff076faf4855ac56d0300a1ea11, type: 2}
+  - {fileID: 2100000, guid: 409b9179b11404bbca49242b1616efb9, type: 2}
+  - {fileID: 2100000, guid: db3d5f24fd34f4f8db6b55af30e41153, type: 2}
+  - {fileID: 2100000, guid: a4f8c75701f7340aeadaee5a45e2cb1f, type: 2}
+  - {fileID: 2100000, guid: a4f8c75701f7340aeadaee5a45e2cb1f, type: 2}
+  - {fileID: 2100000, guid: 409b9179b11404bbca49242b1616efb9, type: 2}
+  - {fileID: 2100000, guid: 2c43c0ce0b25b47d8908f29ebcf798da, type: 2}
+  - {fileID: 2100000, guid: ab66e980ccf0b4bf98b41568635c4f1f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1829,12 +1829,12 @@ PrefabInstance:
     - target: {fileID: 5675104014084331682, guid: 69e388a88ab2f0c48bd414cfce37297f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.03
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 5675104014084331682, guid: 69e388a88ab2f0c48bd414cfce37297f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5675104014084331682, guid: 69e388a88ab2f0c48bd414cfce37297f,
         type: 3}
@@ -1899,6 +1899,11 @@ PrefabInstance:
     - target: {fileID: 5675104014084331694, guid: 69e388a88ab2f0c48bd414cfce37297f,
         type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675104014084331694, guid: 69e388a88ab2f0c48bd414cfce37297f,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

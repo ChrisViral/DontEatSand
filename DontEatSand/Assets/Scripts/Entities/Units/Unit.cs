@@ -1,4 +1,5 @@
-﻿using DontEatSand.Extensions;
+﻿using System;
+using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace DontEatSand.Entities.Units
     /// Unit base class
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class Unit : Entity
+    public abstract class Unit : Entity, IComparable<Unit>
     {
         #region Constants
         private const float OFFSET_MAGNITUDE = 5f;
@@ -95,6 +96,13 @@ namespace DontEatSand.Entities.Units
             this.Destination = dest + positionDiff;
         }
 
+        /// <inheritdoc cref="IComparable{T}.CompareTo"/>
+        public int CompareTo(Unit other)
+        {
+            int c = this.Info.Type.CompareTo(other.Info.Type);
+            return c == 0 ? StringComparer.InvariantCulture.Compare(this.EntityName, other.EntityName) : c;
+        }
+
         public virtual void Attack(Entity target)
         {
             Target = target;
@@ -127,7 +135,36 @@ namespace DontEatSand.Entities.Units
 
         #endregion
 
+        #region Virtual methods
+        /// <summary>
+        /// Processes commands from the player
+        /// Make sure to call base.ProcessCommand if overriding!
+        /// </summary>
+        /// <param name="destination">Position in the world of the command</param>
+        /// <param name="target">Target of the command</param>
+        protected virtual void ProcessCommand(Vector3 destination, ISelectable target)
+        {
+            if (this.IsSelected)
+            {
+                MoveUnit(destination, RTSPlayer.Instance.AveragePosition);
+            }
+        }
+
+        /// <summary>
+        /// Update function, only called on non-networked units. Use this instead of Update()
+        /// </summary>
+        protected virtual void OnUpdate() { }
+
+        /// <summary>
+        /// OnDestroy function, use this instead of OnDestroy()
+        /// </summary>
+        protected virtual void OnDestroyed() { }
+        #endregion
+
         #region Functions
+        /// <summary>
+        /// Make sure you inherit this and do not use Awake(), and call base.OnAwake() first
+        /// </summary>
         protected override void OnAwake()
         {
             if (this.IsControllable())
@@ -136,6 +173,7 @@ namespace DontEatSand.Entities.Units
                 this.aggroSphere = GetComponent<SphereCollider>();
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
+                GameEvents.OnActionRequested.AddListener(ProcessCommand);
             }
             else
             {
@@ -145,17 +183,27 @@ namespace DontEatSand.Entities.Units
 
         private void Update()
         {
-            if (this.Target)
+            if (this.IsControllable())
             {
-                this.agent.destination = this.Target.transform.position;
+                if (this.Target)
+                {
+                    this.agent.destination = this.Target.transform.position;
+                }
+                OnUpdate();
             }
         }
 
         private void OnDestroy()
         {
-            //Notify of death and give back sand
-            GameEvents.OnUnitDestroyed.Invoke(this);
-            GameEvents.OnCandyChanged.Invoke(-this.Info.CandyCost);
+            if (this.IsControllable())
+            {
+                //Notify of death and give back sand
+                GameEvents.OnUnitDestroyed.Invoke(this);
+                GameEvents.OnCandyChanged.Invoke(-this.Info.CandyCost);
+                GameEvents.OnActionRequested.RemoveListener(ProcessCommand);
+            }
+
+            OnDestroyed();
         }
         #endregion
 
