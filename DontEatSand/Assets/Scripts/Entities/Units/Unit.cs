@@ -11,7 +11,7 @@ namespace DontEatSand.Entities.Units
     /// <summary>
     /// Unit base class
     /// </summary>
-    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Rigidbody), typeof(Animator))]
     public abstract class Unit : Entity, IComparable<Unit>
     {
         #region Constants
@@ -284,7 +284,7 @@ namespace DontEatSand.Entities.Units
                     }
                 }
             }
-            
+
             if(!IsEnemySeen())
             {
                 /*if(Vector3.Distance(originalPos, this.transform.position) > this.aggroSphere.radius)
@@ -300,9 +300,9 @@ namespace DontEatSand.Entities.Units
                 Attack(Target);
                 yield return BTNodeResult.NOT_FINISHED;
             }
-            
-            
-            
+
+
+
             /*
             *   move to closest enemy in aggro range
             *   attack unit
@@ -314,8 +314,8 @@ namespace DontEatSand.Entities.Units
             * if(isUnderAttackFlag())
             *   agent.SetDestination(Target.position);
             *   Attack(Target);
-            * 
-            * 
+            *
+            *
             * store original position
             * received damage within last 2 seconds?
             *   move to attacking unit
@@ -324,7 +324,7 @@ namespace DontEatSand.Entities.Units
             *
             *
             *
-            * 
+            *
             * If no enemy in aggro
             *
             *   if dist current to original pos > aggro range, return to original pos
