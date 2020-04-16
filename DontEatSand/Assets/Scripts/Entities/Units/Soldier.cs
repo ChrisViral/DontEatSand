@@ -15,7 +15,6 @@ namespace DontEatSand.Entities.Units
                 // Acknowledge clicked entity as a target for this unit
                 if (target is Entity entity) //&& !entity.IsControllable())
                 {
-                    this.HasOrderFlag = true;
                     this.Target = entity;
                 }
                 else // clicked on the ground somewhere

@@ -56,7 +56,7 @@ namespace DontEatSand.Entities.Units
         private BehaviourTree bt;
         private LayerMask unitsMask;
         private float smoothSpeed;
-        private List<Unit> enemyUnitsInRange;
+        private List<Unit> enemyUnitsInRange = new List<Unit>();
 
         private float attackStart = 0f;
         private float attackInterval = 1.0f;
@@ -89,8 +89,12 @@ namespace DontEatSand.Entities.Units
         {
             get
             {
-                // not headed anywhere and does not have a target
-                return Vector3.Distance(this.Position, Target.Position) > 1.0f && Target == null;
+                // is headed somewhere or has a target
+                return Vector3.Distance(this.Position, agent.destination) > 1.0f && Target != null;
+            }
+            set
+            {
+
             }
         }
 
@@ -102,6 +106,10 @@ namespace DontEatSand.Entities.Units
             get
             {
                 return enemyUnitsInRange.Count != 0;
+            }
+            set
+            {
+
             }
         }
 
@@ -200,28 +208,27 @@ namespace DontEatSand.Entities.Units
         }
 
         /// <summary>
-        /// Find the closest target to this unit
+        /// Find the closest enemy unit to this unit
         /// </summary>
         /// <returns></returns>
-        private Entity FindClosestTarget()
+        private Unit FindClosestTarget()
         {
             //Use non allocating, check up to 128 possible targets
             int size = enemyUnitsInRange.Count;
             if (size == 0) return null;
 
             //Get closest target
-            Entity closestTarget = null;
+            Unit closestTarget = null;
             Vector3 position = this.transform.position;
             float distanceToClosest = float.PositiveInfinity;
-            for (int i = 0; i < size; i++)
+            foreach (Unit enemy in enemyUnitsInRange)
             {
-                Collider hit = hits[i];
-                float dist = Vector3.Distance(hit.transform.position, position);
+                float dist = Vector3.Distance(enemy.Position, position);
                 //Making sure it's a valid entity target
-                if(dist < distanceToClosest && hit.gameObject.TryGetComponent(out Entity entity) && (!PhotonNetwork.IsConnected || !entity.photonView.IsMine))
+                if(dist < distanceToClosest) // && (!PhotonNetwork.IsConnected || !entity.photonView.IsMine))
                 {
                     distanceToClosest = dist;
-                    closestTarget = entity;
+                    closestTarget = enemy;
                 }
             }
 
@@ -380,16 +387,17 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("follow-order")]
         public BTCoroutine FollowOrderRoutine()
         {
-            /*
-             * !HasOrder()
-             *       yield return BTNodeResult.Fail
-             * HasOrder()
-             *      yield return BTNodeResult.SUCCESS;
-             * else
-             *
-             */
 
-            yield return BTNodeResult.NOT_FINISHED;
+            if(HasOrderFlag)
+            {
+                yield return BTNodeResult.SUCCESS;
+            }
+            else
+            {
+                yield return BTNodeResult.FAILURE;
+            }
+            
+            // yield return BTNodeResult.NOT_FINISHED;
         }
 
         /// <summary>
@@ -418,7 +426,9 @@ namespace DontEatSand.Entities.Units
                 if(IsUnderAttack())
                 {
                     this.Target = FindClosestTarget();
+                    Debug.Log(enemyUnitsInRange);
                     this.agent.SetDestination(this.Target.Position);
+                    Debug.Log("CanAttack " + CanAttack);
                     if (CanAttack)
                     {
                         Attack(this.Target);
@@ -427,7 +437,6 @@ namespace DontEatSand.Entities.Units
                 }
                 // should return to original position if wanders too far off
             }
-
 
 
             /*
