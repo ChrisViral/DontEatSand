@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
@@ -56,6 +57,11 @@ namespace DontEatSand.Entities.Units
         private SphereCollider aggroSphere;
         private LayerMask unitsMask;
         private float smoothSpeed;
+        private List<Unit> enemyUnitsInRange;
+
+        private float attackStart = 0f;
+        private float attackInterval = 1.0f;
+
         #endregion
 
         #region Properties
@@ -93,10 +99,10 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         public bool IsEnemySeenFlag
         {
-            get; set;
-            /*{
-                return aggroSphere.bounds.Contains(Target.transform.position);
-            }*/
+            get
+            {
+                return enemyUnitsInRange.Count != 0;
+            }
         }
 
         /// <summary>
@@ -137,6 +143,24 @@ namespace DontEatSand.Entities.Units
                 }
             }
         }
+
+        /// <summary>
+        /// If the unit can currently attack
+        /// </summary>
+        protected bool CanAttack {
+            get
+            {
+                bool attackReady = false;
+                if(Time.time > attackStart + attackInterval)
+                {
+                    attackStart = Time.time;
+                    attackReady = true;
+                }
+                return attackReady && Target != null && Vector3.Distance(this.Position, Target.Position) < 1.0f;
+            }
+        }
+
+
         #endregion
 
         #region Methods
@@ -177,24 +201,13 @@ namespace DontEatSand.Entities.Units
         }
 
         /// <summary>
-        /// Attacks the specified target
-        /// </summary>
-        /// <param name="target">Target to attack</param>
-        public virtual void Attack(Entity target)
-        {
-            // Set animator trigger for attacking
-            animator.SetTrigger(attackTriggerName);
-        }
-
-        /// <summary>
         /// Find the closest target to this unit
         /// </summary>
         /// <returns></returns>
         private Entity FindClosestTarget()
         {
             //Use non allocating, check up to 128 possible targets
-            //NOTE: You really don't want to be doing this, it'd be much better to instead just keep track of who is in range using OnTriggerEnter/Exit
-            int size = Physics.OverlapSphereNonAlloc(this.transform.position, this.aggroSphere.radius, hits, this.unitsMask, QueryTriggerInteraction.Ignore);
+            int size = enemyUnitsInRange.Count;
             if (size == 0) return null;
 
             //Get closest target
@@ -221,6 +234,16 @@ namespace DontEatSand.Entities.Units
 
         #region Virtual methods
         /// <summary>
+        /// Attacks the specified target
+        /// </summary>
+        /// <param name="target">Target to attack</param>
+        public virtual void Attack(Entity target)
+        {
+            // Set animator trigger for attacking
+            animator.SetTrigger(attackTriggerName);
+        }
+        
+        /// <summary>
         /// Processes commands from the player
         /// Make sure to call base.ProcessCommand if overriding!
         /// </summary>
@@ -244,6 +267,31 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         protected virtual void OnDestroyed() { }
         #endregion
+
+        #region Collider Functions
+
+        private void OnTriggerEnter(Collider collider)
+        {
+            GameObject enemy = collider.gameObject;
+            if(enemy.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
+            {
+                // Populate enemies
+                enemyUnitsInRange.Add(enemyUnit);
+            }
+
+        }
+
+        private void OnTriggerExit(Collider collider)
+        {
+            GameObject enemy = collider.gameObject;
+            if(enemy.TryGetComponent(out Unit enemyUnit) && enemyUnitsInRange.Contains(enemyUnit))
+            {
+                enemyUnitsInRange.Remove(enemyUnit);
+            }
+        }
+
+        #endregion
+
 
         #region Functions
         /// <summary>
@@ -357,8 +405,9 @@ namespace DontEatSand.Entities.Units
             {
                 if (IsEnemySeen())
                 {
+                    this.Target = FindClosestTarget();
                     this.agent.SetDestination(this.Target.Position);
-                    if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
+                    if (CanAttack)
                     {
                         Attack(this.Target);
                         yield return BTNodeResult.NOT_FINISHED;
@@ -370,8 +419,9 @@ namespace DontEatSand.Entities.Units
             {
                 if(IsUnderAttack())
                 {
+                    this.Target = FindClosestTarget();
                     this.agent.SetDestination(this.Target.Position);
-                    if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
+                    if (CanAttack)
                     {
                         Attack(this.Target);
                         yield return BTNodeResult.NOT_FINISHED;
