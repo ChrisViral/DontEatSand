@@ -1,4 +1,5 @@
 ﻿using DontEatSand.Base;
+using DontEatSand.Entities.Buildings;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -23,38 +24,39 @@ namespace DontEatSand.Entities.Units
             base.ProcessCommand(destination, target);
 
             // If target is wet sand, dig
-            if (target is Discoverable discoverable)
+            if (target is Sandpit sandpit)
             {
                 this.HasOrderFlag = true;
-                this.Destination = discoverable.transform.position;
-                Dig();
+                this.Destination = sandpit.transform.position;
+                Dig(sandpit);
             }
             // Else if target is building, build
-            else if (target is Entity entity)
+            else if (target is CandyFactory candyFactory)
             {
                 this.HasOrderFlag = true;
-                this.Target = entity;
-                Build();
+                this.Target = candyFactory;
+                Build(candyFactory);
             }
         }
         
-        public void Dig()
+        public void Dig(Sandpit sandpit)
         {
             if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
             {
-                // Set animation trigger
-                animator.SetTrigger(digTriggerName);
+                // Set animation bool for digging
+                animator.SetBool(digTriggerName, true);
                 
                 // Take sand from sandpit
+                sandpit.HarvestSand(10);
             }
         }
 
-        public void Build()
+        public void Build(CandyFactory candyFactory)
         {
             if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
             {
-                // Set animation trigger
-                animator.SetTrigger(buildTriggerName);
+                // Set animation boll for building
+                animator.SetBool(buildTriggerName, true);
                 
                 // Build building
             }
