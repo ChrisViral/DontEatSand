@@ -63,9 +63,9 @@ namespace DontEatSand
         /// <param name="soundTrack"></param>
         /// <param name="position"></param>
         /// <param name="volume"></param>
-        public void play(SoundTrack soundTrack, Vector3 position, float volume)
+        public void Play(SoundTrack soundTrack, Vector3 position, float volume)
         {
-            AudioClip audioClip = get(soundTrack);
+            AudioClip audioClip = Get(soundTrack);
 
             if(audioClip != null)
             {
@@ -78,7 +78,7 @@ namespace DontEatSand
         /// </summary>
         /// <param name="soundTrack"></param>
         /// <param name="position"></param>
-        public void play(SoundTrack soundTrack, Vector3 position)
+        public void Play(SoundTrack soundTrack, Vector3 position)
         {
             play(soundTrack, position, 1.0f);
         }
@@ -95,7 +95,7 @@ namespace DontEatSand
         /// </summary>
         /// <param name="soundTrack"></param>
         /// <returns></returns>
-        private AudioClip get(SoundTrack soundTrack)
+        private AudioClip Get(SoundTrack soundTrack)
         {
             switch (soundTrack)
             {
