@@ -16,15 +16,16 @@ namespace DontEatSand.Entities.Units
     {
         #region Constants
         private const float OFFSET_MAGNITUDE = 5f;
-        private enum Mode { ATTACK, DEFEND }
+        public enum Mode { ATTACK, DEFEND }
 
         #endregion
 
         #region Fields
-        private NavMeshAgent agent;
+        public Mode behaviourMode;
+
+        protected NavMeshAgent agent;
         private Animator anim;
         private BehaviourTree bt;
-        private Mode behaviourMode;
         private SphereCollider aggroSphere;
         #endregion
 
@@ -64,10 +65,10 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         public bool IsEnemySeenFlag
         {
-            get
-            {
+            get; set;
+            /*{
                 return aggroSphere.bounds.Contains(Target.transform.position);
-            }
+            }*/
         }
 
         /// <summary>
@@ -106,15 +107,13 @@ namespace DontEatSand.Entities.Units
 
         public virtual void Attack(Entity target)
         {
-            Target = target;
-            HasOrderFlag = true; // shouldn't be here
-
             //Do the animator thingy
-
-            //Make the target take damage
-            target.Damage(10);
         }
 
+        /// <summary>
+        /// Find the closest target to this unit
+        /// </summary>
+        /// <returns></returns>
         public Entity FindClosestTarget()
         {
             Collider[] targets = Physics.OverlapSphere(this.transform.position, aggroSphere.radius);
@@ -173,6 +172,7 @@ namespace DontEatSand.Entities.Units
                 this.agent = GetComponent<NavMeshAgent>();
                 this.anim = GetComponent<Animator>();
                 this.aggroSphere = GetComponent<SphereCollider>();
+                this.behaviourMode = Mode.DEFEND;
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);

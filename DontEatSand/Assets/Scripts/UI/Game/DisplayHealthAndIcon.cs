@@ -26,7 +26,7 @@ namespace DontEatSand.UI.Game
         {
             if(this.EntityToDisplay)
             {
-                this.greenHealth.GetComponent<Image>().fillAmount = EntityToDisplay.Health / EntityToDisplay.HealthAmount;
+                this.greenHealth.GetComponent<Image>().fillAmount = (float) EntityToDisplay.Health / EntityToDisplay.HealthAmount;
                 GetComponent<Image>().sprite = EntityToDisplay.Info.Icon;
             }
         }
