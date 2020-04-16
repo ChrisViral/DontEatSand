@@ -160,7 +160,17 @@ namespace DontEatSand.Entities.Units
         public int CompareTo(Unit other)
         {
             int c = this.Info.Type.CompareTo(other.Info.Type);
-            return c == 0 ? StringComparer.InvariantCulture.Compare(this.EntityName, other.EntityName) : c;
+            if (c == 0)
+            {
+                c = StringComparer.InvariantCulture.Compare(this.EntityName, other.EntityName);
+                if (c == 0)
+                {
+                    c = other.Health.CompareTo(this.Health);
+                    return c == 0 ? 1 : c;
+                }
+            }
+
+            return c;
         }
 
         /// <summary>
