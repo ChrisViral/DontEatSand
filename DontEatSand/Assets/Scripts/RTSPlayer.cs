@@ -44,7 +44,7 @@ namespace DontEatSand
         private readonly LinkedList<Unit> units = new LinkedList<Unit>();
         private Vector2 startPoint, endPoint;
         private HashSet<Unit> inBox = new HashSet<Unit>();
-        private float rightClickTime;
+        private float clickTime;
         private bool dragging;
         #endregion
 
@@ -159,6 +159,11 @@ namespace DontEatSand
         /// </summary>
         public SortedSet<Unit> SelectedUnits { get; private set; } = new SortedSet<Unit>();
 
+        /// <summary>
+        /// Average position of the currently selected units
+        /// </summary>
+        public Vector3 AveragePosition { get; private set; }
+
         private SelectionType selectionType;
         /// <summary>
         /// Type of screen selection for this player
@@ -236,12 +241,13 @@ namespace DontEatSand
         /// Selects units and other objects from the screen using the mouse
         /// </summary>
         /// <param name="currentlyHovered">The currently hovered selectable object</param>
-        private void SelectFromScreen(ISelectable currentlyHovered)
+        /// <param name="overUI">If the mouse is currently hovering the UI</param>
+        private void SelectFromScreen(ISelectable currentlyHovered, bool overUI)
         {
             if (Input.GetMouseButtonDown(0))
             {
                 //Make sure not hovering UI
-                this.dragging = !EventSystem.current.IsPointerOverGameObject();
+                this.dragging = !overUI;
                 if (this.dragging)
                 {
                     //Begin drag
@@ -367,12 +373,21 @@ namespace DontEatSand
         /// <param name="currentlyHovered">The currently hovered selectable object</param>
         private void ProcessActions(ISelectable currentlyHovered)
         {
-            //Get mouse original time down
-            if (Input.GetMouseButtonDown(1)) { this.rightClickTime = Time.time; }
-            else if (Input.GetMouseButtonUp(1) && Time.time - this.rightClickTime <= CLICK_TIME && this.SelectedUnits.Count > 0)
+            if (Input.GetMouseButtonDown(1))
             {
-                //Fire the action request
-                GameEvents.OnActionRequested.Invoke(this.camera.MouseWorldPosition, currentlyHovered);
+                if (Time.time - this.clickTime <= CLICK_TIME)
+                {
+                    Vector3? pos = this.camera.MouseWorldPosition;
+                    if (pos != null)
+                    {
+                        Vector3 destination = pos.Value;
+                        this.Log($"Command requested at ({destination.x:F2}, {destination.y:F2}, {destination.z:F2})");
+                        GameEvents.OnActionRequested.Invoke(destination, currentlyHovered);
+                        this.clickTime = 0f;
+                    }
+                    else { this.clickTime = Time.time; }
+                }
+                else { this.clickTime = Time.time; }
             }
         }
         #endregion
@@ -406,10 +421,27 @@ namespace DontEatSand
         {
             //Get currently hovered object
             ISelectable currentlyHovered = this.camera.Selected;
+            bool overUI = EventSystem.current.IsPointerOverGameObject();
             //Do selection
-            SelectFromScreen(currentlyHovered);
-            //Do movement
-            ProcessActions(currentlyHovered);
+            SelectFromScreen(currentlyHovered, overUI);
+
+            //Calculate average position
+            this.AveragePosition = Vector3.zero;
+            if (this.SelectedUnits.Count > 0)
+            {
+                foreach (Unit unit in this.SelectedUnits)
+                {
+                    this.AveragePosition += unit.transform.position;
+                }
+
+                this.AveragePosition /= this.SelectedUnits.Count;
+            }
+
+            if (!overUI)
+            {
+                //Do movement
+                ProcessActions(currentlyHovered);
+            }
         }
 
         private void OnDestroy()

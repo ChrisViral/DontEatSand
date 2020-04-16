@@ -188,9 +188,16 @@ namespace RTSCam
         }
 
         /// <summary>
-        /// Position of the mouse in the 3D world
+        /// Position of the mouse in the 3D world, or null if nothing was found
         /// </summary>
-        public Vector3 MouseWorldPosition => this.camera.ScreenToWorldPoint(MouseInput);
+        public Vector3? MouseWorldPosition
+        {
+            get
+            {
+                Ray camRay = this.camera.ScreenPointToRay(MouseInput);
+                return Physics.Raycast(camRay, out RaycastHit hit, 400f, this.clickMask, QueryTriggerInteraction.Ignore) ? (Vector3?)hit.point : null;
+            }
+        }
 
         /// <summary>
         /// Returns the Selectable object under the mouse cursor
