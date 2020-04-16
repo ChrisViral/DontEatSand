@@ -43,6 +43,8 @@ namespace DontEatSand.Entities.Units
         #region Fields
         [SerializeField]
         private Image healthbar;
+        [SerializeField]
+        private Color highHealth = Color.green, lowHealth = Color.red;
         public Mode behaviourMode;
         protected NavMeshAgent agent;
         protected Animator animator;
@@ -269,7 +271,9 @@ namespace DontEatSand.Entities.Units
             //Set healthbar
             if (this.healthbar.gameObject.activeInHierarchy)
             {
-                this.healthbar.fillAmount = Mathf.SmoothDamp(this.healthbar.fillAmount, this.HealthAmount, ref this.smoothSpeed, 0.2f);
+                float fill = Mathf.SmoothDamp(this.healthbar.fillAmount, this.HealthAmount, ref this.smoothSpeed, 0.2f);
+                this.healthbar.fillAmount = fill;
+                this.healthbar.color = Color.Lerp(this.lowHealth, this.highHealth, fill);
             }
         }
 
