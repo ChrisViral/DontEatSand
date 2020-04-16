@@ -1,7 +1,7 @@
 [
   {
-    "Name": "Melee",
-    "Description": "yeet",
+    "Name": "Soldier",
+    "Description": "Melee range. Kinda stupid. Useful cannon fodder.",
     "Type": "COMBAT",
     "SandCost": 100,
     "CandyCost": 5,
@@ -9,8 +9,8 @@
     "Icon": "icon_melee"
   },
   {
-    "Name": "Ranged",
-    "Description": "yote",
+    "Name": "Ranger",
+    "Description": "Long range. Good at throwing stuff.",
     "Type": "RANGED",
     "SandCost": 120,
     "CandyCost": 5,
@@ -18,8 +18,8 @@
     "Icon": "icon_ranged"
   },
   {
-    "Name": "Tank",
-    "Description": "oh",
+    "Name": "Bully",
+    "Description": "Melee range. Just wants to steal lunch money. Can be tricked into helping.",
     "Type": "COMBAT",
     "SandCost": 200,
     "CandyCost": 8,
@@ -28,7 +28,7 @@
   },
   {
     "Name": "Healer",
-    "Description": "eh",
+    "Description": "Area of Effect. Can't fight, but keeps kids alive longer to suffer more.",
     "Type": "SUPPORT",
     "SandCost": 150,
     "CandyCost": 10,
@@ -36,8 +36,8 @@
     "Icon": "icon_healer"
   },
   {
-    "Name": "Scout",
-    "Description": "oh ah ah",
+    "Name": "Snitch",
+    "Description": "Can't fight, but good at snooping. Keep them busy so they don't report you.",
     "Type": "SUPPORT",
     "SandCost": 150,
     "CandyCost": 10,
@@ -46,7 +46,7 @@
   },
   {
     "Name": "Farmer",
-    "Description": "ting tang",
+    "Description": "Can't fight, but has a shovel to collect sand. Possibly useful.",
     "Type": "WORKER",
     "SandCost": 50,
     "CandyCost": 2,
@@ -55,7 +55,7 @@
   },
   {
     "Name": "Candy Factory",
-    "Description": "walla walla bing bang",
+    "Description": "Place to store candy you bribe your kid army with.",
     "Type": "BUILDING",
     "SandCost": 50,
     "CandyCost": 0,
@@ -64,11 +64,11 @@
   },
   {
     "Name": "Castle",
-    "Description": "big ol' thing",
+    "Description": "",
     "Type": "BUILDING",
     "SandCost": 0,
     "CandyCost": 0,
     "BuildTime": 0,
-    "Icon": "icon_castle"
+    "Icon": ""
   }
 ]
