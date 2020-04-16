@@ -54,7 +54,6 @@ namespace DontEatSand.Entities.Units
         protected NavMeshAgent agent;
         protected Animator animator;
         private BehaviourTree bt;
-        private SphereCollider aggroSphere;
         private LayerMask unitsMask;
         private float smoothSpeed;
         private List<Unit> enemyUnitsInRange;
@@ -88,10 +87,11 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         public bool HasOrderFlag
         {
-            //Can't be setting to the property and returning an expression
-            //get => this.agent.pathStatus != NavMeshPathStatus.PathComplete;
-            get;
-            set;
+            get
+            {
+                // not headed anywhere and does not have a target
+                return Vector3.Distance(this.Position, Target.Position) > 1.0f && Target == null;
+            }
         }
 
         /// <summary>
@@ -172,7 +172,6 @@ namespace DontEatSand.Entities.Units
         /// <param name="averagePosition">Average position of cluster</param>
         public void MoveUnit(Vector3 dest, Vector3 averagePosition)
         {
-            this.HasOrderFlag = true;
 
             Vector3 positionDiff = this.transform.position - averagePosition;
             if (positionDiff.magnitude > OFFSET_MAGNITUDE)
@@ -304,7 +303,6 @@ namespace DontEatSand.Entities.Units
             {
                 this.agent = GetComponent<NavMeshAgent>();
                 this.animator = GetComponent<Animator>();
-                this.aggroSphere = GetComponent<SphereCollider>();
                 this.unitsMask = LayerUtils.GetMask(Layers.VISIBLE_UNIT);
                 this.behaviourMode = Mode.DEFEND;
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
@@ -427,22 +425,7 @@ namespace DontEatSand.Entities.Units
                         yield return BTNodeResult.NOT_FINISHED;
                     }
                 }
-            }
-
-            if(!IsEnemySeen())
-            {
-                /*if(Vector3.Distance(originalPos, this.transform.position) > this.aggroSphere.radius)
-                {
-                    agent.SetDestination(originalPos);
-                }*/
-            }
-
-            if(IsUnderAttack())
-            {
-                this.Target = FindClosestTarget();
-                this.agent.SetDestination(this.Target.Position);
-                Attack(this.Target);
-                yield return BTNodeResult.NOT_FINISHED;
+                // should return to original position if wanders too far off
             }
 
 

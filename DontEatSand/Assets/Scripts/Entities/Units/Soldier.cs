@@ -6,10 +6,6 @@ namespace DontEatSand.Entities.Units
 {
     public class Soldier : Unit
     {
-        private float attackStart = 0f;
-        private float attackInterval = 1.0f;
-        
-
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
             base.ProcessCommand(destination, target);
@@ -22,10 +18,9 @@ namespace DontEatSand.Entities.Units
                     this.HasOrderFlag = true;
                     this.Target = entity;
                 }
-
-                if(target == null) // if unit or building gets destroyed
+                else // clicked on the ground somewhere
                 {
-                    this.HasOrderFlag = false;
+                    this.Target = null;
                 }
             }
         }
