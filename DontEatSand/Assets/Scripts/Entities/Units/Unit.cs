@@ -5,6 +5,7 @@ using DontEatSand.Utils.BehaviourTrees;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
 namespace DontEatSand.Entities.Units
@@ -40,12 +41,15 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Fields
+        [SerializeField]
+        private Image healthbar;
         public Mode behaviourMode;
         protected NavMeshAgent agent;
         protected Animator animator;
         private BehaviourTree bt;
         private SphereCollider aggroSphere;
         private LayerMask unitsMask;
+        private float smoothSpeed;
         #endregion
 
         #region Properties
@@ -93,6 +97,40 @@ namespace DontEatSand.Entities.Units
         /// Flag dictating if the enemy is attacking this unit
         /// </summary>
         public bool IsUnderAttackFlag { get; set; } //needs to be set
+
+        /// <summary>
+        /// If the unit is currently selected or not
+        /// </summary>
+        public override bool IsSelected
+        {
+            get => base.IsSelected;
+            set
+            {
+                base.IsSelected = value;
+                //Change activation of healthbar if not hovered or selected
+                if (!this.IsHovered)
+                {
+                    this.healthbar.gameObject.SetActive(value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// If the unit is currently hovered or not
+        /// </summary>
+        public override bool IsHovered
+        {
+            get => base.IsHovered;
+            set
+            {
+                base.IsHovered = value;
+                //Change activation of healthbar if not hovered or selected
+                if (!this.IsSelected)
+                {
+                    this.healthbar.gameObject.SetActive(value);
+                }
+            }
+        }
         #endregion
 
         #region Methods
@@ -197,6 +235,7 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         protected override void OnAwake()
         {
+            this.healthbar.gameObject.SetActive(false);
             if (this.IsControllable())
             {
                 this.agent = GetComponent<NavMeshAgent>();
@@ -227,6 +266,11 @@ namespace DontEatSand.Entities.Units
 
             //Send velocity to animator
             this.animator.SetFloat(velocityParam, this.agent.velocity.magnitude);
+            //Set healthbar
+            if (this.healthbar.gameObject.activeInHierarchy)
+            {
+                this.healthbar.fillAmount = Mathf.SmoothDamp(this.healthbar.fillAmount, this.HealthAmount, ref this.smoothSpeed, 0.2f);
+            }
         }
 
         private void OnDestroy()

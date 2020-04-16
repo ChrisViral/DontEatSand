@@ -62,7 +62,7 @@ namespace DontEatSand.Entities
         /// <summary>
         /// If this Entity is currently selected or not
         /// </summary>
-        public bool IsSelected
+        public virtual bool IsSelected
         {
             get => this.isSelected;
             set
@@ -98,7 +98,7 @@ namespace DontEatSand.Entities
         /// <summary>
         /// If this Entity is currently being hovered or not
         /// </summary>
-        public bool IsHovered
+        public virtual bool IsHovered
         {
             get => this.isHovered;
             set
