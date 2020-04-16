@@ -154,7 +154,6 @@ namespace DontEatSand.Entities.Units
             if (positionDiff.magnitude > OFFSET_MAGNITUDE)
             {
                 positionDiff = Vector3.zero;
-                this.HasOrderFlag = false;
             }
 
             this.Destination = dest + positionDiff;
