@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using DontEatSand.Entities.Units;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace DontEatSand.UI.Game
 {
@@ -9,50 +8,36 @@ namespace DontEatSand.UI.Game
     {
         #region Fields
         [SerializeField]
-        private GameObject buttonPrefab;
-
-        private readonly LinkedList<(UnitInfo info, GameObject icon)> unitQueue = new LinkedList<(UnitInfo, GameObject)>();
-        private float buildTimer;
+        private QueueIcon buttonPrefab;
+        private readonly LinkedList<QueueIcon> unitQueue = new LinkedList<QueueIcon>();
         #endregion
 
         #region Methods
         private void OnUnitAddedToQueue(UnitInfo unitInfo)
         {
-            GameObject newUnit = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.transform);
-
-            newUnit.GetComponent<Image>().sprite = unitInfo.Icon;
-            newUnit.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
-            newUnit.GetComponent<Button>().onClick.AddListener(() => RemoveUnitFromQueue(newUnit));
-
+            QueueIcon newUnit = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.transform);
+            newUnit.Setup(unitInfo, () => RemoveUnitFromQueue(newUnit));
             // Add the unit to the queue visually
-            this.unitQueue.AddLast((unitInfo, newUnit));
+            this.unitQueue.AddLast(newUnit);
         }
 
         private void OnUnitCreated(Unit unit)
         {
-            LinkedListNode<(UnitInfo, GameObject icon)> toRemove = this.unitQueue.First;
-            this.unitQueue.Remove(toRemove);
-            Destroy(toRemove.Value.icon);
+            Destroy(this.unitQueue.First.Value.gameObject);
+            this.unitQueue.RemoveFirst();
         }
 
-        private void RemoveUnitFromQueue(GameObject iconToRemove)
+        private void RemoveUnitFromQueue(QueueIcon iconToRemove)
         {
-            int count = 0;
-            LinkedListNode<(UnitInfo, GameObject icon)> node = this.unitQueue.First;
-            while(node != null)
+            int i;
+            LinkedListNode<QueueIcon> node = this.unitQueue.First;
+            for (i = 0; node != null && node.Value != iconToRemove; i++)
             {
-                var nextNode = node.Next;
-                if (node.Value.icon == iconToRemove)
-                {
-                    this.unitQueue.Remove(node);
-                    Destroy(node.Value.icon);
-                    break;
-                }
-                count++;
-                node = nextNode;
+                node = node.Next;
             }
 
-            GameEvents.OnUnitRemovedFromQueue.Invoke(count);
+            Destroy(node?.Value.gameObject);
+            GameEvents.OnUnitRemovedFromQueue.Invoke(i);
         }
         #endregion
 
@@ -65,13 +50,18 @@ namespace DontEatSand.UI.Game
 
         private void Update()
         {
-            LinkedListNode<(UnitInfo info, GameObject icon)> currentlyBuilding = this.unitQueue.First;
-            if(currentlyBuilding != null)
+            //Set build progress
+            LinkedListNode<QueueIcon> top = this.unitQueue.First;
+            if (top != null)
             {
-                 float timeToBuild = currentlyBuilding.Value.info.BuildTime;
-                 Image icon = currentlyBuilding.Value.icon.transform.GetChild(0).GetComponent<Image>();
-                 icon.fillAmount -= Time.deltaTime / timeToBuild;
+                top.Value.FillAmount = RTSPlayer.Instance.Castle.BuildProgress;
             }
+        }
+
+        private void OnDestroy()
+        {
+            GameEvents.OnUnitAddedToQueue.RemoveListener(OnUnitAddedToQueue);
+            GameEvents.OnUnitCreated.RemoveListener(OnUnitCreated);
         }
         #endregion
 

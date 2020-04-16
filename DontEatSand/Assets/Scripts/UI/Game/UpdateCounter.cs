@@ -25,6 +25,7 @@ namespace DontEatSand.UI.Game
             this.maxCandyCount += amount;
             this.candyCounter.text = $"{this.usedCandyCount}/{this.maxCandyCount}";
         }
+
         /// <summary>
         /// Change in sand amount
         /// </summary>

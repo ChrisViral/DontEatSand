@@ -139,10 +139,24 @@ namespace DontEatSand.Entities.Buildings
             {
                 //ReSharper disable PossibleNullReferenceException
                 //Traverse list to find node
-                LinkedListNode<Unit> toRemove = this.buildQueue.First.Next;
-                for (int i = 1; i < index; i++)
+                LinkedListNode<Unit> toRemove;
+                if (index > this.buildQueue.Count / 2)
                 {
-                    toRemove = toRemove.Next;
+                    //If closer to end go backwards
+                    toRemove = this.buildQueue.Last.Previous;
+                    for (int i = this.buildQueue.Count - 2; i > index; i++)
+                    {
+                        toRemove = toRemove.Previous;
+                    }
+                }
+                else
+                {
+                    //Else go forwards
+                    toRemove = this.buildQueue.First.Next;
+                    for (int i = 1; i < index; i++)
+                    {
+                        toRemove = toRemove.Next;
+                    }
                 }
 
                 removed = toRemove.Value.Info;

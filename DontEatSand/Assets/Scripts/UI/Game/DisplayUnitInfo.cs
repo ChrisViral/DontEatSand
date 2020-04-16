@@ -16,7 +16,7 @@ namespace DontEatSand.UI.Game
     {
         #region Fields
         [SerializeField]
-        private GameObject buttonPrefab;
+        private DisplayHealthAndIcon buttonPrefab;
         [SerializeField]
         private GameObject multiUnitParent;
         [SerializeField]
@@ -26,7 +26,8 @@ namespace DontEatSand.UI.Game
         [SerializeField]
         private Text title, description;
         [SerializeField]
-        private DisplayHealthAndIcon health;
+        private DisplayHealthAndIcon icon;
+        private readonly List<DisplayHealthAndIcon> displayed = new List<DisplayHealthAndIcon>(16);
         #endregion
 
         #region Methods
@@ -79,7 +80,7 @@ namespace DontEatSand.UI.Game
             this.singleUnitParent.SetActive(true);
             this.title.text = selected.Info.Name;
             this.description.text = selected.Info.Description;
-            this.health.Selected = selected;
+            this.icon.Selected = selected;
         }
 
         /// <summary>
@@ -91,24 +92,33 @@ namespace DontEatSand.UI.Game
             this.multiUnitParent.SetActive(true);
             this.singleUnitParent.SetActive(false);
 
-            // First, clear all the children in the parent transform
-            foreach(Transform child in this.multiUnitParent.transform)
+            //Remove extra icons
+            if (units.Count < this.displayed.Count)
             {
-                Destroy(child.gameObject);
+                int i = this.displayed.Count - 1;
+                while (units.Count != this.displayed.Count)
+                {
+                    DisplayHealthAndIcon toRemove = this.displayed[i];
+                    Destroy(toRemove.gameObject);
+                    this.displayed.RemoveAt(i);
+                }
             }
-
-            // Then, create a new list
-            List<GameObject> iconsList = new List<GameObject>();
-
-            // Populate the list with buttons
-            foreach(Unit unit in units)
+            //Add missing icons
+            else if (units.Count > this.displayed.Count)
             {
-                GameObject newIcon = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform);
-                //newIcon.GetComponent<Image>().sprite = unit.Info.Icon;
-                newIcon.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
-                newIcon.GetComponent<Button>().onClick.AddListener(() => DisplaySingleObject(unit));
-                newIcon.GetComponent<DisplayHealthAndIcon>().Selected = unit;
-                iconsList.Add(newIcon);
+                while (units.Count != this.displayed.Count)
+                {
+                    this.displayed.Add(Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.multiUnitParent.transform));
+                }
+            }
+            //Setup icons
+            if (units.Count != 0)
+            {
+                int i = 0;
+                foreach (Unit u in units)
+                {
+                    this.displayed[i++].Selected = u;
+                }
             }
         }
         #endregion
