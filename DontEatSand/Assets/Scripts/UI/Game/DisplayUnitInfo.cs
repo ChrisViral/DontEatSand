@@ -51,10 +51,15 @@ namespace DontEatSand.UI.Game
             
             if(selection == SelectionType.OTHER)
             {
+                
                 if(RTSPlayer.Instance.Selected is Castle castle && castle.IsControllable())
                 {
                     // Display queue
                     queueParent.SetActive(true);
+                }
+                else
+                {
+                    queueParent.SetActive(false);
                 }
                 Entity selected = (Entity) RTSPlayer.Instance.Selected;
                 DisplaySelectedBuildingInfo(selected);
