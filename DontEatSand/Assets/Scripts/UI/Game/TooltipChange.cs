@@ -21,28 +21,20 @@ namespace DontEatSand.UI.Game
         {
             UnitInfo unitInfo = UnitDatabase.GetInfo(key);
             this.title.text = unitInfo.Name;
-            this.description.text = string.Format("Sand: {0}\nCandy: {1}\n{2}", unitInfo.SandCost, unitInfo.CandyCost, unitInfo.Description);
+            this.description.text = $"Sand: {unitInfo.SandCost}\nCandy: {unitInfo.CandyCost}\n{unitInfo.Description}";
         }
 
         /// <summary>
         /// Displays a custom title
         /// </summary>
-        /// <param name="title"></param>
-        /// <param name="description"></param>
-        public void CustomTitle(string title)
-        {
-            this.title.text = title;
-        }
+        /// <param name="text">Title to display</param>
+        public void CustomTitle(string text) => this.title.text = text;
 
         /// <summary>
         /// Displays a custom description
         /// </summary>
-        /// <param name="desc"></param>
-        public void CustomDescription(string desc)
-        {
-            this.description.text = desc;
-        }
-
+        /// <param name="desc">Description to display</param>
+        public void CustomDescription(string desc) => this.description.text = desc;
         #endregion
     }
 }

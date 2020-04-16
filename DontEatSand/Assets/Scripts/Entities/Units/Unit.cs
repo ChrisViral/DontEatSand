@@ -1,4 +1,5 @@
-﻿using DontEatSand.Extensions;
+﻿using System;
+using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace DontEatSand.Entities.Units
     /// Unit base class
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
-    public class Unit : Entity
+    public class Unit : Entity, IComparable<Unit>
     {
         #region Constants
         private const float OFFSET_MAGNITUDE = 5f;
@@ -74,6 +75,13 @@ namespace DontEatSand.Entities.Units
             }
 
             this.Destination = dest + positionDiff;
+        }
+
+        /// <inheritdoc cref="IComparable{T}.CompareTo"/>
+        public int CompareTo(Unit other)
+        {
+            int c = this.Info.Type.CompareTo(other.Info.Type);
+            return c == 0 ? StringComparer.InvariantCulture.Compare(this.EntityName, other.EntityName) : c;
         }
         #endregion
 

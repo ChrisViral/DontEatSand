@@ -362,9 +362,6 @@ namespace RTSCam
 
         private void LateUpdate()
         {
-            //Don't move camera while interacting with UI
-            if (EventSystem.current.IsPointerOverGameObject()) { return; }
-
             if (this.FollowingTarget) { FollowTarget(); }
 
             if (Move())

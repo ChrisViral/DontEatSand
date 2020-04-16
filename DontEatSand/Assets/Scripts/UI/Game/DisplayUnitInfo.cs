@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using DontEatSand.Entities.Units;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,20 +39,20 @@ namespace DontEatSand.UI.Game
                 // Hide queue
                 queueParent.SetActive(false);
 
-                List<Unit> units = RTSPlayer.Instance.SelectedUnits;
+                SortedSet<Unit> units = RTSPlayer.Instance.SelectedUnits;
                 if(units.Count > 1)
                 {
                     DisplayMultipleUnitInfo(units);
                 }
                 else if (units.Count == 1)
                 {
-                    DisplaySingleUnitInfo(units[0]);
+                    DisplaySingleUnitInfo(units.First());
                 }
             }
-            
+
             if(selection == SelectionType.OTHER)
             {
-                
+
                 if(RTSPlayer.Instance.Selected is Castle castle && castle.IsControllable())
                 {
                     // Display queue
@@ -105,11 +106,11 @@ namespace DontEatSand.UI.Game
         /// Given a list of units, display their information in the management menu
         /// </summary>
         /// <param name="units"></param>
-        public void DisplayMultipleUnitInfo(List<Unit> units)
+        public void DisplayMultipleUnitInfo(SortedSet<Unit> units)
         {
             this.multiUnitParent.SetActive(true);
             this.singleUnitParent.SetActive(false);
-            
+
             // First, clear all the children in the parent transform
             foreach(Transform child in multiUnitParent.transform)
             {

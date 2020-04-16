@@ -16,7 +16,6 @@ namespace DontEatSand.UI.Game
             entity = GetComponentInParent<Entity>();
             healthFill = GetComponent<Image>();
             healthFill.enabled = false;
-            entity.IsSelected = true;
         }
 
         private void Update()

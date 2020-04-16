@@ -6,6 +6,7 @@ using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
 using RTSCam;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace DontEatSand
 {
@@ -44,6 +45,7 @@ namespace DontEatSand
         private Vector2 startPoint, endPoint;
         private HashSet<Unit> inBox = new HashSet<Unit>();
         private float rightClickTime;
+        private bool dragging;
         #endregion
 
         #region Properties
@@ -155,7 +157,7 @@ namespace DontEatSand
         /// <summary>
         /// This currently selected grouped objects
         /// </summary>
-        public List<Unit> SelectedUnits { get; private set; } = new List<Unit>();
+        public SortedSet<Unit> SelectedUnits { get; private set; } = new SortedSet<Unit>();
 
         private SelectionType selectionType;
         /// <summary>
@@ -168,6 +170,7 @@ namespace DontEatSand
             {
                 this.selectionType = value;
                 GameEvents.OnSelectionChanged.Invoke(value);
+                this.Log(value);
             }
         }
 
@@ -225,6 +228,7 @@ namespace DontEatSand
             if (unit.IsControllable())
             {
                 this.units.Remove(unit);
+                this.SelectedUnits.Remove(unit);
             }
         }
 
@@ -236,73 +240,102 @@ namespace DontEatSand
         {
             if (Input.GetMouseButtonDown(0))
             {
-                //Begin drag
-                this.startPoint = this.endPoint = Input.mousePosition;
-                this.selection.gameObject.SetActive(true);
-                this.selection.anchoredPosition = this.selection.sizeDelta = Vector2.zero;
+                //Make sure not hovering UI
+                this.dragging = !EventSystem.current.IsPointerOverGameObject();
+                if (this.dragging)
+                {
+                    //Begin drag
+                    this.startPoint = this.endPoint = Input.mousePosition;
+                    this.selection.gameObject.SetActive(true);
+                    this.selection.anchoredPosition = this.selection.sizeDelta = Vector2.zero;
+                }
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                //End drag
-                this.selection.gameObject.SetActive(false);
-                //Get all selectable units
-                HashSet<Unit> withinRect = new HashSet<Unit>(this.camera.GetWithinRect(this.Selection, this.units));
-
-                //If there are non, check for single click
-                if (withinRect.Count == 0 && currentlyHovered is Unit unit && unit.IsControllable())
+                //Reset dragging flag
+                if (!this.dragging) { this.dragging = false; }
+                else
                 {
-                    withinRect.Add(unit);
-                }
+                    //End drag
+                    this.selection.gameObject.SetActive(false);
+                    //Get all selectable units
+                    HashSet<Unit> withinRect = new HashSet<Unit>(this.camera.GetWithinRect(this.Selection, this.units));
 
-                //If multiple friendly units selected
-                if (withinRect.Count != 0)
-                {
-                    //Make sure to mark new ones as selected
-                    withinRect.ForEach(u => u.IsSelected = true);
-
-                    //If pressing ctrl, add to list
-                    if (Input.GetKey(KeyCode.LeftControl))
+                    //If there are non, check for single click
+                    if (withinRect.Count == 0 && currentlyHovered is Unit unit && unit.IsControllable())
                     {
-                        //Make sure to ignore already selected units
-                        withinRect.ExceptWith(this.SelectedUnits);
-                        this.SelectedUnits.AddRange(withinRect);
-                        this.SelectionType = SelectionType.UNITS;
-                    }
-                    else
-                    {
-                        //Otherwise switch out and clear previous
-                        this.SelectedUnits.Where(s => !withinRect.Contains(s)).ForEach(u => u.IsSelected = false);
-                        this.SelectedUnits = new List<Unit>(withinRect);
-                        this.SelectionType = SelectionType.UNITS;
+                        withinRect.Add(unit);
                     }
 
-                    //Clear out single selected if necessary
-                    if (this.Selected != null)
+                    //If multiple friendly units selected
+                    if (withinRect.Count != 0)
                     {
-                        this.Selected = null;
-                    }
+                        //Make sure to mark new ones as selected
+                        withinRect.ForEach(u => u.IsSelected = true);
 
-                    //Clear out hovered box
-                    foreach (Unit u in this.inBox)
-                    {
-                        u.IsHovered = false;
+                        //If pressing ctrl, add to list
+                        if (Input.GetKey(KeyCode.LeftControl))
+                        {
+                            //Make sure to ignore already selected units
+                            withinRect.ExceptWith(this.SelectedUnits);
+                            if (withinRect.Count > 0)
+                            {
+                                withinRect.ForEach(u => this.SelectedUnits.Add(u));
+                                this.SelectionType = SelectionType.UNITS;
+                            }
+                        }
+                        else
+                        {
+                            //Otherwise switch out and clear previous
+                            if (!withinRect.SetEquals(this.SelectedUnits))
+                            {
+                                this.SelectedUnits.Where(s => !withinRect.Contains(s)).ForEach(u => u.IsSelected = false);
+                                this.SelectedUnits = new SortedSet<Unit>(withinRect);
+                                this.SelectionType = SelectionType.UNITS;
+                            }
+                        }
+
+                        //Clear out single selected if necessary
+                        if (this.Selected != null)
+                        {
+                            this.Selected = null;
+                        }
+
+                        //Clear out hovered box
+                        foreach (Unit u in this.inBox)
+                        {
+                            u.IsHovered = false;
+                        }
                     }
-                }
-                //Deselection if no units are selected, or control isn't held
-                else if (this.SelectedUnits.Count == 0 || !Input.GetKey(KeyCode.LeftControl))
-                {
-                    //Else, single selectable object
-                    this.Selected = currentlyHovered;
-                    this.SelectionType = currentlyHovered == null ? SelectionType.NONE : SelectionType.OTHER;
-                    //Clear out group selected if necessary
-                    if (this.SelectedUnits.Count > 0)
+                    //Deselection if no units are selected, or control isn't held
+                    else if (this.SelectedUnits.Count == 0 || !Input.GetKey(KeyCode.LeftControl))
                     {
-                        this.SelectedUnits.ForEach(u => u.IsSelected = false);
-                        this.SelectedUnits.Clear();
+                        bool selectionChanged = false;
+
+                        //Else, single selectable object
+                        if (this.Selected != currentlyHovered)
+                        {
+                            this.Selected = currentlyHovered;
+                            selectionChanged = true;
+                        }
+
+                        //Clear out group selected if necessary
+                        if (this.SelectedUnits.Count > 0)
+                        {
+                            this.SelectedUnits.ForEach(u => u.IsSelected = false);
+                            this.SelectedUnits.Clear();
+                            selectionChanged = true;
+                        }
+
+                        //Update selection
+                        if (selectionChanged)
+                        {
+                            this.SelectionType = currentlyHovered == null ? SelectionType.NONE : SelectionType.OTHER;
+                        }
                     }
                 }
             }
-            else if (Input.GetMouseButton(0))
+            else if (Input.GetMouseButton(0) && this.dragging)
             {
                 //Update drag rect
                 this.endPoint = Input.mousePosition;

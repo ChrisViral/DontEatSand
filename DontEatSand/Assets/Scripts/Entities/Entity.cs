@@ -171,8 +171,6 @@ namespace DontEatSand.Entities
 
             //Setup selection indicator
             this.activeColour = this.IsControllable() ? this.selectedColour : this.enemyColour;
-            this.selectionIndicator.material.color = this.activeColour;
-            this.selectionIndicator.gameObject.SetActive(false);
 
             //If controllable, destroy the discoverable component
             if (this.IsControllable())
