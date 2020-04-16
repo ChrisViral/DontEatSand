@@ -30,6 +30,8 @@ namespace DontEatSand.Entities.Units
         {
             if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
             {
+                base.Attack(target);
+                
                 target.Damage(10);
                 if(target is Unit unit) // attacking a unit
                 {
