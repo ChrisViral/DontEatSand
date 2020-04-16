@@ -39,11 +39,7 @@ namespace DontEatSand.Base
         #endregion
 
         #region Functions
-        private void Start()
-        {
-            this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
-            this.Visible = false;
-        }
+        private void Start() => this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
 
         private void OnTriggerEnter(Collider other)
         {

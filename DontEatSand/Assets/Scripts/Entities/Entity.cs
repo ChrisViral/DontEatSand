@@ -161,6 +161,11 @@ namespace DontEatSand.Entities
         /// Awake function, use this instead of Awake() to avoid overriding default behaviour
         /// </summary>
         protected virtual void OnAwake() { }
+
+        /// <summary>
+        /// Start function, use this instead of Start() to avoid overriding default behaviour
+        /// </summary>
+        protected virtual void OnStart() { }
         #endregion
 
         #region Functions
@@ -169,15 +174,26 @@ namespace DontEatSand.Entities
             this.Rigidbody = GetComponent<Rigidbody>();
             this.Health = this.maxHealth;
 
+            OnAwake();
+        }
+
+        private void Start()
+        {
             //Setup selection indicator
             this.activeColour = this.IsControllable() ? this.selectedColour : this.enemyColour;
 
             //If controllable, destroy the discoverable component
+            Discoverable discoverable = GetComponent<Discoverable>();
             if (this.IsControllable())
             {
-                Destroy(GetComponent<Discoverable>());
+                Destroy(discoverable);
             }
-            OnAwake();
+            else
+            {
+                discoverable.Visible = false;
+            }
+
+            OnStart();
         }
         #endregion
     }

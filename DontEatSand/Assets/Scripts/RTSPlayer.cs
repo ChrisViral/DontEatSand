@@ -429,6 +429,16 @@ namespace DontEatSand
             if (!PhotonNetwork.IsConnected)
             {
                 this.Castle = FindObjectsOfType<Castle>().First(g => g.name == "Sandcastle A");
+                //Testing with units on map
+                foreach (Unit u in FindObjectsOfType<Unit>())
+                {
+                    this.units.AddLast(u);
+                }
+            }
+            else
+            {
+                //Disable when connected
+                this.enabled = false;
             }
 
             //Event registering
@@ -437,14 +447,15 @@ namespace DontEatSand
             GameEvents.OnCandyChanged.AddListener(OnCandyChanged);
             GameEvents.OnUnitCreated.AddListener(OnUnitCreated);
             GameEvents.OnUnitDestroyed.AddListener(OnUnitDestroyed);
+        }
 
-#if UNITY_EDITOR
-            //Testing with units on map
-            foreach (Unit u in FindObjectsOfType<Unit>())
+        private void Start()
+        {
+            //Get the controllable castle
+            if (PhotonNetwork.IsConnected)
             {
-                this.units.AddLast(u);
+                this.Castle = FindObjectsOfType<Castle>().First(c => c.IsControllable());
             }
-#endif
         }
 
         private void Update()

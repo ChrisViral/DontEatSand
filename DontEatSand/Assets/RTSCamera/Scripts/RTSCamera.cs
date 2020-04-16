@@ -3,6 +3,7 @@ using System.Linq;
 using DontEatSand.Entities;
 using DontEatSand.Entities.Units;
 using DontEatSand.Utils;
+using Photon.Pun;
 using UnityEngine;
 
 //ReSharper disable once CheckNamespace
@@ -355,6 +356,10 @@ namespace RTSCam
         {
             this.camera = GetComponent<Camera>();
             this.clickMask = LayerUtils.GetMask(Layers.DEFAULT, Layers.GROUND, Layers.VISIBLE_UNIT, Layers.VISIBLE_RESOURCE);
+            if (PhotonNetwork.IsConnected)
+            {
+                this.enabled = false;
+            }
         }
 
         private void Start()

@@ -33,5 +33,6 @@ MonoBehaviour:
   - DestroyRpc
   - ReceiveDamage
   - ReceiveHarvested
+  - SetPlayerIndex
   DisableAutoOpenWizard: 1
   ShowSettings: 0
