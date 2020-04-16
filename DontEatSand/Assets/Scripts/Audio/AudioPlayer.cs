@@ -67,9 +67,10 @@ namespace DontEatSand
         {
             AudioClip audioClip = Get(soundTrack);
 
+
             if(audioClip != null)
             {
-                AudioSource.PlayClipAtPoint(audioClip, position, volume);
+                 AudioSource.PlayClipAtPoint(audioClip, position, volume);
             }
         }
 
@@ -80,7 +81,9 @@ namespace DontEatSand
         /// <param name="position"></param>
         public void Play(SoundTrack soundTrack, Vector3 position)
         {
+            Debug.Log(position);
             Play(soundTrack, position, 1.0f);
+            
         }
 
 
@@ -95,7 +98,7 @@ namespace DontEatSand
         /// </summary>
         /// <param name="soundTrack"></param>
         /// <returns></returns>
-        private AudioClip Get(SoundTrack soundTrack)
+        public AudioClip Get(SoundTrack soundTrack)
         {
             switch (soundTrack)
             {

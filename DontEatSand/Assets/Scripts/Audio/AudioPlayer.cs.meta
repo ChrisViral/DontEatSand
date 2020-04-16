@@ -3,7 +3,25 @@ guid: 76d8f29168b2f6c459e1a04f7accf7ab
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - buildingCollapse01: {fileID: 8300000, guid: ad7b1254edc687a4a92cbd8283d04f8a,
+      type: 3}
+  - buildingCollapse02: {fileID: 8300000, guid: 90397f4632e61244c90d8900c4fa1cb9,
+      type: 3}
+  - construction01: {fileID: 8300000, guid: e71c4cc036dd5c543bd34616e49f2eb3, type: 3}
+  - construction02: {fileID: 8300000, guid: 444bc766a4096984ca33822c9738e6ac, type: 3}
+  - femaleTeacherDie01: {fileID: 8300000, guid: ec66ac88f471cf8409230fd13275de40,
+      type: 3}
+  - femaleTeacherDie02: {fileID: 8300000, guid: e91dfb37e9ea9a34ebcf85168658cc16,
+      type: 3}
+  - hitOnBuilding01: {fileID: 8300000, guid: bbcb1de0c7880bb40a64e9ffb771a312, type: 3}
+  - hitOnBuilding02: {fileID: 8300000, guid: dad1d21c8b48c164e90a17907e5b4537, type: 3}
+  - hitOnUnit: {fileID: 8300000, guid: a66a412669df50f45a2228ea5c88d7c1, type: 3}
+  - meleeAttack: {fileID: 8300000, guid: c6a4c203884c70c478e76932109c35db, type: 3}
+  - shootSound: {fileID: 8300000, guid: 99bcdbc9f21ebcd49adef39d85fa936c, type: 3}
+  - unitDie01: {fileID: 8300000, guid: 0ff88b128b5dbd045a186bcd254096b3, type: 3}
+  - unitDie02: {fileID: 8300000, guid: a0d049e2506a87747b772ef9c857202b, type: 3}
+  - unitDie03: {fileID: 8300000, guid: 5f6603dd6ae9a284292bc3d8745879de, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
