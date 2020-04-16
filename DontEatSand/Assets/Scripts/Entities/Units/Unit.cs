@@ -38,6 +38,10 @@ namespace DontEatSand.Entities.Units
         /// Velocity animator parameter hash
         /// </summary>
         private static readonly int velocityParam = Animator.StringToHash("Velocity");
+        /// <summary>
+        /// Animator attack trigger name
+        /// </summary>
+        protected int attackTriggerName = Animator.StringToHash("Attacking");
         #endregion
 
         #region Fields
@@ -179,7 +183,8 @@ namespace DontEatSand.Entities.Units
         /// <param name="target">Target to attack</param>
         public virtual void Attack(Entity target)
         {
-            //Do the animator thingy
+            // Set animator trigger for attacking
+            animator.SetTrigger(attackTriggerName);
         }
 
         /// <summary>
