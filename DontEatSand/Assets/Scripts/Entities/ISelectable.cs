@@ -15,6 +15,11 @@
         /// If this selectable unit is currently being hovered
         /// </summary>
         bool IsHovered { get; set; }
+
+        /// <summary>
+        /// Info related to this selectable unit
+        /// </summary>
+        UnitInfo Info { get; }
         #endregion
     }
 }
