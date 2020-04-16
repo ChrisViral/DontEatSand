@@ -80,7 +80,7 @@ namespace DontEatSand
         /// <param name="position"></param>
         public void Play(SoundTrack soundTrack, Vector3 position)
         {
-            play(soundTrack, position, 1.0f);
+            Play(soundTrack, position, 1.0f);
         }
 
 
