@@ -35,7 +35,7 @@ namespace DontEatSand.Entities.Units
         {
             base.Attack(target);
             PhotonUtils.Instantiate(this.projectile, this.transform.TransformPoint(this.launchLocation)).Target = target;
-            
+
         }
         #endregion
 
@@ -44,7 +44,7 @@ namespace DontEatSand.Entities.Units
         {
             base.OnAwake();
 
-            this.agent.stoppingDistance = 0.5f;
+            this.Agent.stoppingDistance = 0.5f;
             // Set throwing animation trigger
             this.attackTriggerName = Animator.StringToHash("Throwing");
         }
@@ -53,12 +53,12 @@ namespace DontEatSand.Entities.Units
         {
             if(this.CanAttack && this.Target)
             {
-                agent.stoppingDistance = this.attackRange * 0.6f;
+                this.Agent.stoppingDistance = this.attackRange * 0.6f;
                 Attack(this.Target);
             }
             if(!this.Target)
             {
-                agent.stoppingDistance = 0.5f;
+                Agent.stoppingDistance = 0.5f;
             }
         }
         #endregion
