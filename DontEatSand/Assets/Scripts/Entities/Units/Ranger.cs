@@ -8,5 +8,15 @@ namespace DontEatSand.Entities.Units
         [SerializeField]
         private GameObject projectile;
         #endregion
+
+        #region Functions
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            
+            // Set throwing animation trigger
+            attackTriggerName = Animator.StringToHash("Throwing");
+        }
+        #endregion
     }
 }
