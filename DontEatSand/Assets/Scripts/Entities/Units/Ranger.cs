@@ -1,5 +1,6 @@
 ﻿using DontEatSand.Utils;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace DontEatSand.Entities.Units
 {
@@ -27,10 +28,6 @@ namespace DontEatSand.Entities.Units
                 {
                     this.Target = entity;
                 }
-                else // clicked on the ground somewhere
-                {
-                    this.Target = null;
-                }
             }
         }
 
@@ -42,27 +39,12 @@ namespace DontEatSand.Entities.Units
         }
         #endregion
 
-        #region Properties
-        public override bool CanAttack
-        {
-            get
-            {
-                bool attackReady = false;
-                if(Time.time > this.attackStart + this.attackInterval)
-                {
-                    this.attackStart = Time.time;
-                    attackReady = true;
-                }
-                return attackReady && this.Target != null && Vector3.Distance(this.Position, this.Target.Position) < 10.0f;
-            }
-        }
-        #endregion
-
         #region Functions
         protected override void OnAwake()
         {
             base.OnAwake();
 
+            this.agent.stoppingDistance = 0.5f;
             // Set throwing animation trigger
             this.attackTriggerName = Animator.StringToHash("Throwing");
         }
@@ -71,7 +53,12 @@ namespace DontEatSand.Entities.Units
         {
             if(this.CanAttack && this.Target)
             {
+                agent.stoppingDistance = this.attackRange * 0.6f;
                 Attack(this.Target);
+            }
+            if(!this.Target)
+            {
+                agent.stoppingDistance = 0.5f;
             }
         }
         #endregion

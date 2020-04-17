@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <behaviour-tree>
   <sequence>
-      <selector>
+    <selector>
       <sequence>
         <condition name = "has-order"/>
         <leaf name = "follow-order"/>

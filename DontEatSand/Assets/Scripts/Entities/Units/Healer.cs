@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
@@ -97,9 +98,6 @@ namespace DontEatSand.Entities.Units
             Destination = transform.position - FindClosestTarget().transform.position;
         }
 
-        #endregion
-
-        #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
             base.ProcessCommand(destination, target);
@@ -121,7 +119,9 @@ namespace DontEatSand.Entities.Units
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+
+            this.bt = new BehaviourTree(DESUtils.HealerBehaviourTreeLocation, this);
+
             // Set throwing animation trigger
             attackTriggerName = Animator.StringToHash("Throwing");
         }

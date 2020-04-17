@@ -150,7 +150,7 @@ namespace DontEatSand.Entities.Units
             {
                 base.IsHovered = value;
                 //Change activation of healthbar if not hovered or selected
-                if (!this.IsSelected)
+                if (!this.IsSelected && this.gameObject) // bandaid
                 {
                     this.healthbar.gameObject.SetActive(value);
                 }
@@ -331,7 +331,6 @@ namespace DontEatSand.Entities.Units
 
         private void Update()
         {
-            
             if (this.IsControllable())
             {
                 if (this.Target)
@@ -420,12 +419,11 @@ namespace DontEatSand.Entities.Units
 
             if(this.HasOrderFlag)
             {
-                Debug.Log("i got an order sir");
+                Debug.Log("i have an order");
                 yield return BTNodeResult.SUCCESS;
             }
             else
             {
-                Debug.Log("i aint got shit to do sir");
                 yield return BTNodeResult.FAILURE;
             }
 
@@ -439,7 +437,6 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("attack")]
         public BTCoroutine AttackRoutine()
         {
-
             this.Target = FindClosestTarget();
             if (this.Target)
             {
@@ -455,54 +452,6 @@ namespace DontEatSand.Entities.Units
                 yield return BTNodeResult.SUCCESS;
             }
 
-
-            /*if (this.behaviourMode == Mode.ATTACK)
-            {
-                if (IsEnemySeen())
-                {
-                    this.Target = FindClosestTarget();
-                    if (this.Target)
-                    {
-                        this.agent.SetDestination(this.Target.Position);
-                        if (this.CanAttack)
-                        {
-                            Attack(this.Target);
-                            yield return BTNodeResult.NOT_FINISHED;
-                        }
-                    }
-                }
-                else
-                {
-                    yield return BTNodeResult.SUCCESS;
-                }
-            }
-
-            if (this.behaviourMode == Mode.DEFEND)
-            {
-                if(IsUnderAttack())
-                {
-                    this.Target = FindClosestTarget();
-                    //NOTE: This was throwing when out of targets, so I'm guessing this is the way to handle it
-                    if (this.Target)
-                    {
-                        this.agent.SetDestination(this.Target.Position);
-                        if (this.CanAttack)
-                        {
-                            Attack(this.Target);
-                            yield return BTNodeResult.NOT_FINISHED;
-                        }
-                    }
-                    else
-                    {
-                        this.behaviourMode = Mode.DEFEND;
-                    }
-                }
-                else
-                {
-                    yield return BTNodeResult.SUCCESS;
-                }
-                // should return to original position if wanders too far off
-            }*/
             yield return BTNodeResult.FAILURE;
         }
 

@@ -117,7 +117,7 @@ namespace DontEatSand.Entities.Units
             base.OnAwake();
             
             // This probably doesn't work. Need to load farmer behavior tree
-            bt = new BehaviourTree(DESUtils.FarmerBehaviourTreeLocation, this);
+            this.bt = new BehaviourTree(DESUtils.FarmerBehaviourTreeLocation, this);
         }
 
         protected override void OnUpdate()

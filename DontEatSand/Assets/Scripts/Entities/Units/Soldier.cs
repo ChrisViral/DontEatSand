@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
-
 
 namespace DontEatSand.Entities.Units
 {
@@ -47,7 +45,7 @@ namespace DontEatSand.Entities.Units
         protected override void OnUpdate()
         {
             // if target exists and is within range
-            if(CanAttack && Target != null)
+            if(this.CanAttack && this.Target)
             {
                 Attack(Target);
             }
