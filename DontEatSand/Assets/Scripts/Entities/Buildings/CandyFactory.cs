@@ -66,7 +66,7 @@ namespace DontEatSand.Entities.Buildings
             GameEvents.OnCandyMaxChanged.Invoke(this.candyGiven);
 
             //Notify farmer
-            //this.Builder.DoneBuilding();
+            this.Builder.DoneBuilding();
             this.Builder = null;
         }
 
