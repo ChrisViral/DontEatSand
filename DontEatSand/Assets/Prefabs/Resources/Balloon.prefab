@@ -268,4 +268,5 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   damage: 10
-  projectileSound: {fileID: 0}
+  projectileSound: {fileID: 4746045510766085816, guid: d59aeb174fc987b4c891f8c6df5f19f6,
+    type: 3}
