@@ -58,9 +58,10 @@ namespace DontEatSand.Entities.Units
         private BehaviourTree bt;
         private float smoothSpeed;
         private float healthPercent = 1f;
-        private readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
-        private float attackStart;
-        private float attackInterval = 1.0f;
+        protected readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
+        protected float attackStart;
+        protected float attackInterval = 1.0f;
+
         #endregion
 
         #region Properties
@@ -85,18 +86,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Flag dictating if the unit is following an order
         /// </summary>
-        public bool HasOrderFlag
-        {
-            get
-            {
-                // is headed somewhere or has a target
-                return Vector3.Distance(this.Position, this.agent.destination) > 1.0f && this.Target != null;
-            }
-            set
-            {
-
-            }
-        }
+        public bool HasOrderFlag { get; set; }
 
         /// <summary>
         /// Flag dictating if an enemy is within the aggro range
@@ -155,7 +145,8 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// If the unit can currently attack
         /// </summary>
-        protected bool CanAttack {
+        public virtual bool CanAttack
+        {
             get
             {
                 bool attackReady = false;
@@ -264,7 +255,14 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Update function, only called on non-networked units. Use this instead of Update()
         /// </summary>
-        protected virtual void OnUpdate() { }
+        protected virtual void OnUpdate()
+        {
+            if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 0.5f)
+            {
+                // no target and arrived to player-commanded destination
+                HasOrderFlag = false;
+            }
+        }
 
         /// <summary>
         /// OnDestroy function, use this instead of OnDestroy()
@@ -438,12 +436,10 @@ namespace DontEatSand.Entities.Units
                 if(IsUnderAttack())
                 {
                     this.Target = FindClosestTarget();
-                    Debug.Log(this.enemyUnitsInRange.Count);
                     //NOTE: This was throwing when out of targets, so I'm guessing this is the way to handle it
                     if (this.Target)
                     {
                         this.agent.SetDestination(this.Target.Position);
-                        Debug.Log("CanAttack " + this.CanAttack);
                         if (this.CanAttack)
                         {
                             Attack(this.Target);
