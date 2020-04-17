@@ -55,7 +55,7 @@ namespace DontEatSand.Entities.Units
         public Mode behaviourMode;
         protected NavMeshAgent agent;
         protected Animator animator;
-        private BehaviourTree bt;
+        protected BehaviourTree bt;
         private float smoothSpeed;
         private float healthPercent = 1f;
         protected readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
@@ -202,7 +202,7 @@ namespace DontEatSand.Entities.Units
         /// Find the closest enemy unit to this unit
         /// </summary>
         /// <returns></returns>
-        private Unit FindClosestTarget()
+        protected Unit FindClosestTarget()
         {
             int size = this.enemyUnitsInRange.Count;
             if (size == 0) return null;
