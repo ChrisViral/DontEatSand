@@ -91,6 +91,12 @@ namespace DontEatSand.Entities.Units
             return closestTarget;
         }
 
+        public void Flee()
+        {
+            // Set destination away from enemy
+            Destination = transform.position - FindClosestTarget().transform.position;
+        }
+
         #endregion
 
         #region Methods
@@ -118,6 +124,17 @@ namespace DontEatSand.Entities.Units
             
             // Set throwing animation trigger
             attackTriggerName = Animator.StringToHash("Throwing");
+        }
+
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+            // if target exists and is within range
+            if(CanAttack && Target != null)
+            {
+                Heal(Target);
+            }
+            
         }
         #endregion
 
@@ -152,21 +169,44 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         /// <returns></returns>
         [BTLeaf("ally-seen")]
-        public bool IsAllySeen() => this.IsEnemySeenFlag;
+        public bool IsAllySeen() => this.IsAllySeenFlag;
 
         [BTLeaf("heal")]
         public BTCoroutine HealRoutine()
         {
-            this.Target = FindClosestAlly();
-            if(this.Target)
+            if(IsAllySeenFlag)
             {
-                this.agent.SetDestination(this.Target.Position);
-                if(this.CanAttack) // using the same timer as attack
+                this.Target = FindClosestAlly();
+                if(this.Target)
                 {
-                    Heal(this.Target);
-                    yield return BTNodeResult.NOT_FINISHED;
+                    this.agent.SetDestination(this.Target.Position);
+                    if(this.CanAttack) // using the same timer as attack
+                    {
+                        Heal(this.Target);
+                        yield return BTNodeResult.NOT_FINISHED;
+                    }
                 }
             }
+            else
+            {
+                yield return BTNodeResult.FAILURE;
+            }
+
+        }
+
+        /// <summary>
+        /// Routine for the flee leaf
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("flee")]
+        public BTCoroutine FleeRoutine()
+        {
+            if (IsUnderAttackFlag)
+            {
+                Flee();
+                yield return BTNodeResult.NOT_FINISHED;
+            }
+            yield return BTNodeResult.SUCCESS;
         }
 
         #endregion

@@ -37,17 +37,6 @@ namespace DontEatSand.Entities.Units
         {
             base.Attack(target);
             PhotonUtils.Instantiate(this.projectile, this.transform.TransformPoint(this.launchLocation)).Target = target;
-        
-            target.Damage(10);
-
-            if(target is Unit unit) // attacking a unit
-            {
-                unit.IsUnderAttackFlag = true;
-            }
-            else // attacking a building
-            {
-
-            }
             
         }
         #endregion

@@ -16,7 +16,7 @@ namespace DontEatSand.Entities.Units
 
             if(this.IsSelected)
             {
-                HasOrderFlag = true;
+                this.HasOrderFlag = true;
                 // Acknowledge clicked entity as a target for this unit
                 if (target is Entity entity) //&& !entity.IsControllable())
                 {
@@ -50,12 +50,6 @@ namespace DontEatSand.Entities.Units
             if(CanAttack && Target != null)
             {
                 Attack(Target);
-            }
-
-            if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 0.5f)
-            {
-                // no target and arrived to player-commanded destination
-                HasOrderFlag = false;
             }
         }
         #endregion
