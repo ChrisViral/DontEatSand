@@ -13,9 +13,9 @@ namespace DontEatSand.Entities.Units
         // 1 attack sound
         // 2 hit on unit
         // 3 hit on building
-        [SerializeField, Header("Sound Effect")]
-        private AudioClip[] soundEffect;
-        private AudioSource source;
+        //[SerializeField, Header("Sound Effect")]
+        //private AudioClip[] soundEffect;
+        //private AudioSource source;
 
         #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
@@ -37,10 +37,11 @@ namespace DontEatSand.Entities.Units
         {
             base.Attack(target);
 
-            if (soundEffect.Length > 0)
-            {
-                source.PlayOneShot(soundEffect[1]);
-            }
+            //if (soundEffect.Length > 0)
+            //{
+            //    source.PlayOneShot(soundEffect[1]);
+            //}
+            PlaySoundOnce(1);
 
             target.Damage(10);
 
@@ -48,33 +49,35 @@ namespace DontEatSand.Entities.Units
             {
                 unit.IsUnderAttackFlag = true;
 
-                if (soundEffect.Length > 0)
-                {// sound of hit on unit
-                    source.clip = soundEffect[2];
-                    source.PlayDelayed(0.1f);
-                }
+                //if (soundEffect.Length > 0)
+                //{// sound of hit on unit
+                //    source.clip = soundEffect[2];
+                //    source.PlayDelayed(0.1f);
+                //}
+                PlaySoundOnce(2, 0.1f);
             }
             else // attacking a building
             {
+                PlaySoundOnce(3, 0.1f);
 
-                if (soundEffect.Length > 0)
-                {// sound of hit on building
-                    source.clip = soundEffect[3];
-                    source.PlayDelayed(0.1f);
-                }
+                //if (soundEffect.Length > 0)
+                //{// sound of hit on building
+                //    source.clip = soundEffect[3];
+                //    source.PlayDelayed(0.1f);
+                //}
             }
         }
 
         #endregion
 
         #region Functions
-        protected override void OnAwake()
-        {
-            base.OnAwake();
+        //protected override void OnAwake()
+        //{
+        //    base.OnAwake();
 
-            // Setup audio
-            this.source = GetComponent<AudioSource>();
-        }
+        //    // Setup audio
+        //    this.source = GetComponent<AudioSource>();
+        //}
         
         protected override void OnUpdate()
         {
@@ -85,14 +88,14 @@ namespace DontEatSand.Entities.Units
             }
         }
 
-        protected override void OnDestroyed()
-        {
-            if (soundEffect.Length > 0)
-            {
-                source.PlayOneShot(soundEffect[0]);
-            }
-            base.OnDestroyed();
-        }
+        //protected override void OnDestroyed()
+        //{
+        //    if (soundEffect.Length > 0)
+        //    {
+        //        source.PlayOneShot(soundEffect[0]);
+        //    }
+        //    base.OnDestroyed();
+        //}
         #endregion
     }
 }

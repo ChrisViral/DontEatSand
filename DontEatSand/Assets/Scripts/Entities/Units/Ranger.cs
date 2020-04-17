@@ -10,10 +10,6 @@ namespace DontEatSand.Entities.Units
         private Vector3 launchLocation;
         [SerializeField]
         private Projectile projectile;
-        // 0 die sound
-        [SerializeField, Header("Sound Effect")]
-        private AudioClip[] soundEffect;
-        private AudioSource source;
         #endregion
 
         #region Methods

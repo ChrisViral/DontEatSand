@@ -60,6 +60,9 @@ namespace DontEatSand.Entities.Units
         protected readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
         protected float attackStart;
         protected float attackInterval = 1.0f;
+        [SerializeField, Header("Sound Effect")]
+        protected AudioClip[] soundEffect;
+        protected AudioSource source;
 
         #endregion
 
@@ -242,6 +245,33 @@ namespace DontEatSand.Entities.Units
         }
         #endregion
 
+        #region Audio methods
+
+        /// <summary>
+        /// Play Sound at clip index with specified delay
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="delay"></param>
+        protected void PlaySoundOnce(int index, float delay)
+        {
+            if (soundEffect.Length > index)
+            {
+                source.clip = soundEffect[index];
+                source.PlayDelayed(delay);
+            }
+        }
+
+        /// <summary>
+        /// Play Sound at clip index with 0 delay
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlaySoundOnce(int index)
+        {
+            PlaySoundOnce(index, 0f);
+        }
+
+        #endregion
+
         #region Virtual methods
         /// <summary>
         /// Attacks the specified target
@@ -327,6 +357,9 @@ namespace DontEatSand.Entities.Units
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);
             }
+
+            // Setup audio
+            this.source = GetComponent<AudioSource>();
         }
 
         private void Update()
@@ -361,6 +394,8 @@ namespace DontEatSand.Entities.Units
 
         private void OnDestroy()
         {
+            // play death sound (index 0)
+            PlaySoundOnce(0);
             if (this.IsControllable())
             {
                 //Notify of death and give back sand
