@@ -37,5 +37,9 @@ MonoBehaviour:
   - SetupPlayer
   - SetupField
   - SetupIndex
+  - DestroyObstacle
+  - SetBuilt
+  - SetIsBuilding
+  - FinishBuildOnNetwork
   DisableAutoOpenWizard: 1
   ShowSettings: 0

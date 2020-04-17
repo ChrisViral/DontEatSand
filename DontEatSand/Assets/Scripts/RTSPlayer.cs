@@ -5,13 +5,24 @@ using DontEatSand.Entities;
 using DontEatSand.Entities.Buildings;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
+using DontEatSand.Utils;
 using Photon.Pun;
 using RTSCam;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
 namespace DontEatSand
 {
+    /// <summary>
+    /// Types of selection modes
+    /// </summary>
+    public enum SelectionMode
+    {
+        NORMAL,
+        BUILD
+    }
+
     /// <summary>
     /// Types of possible screen selections
     /// </summary>
@@ -26,7 +37,7 @@ namespace DontEatSand
     /// RTS RTSPlayer class
     /// </summary>
     [DisallowMultipleComponent]
-    public class RTSPlayer : Singleton<RTSPlayer>
+    public sealed class RTSPlayer : Singleton<RTSPlayer>
     {
         #region Constants
         /// <summary>
@@ -42,12 +53,18 @@ namespace DontEatSand
         private int baseCandy = 30;
         [SerializeField]
         private RectTransform selection;
+        [SerializeField]
+        private CandyFactory factoryPrefab;
+        [SerializeField]
+        private FactoryTemplate factoryTemplate;
         private new RTSCamera camera;
         private readonly LinkedList<Unit> units = new LinkedList<Unit>();
         private Vector2 startPoint, endPoint;
         private HashSet<Unit> inBox = new HashSet<Unit>();
         private float clickTime;
         private bool dragging;
+        private FactoryTemplate currentTemplate;
+        private NavMeshPath path;
         #endregion
 
         #region Properties
@@ -187,6 +204,11 @@ namespace DontEatSand
         }
 
         /// <summary>
+        /// Current selection mode of this player
+        /// </summary>
+        public SelectionMode Mode { get; set; }
+
+        /// <summary>
         /// Make sure this Singleton is not immortal
         /// </summary>
         protected override bool Immortal { get; } = false;
@@ -194,12 +216,81 @@ namespace DontEatSand
 
         #region Methods
         /// <summary>
+        /// Asks this player's castle to create an entity
+        /// </summary>
+        /// <param name="index">Index of the entity to create</param>
+        public void CreateEntity(int index) => this.Castle.CreateEntity(index);
+
+        /// <summary>
+        /// Requests to do factory creation or stop
+        /// </summary>
+        public void CreateFactory()
+        {
+            switch (this.Mode)
+            {
+                case SelectionMode.NORMAL:
+                    if (CheckResourcesAvailable(this.factoryPrefab.Info))
+                    {
+                        Farmer farmer = this.units.OfType<Farmer>().FirstOrDefault();
+                        if (farmer)
+                        {
+                            this.Mode = SelectionMode.BUILD;
+                            this.currentTemplate = Instantiate(this.factoryTemplate, new Vector3(0f, -5f, 0f), Quaternion.identity);
+                            this.currentTemplate.Builder = farmer;
+                        }
+                    }
+                    break;
+
+                case SelectionMode.BUILD:
+                    this.Mode = SelectionMode.NORMAL;
+                    Destroy(this.currentTemplate);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Spawns a factory at the specified location and assigns a farmer to build it
+        /// </summary>
+        public void SpawnFactory()
+        {
+            if (this.Mode == SelectionMode.BUILD)
+            {
+                //Get best farmer for job
+                Transform template = this.currentTemplate.transform;
+                Vector3 target = template.position;
+                Farmer best = null;
+                float distance = float.PositiveInfinity;
+                foreach (Farmer farmer in this.units.OfType<Farmer>())
+                {
+                    float d = Vector3.Distance(target, farmer.transform.position);
+                    if (d < distance)
+                    {
+                        best = farmer;
+                        distance = d;
+                    }
+                }
+
+                if (best != null)
+                {
+                    //Create object
+                    CandyFactory factory = PhotonUtils.Instantiate(this.factoryPrefab, target, template.rotation, this.Castle.transform.parent);
+                    factory.Builder = best;
+                    best.Build(factory);
+
+                    //Clear out
+                    this.Mode = SelectionMode.NORMAL;
+                    Destroy(this.currentTemplate.gameObject);
+                    GameEvents.OnSandChanged.Invoke(-this.factoryPrefab.Info.SandCost);
+                }
+            }
+        }
+
+        /// <summary>
         /// Checks if the specified resources are available
         /// </summary>
-        /// <param name="sand">Sand amount to request</param>
-        /// <param name="candy">Candy amount to request</param>
+        /// <param name="info">Info of the unit to create</param>
         /// <returns>True if the resources are available, false otherwise</returns>
-        public bool CheckResourcesAvailable(int sand, int candy) => sand <= this.Sand && candy <= this.AvailableCandy;
+        public bool CheckResourcesAvailable(UnitInfo info) => info.SandCost <= this.Sand && info.CandyCost <= this.AvailableCandy;
 
         /// <summary>
         /// Change in candy total
@@ -259,6 +350,13 @@ namespace DontEatSand
                         }
                         break;
                 }
+
+                //Make sure we stop building a factory if our last farmer dies
+                if (this.Mode == SelectionMode.BUILD && unit is Farmer && !this.units.Any(u => u is Farmer))
+                {
+                    Destroy(this.currentTemplate.gameObject);
+                    this.Mode = SelectionMode.NORMAL;
+                }
             }
         }
 
@@ -272,7 +370,7 @@ namespace DontEatSand
             if (Input.GetMouseButtonDown(0))
             {
                 //Make sure not hovering UI
-                this.dragging = !overUI;
+                this.dragging = !overUI && this.Mode == SelectionMode.NORMAL;
                 if (this.dragging)
                 {
                     //Begin drag
@@ -444,6 +542,7 @@ namespace DontEatSand
             this.MaxCandy = this.baseCandy;
             //ReSharper disable once PossibleNullReferenceException
             this.camera = Camera.main.GetComponent<RTSCamera>();
+            this.path = new NavMeshPath();
             if (!PhotonNetwork.IsConnected)
             {
                 this.Castle = FindObjectsOfType<Castle>().First(g => g.name == "Sandcastle A");

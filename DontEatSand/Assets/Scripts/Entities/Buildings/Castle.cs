@@ -25,6 +25,8 @@ namespace DontEatSand.Entities.Buildings
         private readonly LinkedList<Unit> buildQueue = new LinkedList<Unit>();
         private readonly Timer buildTimer = new Timer();
         private UnitInfo inProgress;
+        [SerializeField, Header("Sound Effect")]
+        protected AudioClip[] soundEffect;
         #endregion
 
         #region Properties
@@ -81,7 +83,7 @@ namespace DontEatSand.Entities.Buildings
             UnitInfo info = unit.Info;
 
             //Check if we have the resources to create it
-            if (RTSPlayer.Instance.CheckResourcesAvailable(info.SandCost, info.CandyCost))
+            if (RTSPlayer.Instance.CheckResourcesAvailable(info))
             {
                 //Request resources
                 if (info.SandCost > 0)
@@ -224,10 +226,12 @@ namespace DontEatSand.Entities.Buildings
                 {
                     GameObject go = PhotonNetwork.Instantiate(farmer.name, this.spawnLocation.position, farmer.transform.rotation);
                     go.transform.SetParent(this.transform.parent, true);
+                    GameEvents.OnUnitCreated.Invoke(go.GetComponent<Unit>());
                 }
                 else
                 {
-                    Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
+                    Unit u = Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
+                    GameEvents.OnUnitCreated.Invoke(u);
                 }
             }
         }
@@ -249,9 +253,28 @@ namespace DontEatSand.Entities.Buildings
 
         private void OnDestroy()
         {
+            // collapse
+            PlaySound(0);
+            // teacher die
+            PlaySound(1);
+
             if (this.IsControllable())
             {
                 GameEvents.OnUnitRemovedFromQueue.RemoveListener(OnUnitRemovedFromQueue);
+            }
+        }
+
+
+        /// <summary>
+        /// Play isolated Sound at position at clip index
+        /// even if the current object is on destroy
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlaySound(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
             }
         }
         #endregion

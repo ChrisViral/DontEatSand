@@ -52,7 +52,6 @@ namespace DontEatSand.Entities.Units
         [SerializeField]
         private int[] tintIndices;
         public Mode behaviourMode;
-        protected NavMeshAgent agent;
         protected Animator animator;
         protected BehaviourTree bt;
         private float smoothSpeed;
@@ -60,10 +59,18 @@ namespace DontEatSand.Entities.Units
         protected readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
         protected float attackStart;
         protected float attackInterval = 1.0f;
+        [SerializeField, Header("Sound Effect")]
+        protected AudioClip[] soundEffect;
+        protected AudioSource source;
 
         #endregion
 
         #region Properties
+        /// <summary>
+        /// The NavMeshAgent associated to this unit
+        /// </summary>
+        public NavMeshAgent Agent { get; private set; }
+
         /// <summary>
         /// Current target of this unit
         /// </summary>
@@ -74,11 +81,11 @@ namespace DontEatSand.Entities.Units
         /// </summary>
         public Vector3 Destination
         {
-            get => this.agent.destination;
+            get => this.Agent.destination;
             set
             {
                 this.Target = null;
-                this.agent.SetDestination(value);
+                this.Agent.SetDestination(value);
             }
         }
 
@@ -106,17 +113,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Flag dictating if an enemy is within the aggro range
         /// </summary>
-        public bool IsEnemySeenFlag
-        {
-            get
-            {
-                return this.enemyUnitsInRange.Count != 0;
-            }
-            set
-            {
-
-            }
-        }
+        public bool IsEnemySeenFlag => this.enemyUnitsInRange.Count != 0;
 
         /// <summary>
         /// Flag dictating if the enemy is attacking this unit
@@ -242,6 +239,49 @@ namespace DontEatSand.Entities.Units
         }
         #endregion
 
+        #region Audio methods
+
+        /// <summary>
+        /// Play Sound at clip index with specified delay
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="delay"></param>
+        protected void PlaySoundOnce(int index, float delay)
+        {
+            if (soundEffect.Length > index)
+            {
+                source.clip = soundEffect[index];
+                source.PlayDelayed(delay);
+            }
+        }
+
+        /// <summary>
+        /// Play Sound at clip index with 0 delay
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlaySoundOnce(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                source.PlayOneShot(soundEffect[index]);
+            }
+        }
+
+        /// <summary>
+        /// Play isolated Sound at position at clip index
+        /// even if the current object is on destroy
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlayLastSound(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
+            }
+        }
+
+        #endregion
+
         #region Virtual methods
         /// <summary>
         /// Attacks the specified target
@@ -317,30 +357,33 @@ namespace DontEatSand.Entities.Units
             }
             this.bodyRenderer.materials = materials;
             this.animator = GetComponent<Animator>();
-            this.agent = GetComponent<NavMeshAgent>();
+            this.Agent = GetComponent<NavMeshAgent>();
 
             if (this.IsControllable())
             {
-                this.agent.stoppingDistance = this.attackRange * 0.6f;
+                this.Agent.stoppingDistance = this.attackRange * 0.6f;
                 this.behaviourMode = Mode.DEFEND;
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);
             }
+
+            // Setup audio
+            this.source = GetComponent<AudioSource>();
         }
 
         private void Update()
         {
-            
+
             if (this.IsControllable())
             {
                 if (this.Target)
                 {
-                    this.agent.destination = this.Target.transform.position;
+                    this.Agent.destination = this.Target.transform.position;
                 }
                 OnUpdate();
 
-                if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 1f)
+                if(this.Target == null && Vector3.Distance(this.Position, this.Agent.destination) < 1f)
                 {
                     // no target and arrived to player-commanded destination
                     HasOrderFlag = false;
@@ -349,7 +392,7 @@ namespace DontEatSand.Entities.Units
             }
 
             //Send velocity to animator
-            this.animator.SetFloat(velocityParam, this.agent.velocity.magnitude);
+            this.animator.SetFloat(velocityParam, this.Agent.velocity.magnitude);
             //Set healthbar
             this.healthPercent = Mathf.SmoothDamp(this.healthPercent, this.HealthAmount, ref this.smoothSpeed, 0.2f);
             this.healthbar.fillAmount = this.healthPercent;
@@ -361,6 +404,8 @@ namespace DontEatSand.Entities.Units
 
         private void OnDestroy()
         {
+            // play death sound (index 0)
+            PlayLastSound(0);
             if (this.IsControllable())
             {
                 //Notify of death and give back sand
@@ -443,7 +488,7 @@ namespace DontEatSand.Entities.Units
             this.Target = FindClosestTarget();
             if (this.Target)
             {
-                this.agent.SetDestination(this.Target.Position);
+                this.Agent.SetDestination(this.Target.Position);
                 if (this.CanAttack)
                 {
                     Attack(this.Target);

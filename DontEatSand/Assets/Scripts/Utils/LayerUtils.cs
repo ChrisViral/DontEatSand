@@ -18,7 +18,8 @@ namespace DontEatSand.Utils
         VISIBLE_UNIT       = 9,
         VISIBLE_RESOURCE   = 10,
         INVISIBLE_UNIT     = 11,
-        INVISIBLE_RESOURCE = 12
+        INVISIBLE_RESOURCE = 12,
+        OBSTACLE           = 13
     }
 
     /// <summary>

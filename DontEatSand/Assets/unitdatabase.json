@@ -57,7 +57,7 @@
     "Name": "Candy Factory",
     "Description": "Place to store candy you bribe your kid army with.",
     "Type": "BUILDING",
-    "SandCost": 50,
+    "SandCost": 300,
     "CandyCost": 0,
     "BuildTime": 20,
     "Icon": "icon_candyfactory"

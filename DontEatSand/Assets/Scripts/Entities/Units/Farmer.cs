@@ -2,6 +2,7 @@
 using DontEatSand.Entities.Buildings;
 using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
@@ -22,13 +23,16 @@ namespace DontEatSand.Entities.Units
         #region Fields
         private float digStart;
         private float digInterval = 3.0f;
+        private bool isBuilding;
+        private float buildDistance = 2f;
+        private float digDistance = 0.5f;
         #endregion
 
         #region Properties
 
         private Sandpit SandPitTarget { get; set; }
-        private CandyFactory BuildTarget { get; set; }
-        
+        public CandyFactory BuildTarget { get; set; }
+
         /// <summary>
         /// If the unit can currently dig
         /// </summary>
@@ -42,8 +46,20 @@ namespace DontEatSand.Entities.Units
                     digReady = true;
                 }
 
-                return digReady && Vector3.Distance(this.Position, agent.destination) < 1.0f;
+                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= digDistance && BuildTarget == null;
             }
+        }
+
+        public void DoneBuilding()
+        {
+            isBuilding = false;
+            
+            // Reset stopping distance
+            this.Agent.stoppingDistance = digDistance;
+                
+            // Set animation bool for digging
+            animator.SetBool(buildParam, false);
+            BuildTarget = null;
         }
 
         #endregion
@@ -55,26 +71,21 @@ namespace DontEatSand.Entities.Units
             base.ProcessCommand(destination, target);
 
             // If target is wet sand, dig
-            if (target is Sandpit sandpit)
+            if (BuildTarget == null && target is Sandpit sandpit)
             {
                 this.HasOrderFlag = true;
+                this.digDistance = digDistance;
                 this.SandPitTarget = sandpit;
             }
-            // Else if target is building, build
-            else if (target is CandyFactory candyFactory)
-            {
-                this.HasOrderFlag = true;
-                this.BuildTarget = candyFactory;
-            }
         }
-        
+
         public void Dig(Sandpit sandpit)
         {
             if (CanDig)
             {
                 // Set animation bool for digging
                 animator.SetBool(digParam, true);
-                
+
                 // Take sand from sandpit
                 GameEvents.OnSandChanged.Invoke(sandpit.HarvestSand(10));
             }
@@ -87,18 +98,25 @@ namespace DontEatSand.Entities.Units
 
         public void Build(CandyFactory candyFactory)
         {
-            if (CanDig)
+            // Farmer just started building
+            if (BuildTarget == null && !isBuilding)
             {
-                // Set animation boll for building
+                // Set new stopping distance for building
+                this.Agent.stoppingDistance = buildDistance;
+
+                BuildTarget = candyFactory;
+                Destination = BuildTarget.Position;
+            }
+            // Farmer has arrived and will start building
+            else if (!isBuilding && Vector3.Distance(Position, Agent.destination) <= buildDistance)
+            {
+                // Set animation bool for building
                 animator.SetBool(buildParam, true);
                 
-                // Build building
-                // TODO building factories
-            }
-            else
-            {
-                // Set animation bool for digging
-                animator.SetBool(buildParam, false);
+                // Tell CandyFactory
+                BuildTarget.StartBuilding();
+
+                isBuilding = true;
             }
         }
 
@@ -107,7 +125,7 @@ namespace DontEatSand.Entities.Units
             // Set destination away from enemy
             Destination = transform.position - FindClosestTarget().transform.position;
         }
-        
+
         #endregion
 
         #region Functions
@@ -115,7 +133,7 @@ namespace DontEatSand.Entities.Units
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+
             // This probably doesn't work. Need to load farmer behavior tree
             bt = new BehaviourTree(DESUtils.FarmerBehaviourTreeLocation, this);
         }
@@ -131,6 +149,17 @@ namespace DontEatSand.Entities.Units
             else if (SandPitTarget != null)
             {
                 Dig(SandPitTarget);
+            }
+        }
+
+        protected override void OnDestroyed()
+        {
+            base.OnDestroyed();
+
+            if (isBuilding)
+            {
+                // Destroy building too
+                PhotonNetwork.Destroy(BuildTarget.gameObject);
             }
         }
 
