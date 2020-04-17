@@ -1,5 +1,6 @@
 ﻿using DontEatSand.Base;
 using DontEatSand.Entities.Buildings;
+using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
 using UnityEngine;
 using UnityEngine.AI;
@@ -29,8 +30,7 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Fields
-        public FarmerMode behaviourMode;
-        private BehaviourTree bt;
+        public FarmerMode behaviourFarmerMode;
         private float digStart;
         private float digInterval = 3.0f;
         #endregion
@@ -99,36 +99,29 @@ namespace DontEatSand.Entities.Units
                 // Build building
             }
         }
+
+        public void Flee()
+        {
+            // Set destination away from enemy
+            Destination = transform.position - FindClosestTarget().transform.position;
+        }
+        
+        #endregion
+
+        #region Functions
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            
+            // This probably doesn't work. Need to load farmer behavior tree
+            bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
+        }
+
         #endregion
 
         #region BehaviourTree
 
-        /// <summary>
-        /// Routine for the dig leaf
-        /// </summary>
-        /// <returns></returns>
-        [BTLeaf("dig")]
-        public BTCoroutine DigRoutine()
-        {
-            if (this.behaviourMode == FarmerMode.DIG)
-            {
-
-            }
-        }
-        
-        /// <summary>
-        /// Routine for the build leaf
-        /// </summary>
-        /// <returns></returns>
-        [BTLeaf("build")]
-        public BTCoroutine BuildRoutine()
-        {
-            if (this.behaviourMode == FarmerMode.BUILD)
-            {
-
-            }
-        }
-        
         /// <summary>
         /// Routine for the flee leaf
         /// </summary>
@@ -136,9 +129,14 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("flee")]
         public BTCoroutine FleeRoutine()
         {
-            if (this.behaviourMode == FarmerMode.FLEE)
+            if (this.behaviourFarmerMode == FarmerMode.FLEE)
             {
-
+                if (IsUnderAttackFlag)
+                {
+                    Flee();
+                    yield return BTNodeResult.NOT_FINISHED;
+                }
+                yield return BTNodeResult.SUCCESS;
             }
         }
 
