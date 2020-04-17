@@ -367,7 +367,7 @@ namespace RTSCam
             Transform t = this.transform;
             float tiltAngle = Mathf.Clamp(t.eulerAngles.x, MIN_TILT, MAX_TILT) * Mathf.Deg2Rad;
             this.distance = t.localPosition.magnitude;
-            this.transform.position = new Vector3(0f, Mathf.Sin(tiltAngle) * this.distance, -Mathf.Cos(tiltAngle) * this.distance);
+            this.transform.localPosition = new Vector3(0f, Mathf.Sin(tiltAngle) * this.distance, -Mathf.Cos(tiltAngle) * this.distance);
             this.zoomPos = Mathf.InverseLerp(this.minOrtho, this.maxOrtho, this.camera.orthographicSize);
         }
 

@@ -326,7 +326,72 @@ PrefabInstance:
     - target: {fileID: 437697200520112603, guid: 0d17ea15291c1244c872ed0e93991e64,
         type: 3}
       propertyPath: orthographic size
-      value: 25
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: lastTab
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: panningKey
+      value: 325
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: limitX
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: limitY
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: keyboardMovementSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: rotationSped
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: mouseRotationSpeed
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: autoHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: scrollWheelZoomingSensitivity
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: keyboardZoomingSensitivity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1338252983538220935, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: useScreenEdgeInput
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1551632161323126512, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -70.71068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1551632161323126512, guid: 0d17ea15291c1244c872ed0e93991e64,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4129347733721034048, guid: 0d17ea15291c1244c872ed0e93991e64,
         type: 3}

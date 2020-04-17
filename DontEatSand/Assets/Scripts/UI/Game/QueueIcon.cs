@@ -38,7 +38,7 @@ namespace DontEatSand.UI.Game
         public void Setup(UnitInfo info, UnityAction call)
         {
             this.Info = info;
-            this.rect.anchoredPosition = Vector3.zero;
+            //this.rect.anchoredPosition = Vector3.zero;
             this.icon.sprite = info.Icon;
             this.button.onClick.AddListener(call);
         }
