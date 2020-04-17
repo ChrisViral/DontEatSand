@@ -269,8 +269,6 @@ namespace DontEatSand.Entities.Units
         #region Collider Functions
         private void OnTriggerEnter(Collider collider)
         {
-            if (collider.isTrigger) { return; }
-
             GameObject enemy = collider.gameObject;
             if(enemy.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
             {
@@ -282,8 +280,6 @@ namespace DontEatSand.Entities.Units
 
         private void OnTriggerExit(Collider collider)
         {
-            if (collider.isTrigger) { return; }
-
             GameObject enemy = collider.gameObject;
             if(enemy.TryGetComponent(out Unit enemyUnit) && this.enemyUnitsInRange.Contains(enemyUnit))
             {

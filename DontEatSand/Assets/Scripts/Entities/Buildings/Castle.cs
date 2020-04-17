@@ -6,6 +6,7 @@ using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using Photon.Pun;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DontEatSand.Entities.Buildings
 {
