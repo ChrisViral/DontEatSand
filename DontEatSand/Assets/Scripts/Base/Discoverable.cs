@@ -39,11 +39,7 @@ namespace DontEatSand.Base
         #endregion
 
         #region Functions
-        private void Start()
-        {
-            this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
-            this.Visible = false;
-        }
+        private void Start() => this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
 
         private void OnTriggerEnter(Collider other)
         {
@@ -51,11 +47,7 @@ namespace DontEatSand.Base
             if (this.permanent)
             {
                 //If invisible, make visible
-                if (!this.Visible)
-                {
-                    this.gameObject.layer = this.otherLayer.Value;
-                    this.visible = true;
-                }
+                this.Visible = true;
             }
             else
             {

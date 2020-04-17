@@ -1,9 +1,15 @@
-﻿using DontEatSand.Base;
+﻿using System;
+using System.Linq;
+using DontEatSand.Base;
+using DontEatSand.Entities;
+using DontEatSand.Entities.Buildings;
 using DontEatSand.UI;
 using DontEatSand.Utils;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace DontEatSand
 {
@@ -40,6 +46,9 @@ namespace DontEatSand
         private AudioSource source;
         private float baseVolume;
         private bool loaded;
+        private int playerIndex;
+        private Player otherPlayer;
+        private Castle[] castles;
         #endregion
 
         #region Static properties
@@ -169,17 +178,27 @@ namespace DontEatSand
                 }
             }
 
+            switch (loadedScene)
+            {
+                case GameScenes.MENU:
+                    //Make sure the game does not stay paused in the menu
+                    IsPaused = false;
+
+                    //First time loading of the menu
+                    if (!this.loaded)
+                    {
+                        FindObjectOfType<MainMenu>().SetupMenu();
+                        this.loaded = true;
+                    }
+
+                    break;
+                case GameScenes.WORLD:
+                    this.castles = FindObjectsOfType<Castle>();
+                    Array.Sort(this.castles);
+                    break;
+            }
             if (loadedScene == GameScenes.MENU)
             {
-                //Make sure the game does not stay paused in the menu
-                IsPaused = false;
-
-                //First time loading of the menu
-                if (!this.loaded)
-                {
-                    FindObjectOfType<MainMenu>().SetupMenu();
-                    this.loaded = true;
-                }
             }
 
             //Log scene change
@@ -190,9 +209,69 @@ namespace DontEatSand
             //Fire scene load event
             GameEvents.OnSceneLoaded.Invoke(from, loadedScene);
         }
+
+        private void StartGame()
+        {
+            //Shortcut since we know we only have two players
+            if (Random.value > 0.5f)
+            {
+                this.playerIndex = 0;
+                this.photonView.RPC(nameof(SetPlayerIndex), this.otherPlayer, 1);
+            }
+            else
+            {
+                this.playerIndex = 1;
+                this.photonView.RPC(nameof(SetPlayerIndex), this.otherPlayer, 0);
+            }
+
+            SetupPlayer();
+        }
+
+        [PunRPC]
+        private void SetPlayerIndex(int index)
+        {
+            this.playerIndex = index;
+            SetupPlayer();
+        }
+
+        private void SetupPlayer()
+        {
+            Castle castle = this.castles[this.playerIndex];
+            castle.photonView.RequestOwnership();
+            RTSPlayer.Instance.enabled = true;
+        }
         #endregion
 
         #region Callbacks
+        public override void OnPlayerEnteredRoom(Player player)
+        {
+            this.Log(player.NickName + " just entered the room");
+            if (PhotonNetwork.IsMasterClient)
+            {
+                if (PhotonNetwork.CurrentRoom.PlayerCount == MAX_PLAYERS)
+                {
+                    StartGame();
+                    this.otherPlayer = player;
+                }
+            }
+            else
+            {
+                //Get other player
+                this.otherPlayer = PhotonNetwork.PlayerListOthers[0];
+            }
+        }
+
+        public override void OnPlayerLeftRoom(Player other)
+        {
+            this.Log(other.NickName + " left the room");
+            if (PhotonNetwork.IsMasterClient)
+            {
+                //Return to menu
+                PhotonNetwork.DestroyAll();
+                ReloadScene();
+            }
+        }
+
         public override void OnLeftRoom()
         {
             //Return to main menu

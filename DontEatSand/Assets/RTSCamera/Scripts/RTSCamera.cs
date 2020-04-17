@@ -3,8 +3,8 @@ using System.Linq;
 using DontEatSand.Entities;
 using DontEatSand.Entities.Units;
 using DontEatSand.Utils;
+using Photon.Pun;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 //ReSharper disable once CheckNamespace
 namespace RTSCam
@@ -356,6 +356,10 @@ namespace RTSCam
         {
             this.camera = GetComponent<Camera>();
             this.clickMask = LayerUtils.GetMask(Layers.DEFAULT, Layers.GROUND, Layers.VISIBLE_UNIT, Layers.VISIBLE_RESOURCE);
+            if (PhotonNetwork.IsConnected)
+            {
+                this.enabled = false;
+            }
         }
 
         private void Start()
@@ -363,7 +367,7 @@ namespace RTSCam
             Transform t = this.transform;
             float tiltAngle = Mathf.Clamp(t.eulerAngles.x, MIN_TILT, MAX_TILT) * Mathf.Deg2Rad;
             this.distance = t.localPosition.magnitude;
-            this.transform.position = new Vector3(0f, Mathf.Sin(tiltAngle) * this.distance, -Mathf.Cos(tiltAngle) * this.distance);
+            this.transform.localPosition = new Vector3(0f, Mathf.Sin(tiltAngle) * this.distance, -Mathf.Cos(tiltAngle) * this.distance);
             this.zoomPos = Mathf.InverseLerp(this.minOrtho, this.maxOrtho, this.camera.orthographicSize);
         }
 

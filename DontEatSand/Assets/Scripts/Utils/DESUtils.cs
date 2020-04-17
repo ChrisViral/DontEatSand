@@ -18,6 +18,10 @@ namespace DontEatSand.Utils
         /// Location of the Unit BehaviourTree file
         /// </summary>
         public static string BehaviourTreeLocation { get; } = Path.Combine(Application.dataPath, "unit-behaviour.xml");
+        /// <summary>
+        /// Location of the Unit BehaviourTree file
+        /// </summary>
+        public static string FarmerBehaviourTreeLocation { get; } = Path.Combine(Application.dataPath, "farmer-behaviour.xml");
         #endregion
 
         #region Static methods
