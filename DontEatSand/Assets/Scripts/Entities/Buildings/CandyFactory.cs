@@ -122,7 +122,7 @@ namespace DontEatSand.Entities.Buildings
         private void OnDestroy()
         {
             //When destroyed, remove the candy given if done building
-            if (this.IsControllable() && !this.IsBuilding)
+            if (this.IsControllable() && !this.Built)
             {
                 GameEvents.OnCandyMaxChanged.Invoke(-this.candyGiven);
             }
