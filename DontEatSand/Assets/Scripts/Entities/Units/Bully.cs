@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
 
 namespace DontEatSand.Entities.Units
 {
@@ -15,7 +14,7 @@ namespace DontEatSand.Entities.Units
 
             if(this.IsSelected)
             {
-                HasOrderFlag = true;
+                this.HasOrderFlag = true;
                 // Acknowledge clicked entity as a target for this unit
                 if (target is Entity entity) //&& !entity.IsControllable())
                 {
@@ -44,17 +43,16 @@ namespace DontEatSand.Entities.Units
                 // index 3 hit on building sound
                 PlaySoundOnce(3, 0.1f);
             }
-            
+
         }
         #endregion
-
 
         #region Functions
         protected override void OnUpdate()
         {
-            if(CanAttack && Target != null)
+            if(this.CanAttack && this.Target != null)
             {
-                Attack(Target);
+                Attack(this.Target);
             }
         }
         #endregion

@@ -7,7 +7,6 @@ namespace DontEatSand.Entities.Units
     /// </summary>
     public class Soldier : Unit
     {
-        
         #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
@@ -55,7 +54,7 @@ namespace DontEatSand.Entities.Units
             // if target exists and is within range
             if(this.CanAttack && this.Target)
             {
-                Attack(Target);
+                Attack(this.Target);
             }
         }
         #endregion
