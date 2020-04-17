@@ -14,8 +14,6 @@ namespace DontEatSand.Entities.Buildings
     {
         #region Fields
         [SerializeField]
-        private int id;
-        [SerializeField]
         private Transform spawnLocation;
         [SerializeField]
         private int buildQueueMaxSize = 10;
@@ -29,6 +27,8 @@ namespace DontEatSand.Entities.Buildings
         #endregion
 
         #region Properties
+        [SerializeField]
+        private int id;
         /// <summary>
         /// ID of this player
         /// </summary>
