@@ -21,7 +21,7 @@ namespace DontEatSand.Entities.Units
 
         #region Fields
         private float digStart;
-        private float digInterval = 3.0f;
+        private float digInterval = 5.0f;
         #endregion
 
         #region Properties
