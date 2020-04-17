@@ -71,34 +71,16 @@ namespace DontEatSand
 
         #region Object extensions
         /// <summary>
-        /// Sets the layer of this object and all it's children
+        /// Sets the layer of this object and all it's renderer children
         /// </summary>
         /// <param name="o">Object to change the layer for</param>
         /// <param name="layer">Layer to switch to</param>
         public static void ChangeLayerRecursively(this GameObject o, Layer layer)
         {
-            //Sets in the transform's children
-            void SetChildren(Transform t)
-            {
-                foreach (Transform child in t)
-                {
-                    child.gameObject.layer = layer;
-                    if (child.childCount > 0)
-                    {
-                        SetChildren(child);
-                    }
-                }
-            }
-
-            //Set in the GameObject's children
             o.layer = layer;
-            foreach (Transform child in o.transform)
+            foreach (Renderer renderer in o.GetComponentsInChildren<Renderer>())
             {
-                child.gameObject.layer = layer;
-                if (child.childCount > 0)
-                {
-                    SetChildren(child);
-                }
+                renderer.gameObject.layer = layer;
             }
         }
 

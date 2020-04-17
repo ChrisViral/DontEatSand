@@ -132,19 +132,19 @@ namespace DontEatSand.Base
         public virtual void OnLeftRoom() { }
 
         /// <inheritdoc cref="IInRoomCallbacks.OnPlayerEnteredRoom"/>
-        public virtual void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer) { }
+        public virtual void OnPlayerEnteredRoom(Player newPlayer) { }
 
         /// <inheritdoc cref="IInRoomCallbacks.OnPlayerLeftRoom"/>
-        public virtual void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer) { }
+        public virtual void OnPlayerLeftRoom(Player otherPlayer) { }
 
         /// <inheritdoc cref="IInRoomCallbacks.OnRoomPropertiesUpdate"/>
         public virtual void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged) { }
 
         /// <inheritdoc cref="IInRoomCallbacks.OnPlayerPropertiesUpdate"/>
-        public virtual void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps) { }
+        public virtual void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) { }
 
         /// <inheritdoc cref="IInRoomCallbacks.OnMasterClientSwitched"/>
-        public virtual void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient) { }
+        public virtual void OnMasterClientSwitched(Player newMasterClient) { }
 
         /// <inheritdoc cref="ILobbyCallbacks.OnJoinedLobby"/>
         public virtual void OnJoinedLobby() { }
@@ -171,7 +171,11 @@ namespace DontEatSand.Base
             if (this.Immortal)
             {
                 //Make sure we have a unique PhotonView since this object will persist through scenes
-                this.gameObject.AddComponent<PhotonView>().ViewID = lastID--;
+                if (!this.photonView)
+                {
+                    this.gameObject.AddComponent<PhotonView>();
+                }
+                this.photonView.ViewID = lastID--;
             }
         }
 

@@ -6,9 +6,6 @@ namespace DontEatSand.Entities.Units
 {
     public class Soldier : Unit
     {
-        #region Fields
-        private float attackStart = 0f;
-        private float attackInterval = 1.0f;
 
         // 0 attack sound
         // 1 hit on unit
@@ -16,22 +13,6 @@ namespace DontEatSand.Entities.Units
         [SerializeField, Header("Sound Effect")]
         private AudioClip[] soundEffect;
         private AudioSource source;
-
-        #endregion
-
-        private bool canAttack {
-            get
-            {
-                bool attackReady = false;
-                if(Time.time > attackStart + attackInterval)
-                {
-                    attackStart = Time.time;
-                    attackReady = true;
-                }
-                return attackReady && Target != null && Vector3.Distance(this.Position, Target.Position) < 1.0f;
-            }
-        }
-
 
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
@@ -42,13 +23,11 @@ namespace DontEatSand.Entities.Units
                 // Acknowledge clicked entity as a target for this unit
                 if (target is Entity entity) //&& !entity.IsControllable())
                 {
-                    this.HasOrderFlag = true;
                     this.Target = entity;
                 }
-
-                if(target == null) // if unit or building gets destroyed
+                else // clicked on the ground somewhere
                 {
-                    this.HasOrderFlag = false;
+                    this.Target = null;
                 }
             }
         }
@@ -96,7 +75,7 @@ namespace DontEatSand.Entities.Units
 
         protected override void OnUpdate()
         {
-            if(canAttack)
+            if(CanAttack)
             {
                 Attack(Target);
             }

@@ -4,23 +4,43 @@ using System.Collections.ObjectModel;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
+using Photon.Pun;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DontEatSand.Entities.Buildings
 {
-    public class Castle : Entity
+    public class Castle : Entity, IComparable<Castle>
     {
         #region Fields
         [SerializeField]
+        private int id;
+        [SerializeField]
         private Transform spawnLocation;
         [SerializeField]
-        private int buildQueueMaxSize = 20;
+        private int buildQueueMaxSize = 10;
+        [SerializeField]
+        private Vector3 startCameraPosition, startCameraRotation;
+        [SerializeField]
+        private Sandpit visibleSandpit;
         private readonly LinkedList<Unit> buildQueue = new LinkedList<Unit>();
         private readonly Timer buildTimer = new Timer();
         private UnitInfo inProgress;
         #endregion
 
         #region Properties
+        /// <summary>
+        /// ID of this player
+        /// </summary>
+        public int ID => this.id;
+
+        [SerializeField]
+        private Material playerMaterial;
+        /// <summary>
+        /// Colour of this player
+        /// </summary>
+        public Material PlayerMaterial => this.playerMaterial;
+
         [SerializeField, Tooltip("All the units that can be created by this castle")]
         private Unit[] units;
         /// <summary>
@@ -174,12 +194,22 @@ namespace DontEatSand.Entities.Buildings
             }
 
         }
+
+        /// <inheritdoc cref="IComparable{T}.CompareTo"/>
+        public int CompareTo(Castle other) => this.id.CompareTo(other.id);
         #endregion
 
         #region Functions
-        protected override void OnAwake() => this.Units = Array.AsReadOnly(this.units);
+        protected override void OnAwake()
+        {
+            this.Units = Array.AsReadOnly(this.units);
+            if (PhotonNetwork.IsConnected)
+            {
+                this.enabled = false;
+            }
+        }
 
-        private void Start()
+        protected override void OnStart()
         {
             if (this.IsControllable())
             {
@@ -189,6 +219,8 @@ namespace DontEatSand.Entities.Buildings
 
         private void Update()
         {
+            if (!this.IsControllable()) return;
+
             //Check if building, if so check for completion of current unit
             if (this.IsBuilding && this.buildTimer.Elapsed.TotalSeconds >= this.inProgress.BuildTime)
             {

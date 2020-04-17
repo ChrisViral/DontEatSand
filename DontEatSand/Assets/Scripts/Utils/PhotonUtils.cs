@@ -80,7 +80,7 @@ namespace DontEatSand.Utils
                 }
             }
             //otherwise just destroy normally
-            else { Object.Destroy(obj); }
+            else { Object.Destroy(obj.gameObject); }
         }
         #endregion
     }
