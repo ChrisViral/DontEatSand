@@ -22,6 +22,7 @@ namespace DontEatSand.Entities.Units
         #region Fields
         private float digStart;
         private float digInterval = 5.0f;
+        private float digDistance = 1f;
         #endregion
 
         #region Properties
@@ -55,16 +56,11 @@ namespace DontEatSand.Entities.Units
             base.ProcessCommand(destination, target);
 
             // If target is wet sand, dig
-            if (target is Sandpit sandpit)
+            if (BuildTarget == null && target is Sandpit sandpit)
             {
                 this.HasOrderFlag = true;
+                this.digDistance = digDistance;
                 this.SandPitTarget = sandpit;
-            }
-            // Else if target is building, build
-            else if (target is CandyFactory candyFactory)
-            {
-                this.HasOrderFlag = true;
-                this.BuildTarget = candyFactory;
             }
         }
         
@@ -89,6 +85,9 @@ namespace DontEatSand.Entities.Units
         {
             if (CanDig)
             {
+                // Set new stopping distance for building
+                this.agent.stoppingDistance = buildDistance;
+                
                 // Set animation boll for building
                 animator.SetBool(buildParam, true);
                 
@@ -97,8 +96,12 @@ namespace DontEatSand.Entities.Units
             }
             else
             {
+                // Reset stopping distance
+                this.agent.stoppingDistance = digDistance;
+                
                 // Set animation bool for digging
                 animator.SetBool(buildParam, false);
+                BuildTarget = null;
             }
         }
 
