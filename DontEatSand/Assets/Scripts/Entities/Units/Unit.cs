@@ -52,8 +52,8 @@ namespace DontEatSand.Entities.Units
         private BehaviourTree bt;
         private float smoothSpeed;
         private readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
-        private float attackStart;
-        private float attackInterval = 1.0f;
+        protected float attackStart;
+        protected float attackInterval = 1.0f;
 
         #endregion
 
@@ -79,18 +79,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Flag dictating if the unit is following an order
         /// </summary>
-        public bool HasOrderFlag
-        {
-            get
-            {
-                // is headed somewhere or has a target
-                return Vector3.Distance(this.Position, this.agent.destination) > 1.0f && this.Target != null;
-            }
-            set
-            {
-
-            }
-        }
+        public bool HasOrderFlag { get; set; }
 
         /// <summary>
         /// Flag dictating if an enemy is within the aggro range
@@ -149,7 +138,8 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// If the unit can currently attack
         /// </summary>
-        protected bool CanAttack {
+        public virtual bool CanAttack
+        {
             get
             {
                 bool attackReady = false;
@@ -269,8 +259,9 @@ namespace DontEatSand.Entities.Units
         #region Collider Functions
         private void OnTriggerEnter(Collider collider)
         {
-            GameObject enemy = collider.gameObject;
-            if(enemy.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
+            if (collider.isTrigger) { return; }
+
+            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
             {
                 // Populate enemies
                 this.enemyUnitsInRange.Add(enemyUnit);
@@ -280,8 +271,9 @@ namespace DontEatSand.Entities.Units
 
         private void OnTriggerExit(Collider collider)
         {
-            GameObject enemy = collider.gameObject;
-            if(enemy.TryGetComponent(out Unit enemyUnit) && this.enemyUnitsInRange.Contains(enemyUnit))
+            if (collider.isTrigger) { return; }
+
+            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit) && this.enemyUnitsInRange.Contains(enemyUnit))
             {
                 this.enemyUnitsInRange.Remove(enemyUnit);
             }
@@ -421,12 +413,10 @@ namespace DontEatSand.Entities.Units
                 if(IsUnderAttack())
                 {
                     this.Target = FindClosestTarget();
-                    Debug.Log(this.enemyUnitsInRange.Count);
                     //NOTE: This was throwing when out of targets, so I'm guessing this is the way to handle it
                     if (this.Target)
                     {
                         this.agent.SetDestination(this.Target.Position);
-                        Debug.Log("CanAttack " + this.CanAttack);
                         if (this.CanAttack)
                         {
                             Attack(this.Target);
