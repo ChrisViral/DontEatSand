@@ -87,7 +87,7 @@ namespace DontEatSand.Entities.Units
             if (CanDig)
             {
                 // Set new stopping distance for building
-                this.agent.stoppingDistance = buildDistance;
+                this.Agent.stoppingDistance = buildDistance; 
                 
                 // Set animation boll for building
                 animator.SetBool(buildParam, true);
@@ -98,7 +98,7 @@ namespace DontEatSand.Entities.Units
             else
             {
                 // Reset stopping distance
-                this.agent.stoppingDistance = digDistance;
+                this.Agent.stoppingDistance = digDistance; 
                 
                 // Set animation bool for digging
                 animator.SetBool(buildParam, false);

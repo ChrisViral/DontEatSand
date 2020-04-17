@@ -140,7 +140,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7abf3df39d428d9dc25bc3961d30dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: []
+  music:
+  - {fileID: 8300000, guid: f3acf2423a3a9834193f949979c0783b, type: 3}
+  - {fileID: 8300000, guid: 4655bc612af154f4fba2600c4c06a065, type: 3}
   teams:
   - {fileID: 2100000, guid: 409b9179b11404bbca49242b1616efb9, type: 2}
   - {fileID: 2100000, guid: 7ff96785964a14cb5ab380709cf8de1b, type: 2}
+  playerIndex: 0
+  opponentIndex: 0

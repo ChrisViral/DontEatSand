@@ -49,6 +49,8 @@ namespace DontEatSand.Entities.Buildings
                 this.photonView.RPC(nameof(SetIsBuilding), RpcTarget.Others, true);
                 this.buildTimer = Timer.StartNew();
             }
+            // construction sound
+            PlaySound(1);
         }
 
         private void DoneBuilding()
@@ -70,6 +72,9 @@ namespace DontEatSand.Entities.Buildings
             //Notify farmer
             //this.Builder.DoneBuilding();
             this.Builder = null;
+
+            // construction done sound
+            PlaySound(2);
         }
 
         [PunRPC]
@@ -103,12 +108,6 @@ namespace DontEatSand.Entities.Buildings
                 position.y = this.buildHeight;
                 this.transform.localPosition = position;
             }
-        }
-
-        protected override void OnStart()
-        {
-            // construction sound
-            PlaySound(1);
         }
 
         private void Update()

@@ -379,6 +379,8 @@ MonoBehaviour:
   bodyRenderer: {fileID: 8997187199331507035}
   tintIndices: 07000000
   behaviourMode: 0
+  soundEffect:
+  - {fileID: 8300000, guid: 0ff88b128b5dbd045a186bcd254096b3, type: 3}
   projectile: {fileID: 0}
 --- !u!114 &1099417551836660900
 MonoBehaviour:
