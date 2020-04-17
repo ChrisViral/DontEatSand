@@ -22,7 +22,15 @@ namespace DontEatSand.Utils
         /// Location of the Unit BehaviourTree file
         /// </summary>
         public static string FarmerBehaviourTreeLocation { get; } = Path.Combine(Application.dataPath, "farmer-behaviour.xml");
+        
+        /// <summary>
+        /// Location of the Healer BehaviourTree file
+        /// </summary>
+        public static string HealerBehaviourTreeLocation { get; } = Path.Combine(Application.dataPath, "healer-behaviour.xml");
+        
         #endregion
+
+
 
         #region Static methods
         /// <summary>
