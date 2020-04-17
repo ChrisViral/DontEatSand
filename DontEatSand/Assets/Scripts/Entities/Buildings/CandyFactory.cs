@@ -17,9 +17,10 @@ namespace DontEatSand.Entities.Buildings
         private float buildHeight;
         [SerializeField]
         private GameObject obstacle;
-        private Timer buildTimer;
         [SerializeField, Header("Sound Effect")]
         protected AudioClip[] soundEffect;
+        private float originalY, undergroundY;
+        private Timer buildTimer;
         #endregion
 
         #region Properties
@@ -46,8 +47,11 @@ namespace DontEatSand.Entities.Buildings
             {
                 //Start building
                 this.IsBuilding = true;
-                this.photonView.RPC(nameof(SetIsBuilding), RpcTarget.Others, true);
                 this.buildTimer = Timer.StartNew();
+                if (PhotonNetwork.IsConnected)
+                {
+                    this.photonView.RPC(nameof(SetIsBuilding), RpcTarget.Others, true);
+                }
             }
             // construction sound
             PlaySound(1);
@@ -56,9 +60,9 @@ namespace DontEatSand.Entities.Buildings
         private void DoneBuilding()
         {
             //Set to zero and stop
-            Vector3 position = this.transform.localPosition;
-            position.y = 0f;
-            this.transform.localPosition = position;
+            Vector3 position = this.transform.position;
+            position.y = this.originalY;
+            this.transform.position = position;
 
             //Set flags
             this.IsBuilding = false;
@@ -66,8 +70,12 @@ namespace DontEatSand.Entities.Buildings
             this.buildTimer = null;
 
             //Terminate building process
-            this.photonView.RPC(nameof(FinishBuildOnNetwork), RpcTarget.All);
             GameEvents.OnCandyMaxChanged.Invoke(this.candyGiven);
+            FinishBuildOnNetwork();
+            if (PhotonNetwork.IsConnected)
+            {
+                this.photonView.RPC(nameof(FinishBuildOnNetwork), RpcTarget.Others);
+            }
 
             //Notify farmer
             this.Builder.DoneBuilding();
@@ -104,9 +112,11 @@ namespace DontEatSand.Entities.Buildings
             if (this.IsControllable())
             {
                 //Start building
-                Vector3 position = this.transform.localPosition;
-                position.y = this.buildHeight;
-                this.transform.localPosition = position;
+                Vector3 position = this.transform.position;
+                this.originalY = position.y;
+                this.undergroundY = this.originalY - this.buildHeight;
+                position.y = this.undergroundY;
+                this.transform.position = position;
             }
         }
 
@@ -118,9 +128,9 @@ namespace DontEatSand.Entities.Buildings
                 float seconds = this.buildTimer.ElapsedSeconds;
                 if (seconds < this.Info.BuildTime)
                 {
-                    Vector3 position = this.transform.localPosition;
-                    position.y = Mathf.Lerp(this.buildHeight, 0f, seconds / this.Info.BuildTime);
-                    this.transform.localPosition = position;
+                    Vector3 position = this.transform.position;
+                    position.y = Mathf.Lerp(this.undergroundY, this.originalY, seconds / this.Info.BuildTime);
+                    this.transform.position = position;
                 }
                 else { DoneBuilding(); }
             }

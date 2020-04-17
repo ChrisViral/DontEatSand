@@ -10,20 +10,26 @@ namespace DontEatSand.Entities.Units
     public class Farmer : Unit
     {
         #region Constants
+        /// <summary>
         /// Animator dig trigger name
         /// </summary>
         private static readonly int digParam = Animator.StringToHash("Digging");
+
+        /// <summary>
         /// Animator build trigger name
         /// </summary>
         private static readonly int buildParam = Animator.StringToHash("Building");
+
+        private const float DIG_INTERVAL = 3.0f;
+
+        private const float BUILD_DISTANCE = 3f;
+
+        private const float DIG_DISTANCE = 0.5f;
         #endregion
 
         #region Fields
         private float digStart;
-        private float digInterval = 3.0f;
         private bool isBuilding;
-        private float buildDistance = 2f;
-        private float digDistance = 0.5f;
         #endregion
 
         #region Properties
@@ -41,13 +47,13 @@ namespace DontEatSand.Entities.Units
             get
             {
                 bool digReady = false;
-                if (Time.time > this.digStart + this.digInterval)
+                if (Time.time > this.digStart + DIG_INTERVAL)
                 {
                     this.digStart = Time.time;
                     digReady = true;
                 }
 
-                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= this.digDistance && this.BuildTarget == null;
+                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= DIG_DISTANCE && this.BuildTarget == null;
             }
         }
 
@@ -56,7 +62,7 @@ namespace DontEatSand.Entities.Units
             this.isBuilding = false;
 
             // Reset stopping distance
-            this.Agent.stoppingDistance = this.digDistance;
+            this.Agent.stoppingDistance = DIG_DISTANCE;
 
             // Set animation bool for digging
             this.animator.SetBool(buildParam, false);
@@ -103,13 +109,13 @@ namespace DontEatSand.Entities.Units
             if (this.BuildTarget == null && !this.isBuilding)
             {
                 // Set new stopping distance for building
-                this.Agent.stoppingDistance = this.buildDistance;
+                this.Agent.stoppingDistance = BUILD_DISTANCE;
 
                 this.BuildTarget = candyFactory;
                 this.Destination = this.BuildTarget.Position;
             }
             // Farmer has arrived and will start building
-            else if (!this.isBuilding && Vector3.Distance(this.Position, this.Agent.destination) <= this.buildDistance)
+            else if (!this.isBuilding && Vector3.Distance(this.Position, this.Agent.destination) <= BUILD_DISTANCE)
             {
                 // Set animation bool for building
                 this.animator.SetBool(buildParam, true);
