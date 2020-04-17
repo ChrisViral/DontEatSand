@@ -1299,6 +1299,7 @@ MonoBehaviour:
   lowHealth: {r: 0.7058824, g: 0.007843138, b: 0.007843138, a: 1}
   behaviourMode: 0
   soundEffect:
+  - {fileID: 8300000, guid: 5f6603dd6ae9a284292bc3d8745879de, type: 3}
   - {fileID: 8300000, guid: c6a4c203884c70c478e76932109c35db, type: 3}
   - {fileID: 8300000, guid: a66a412669df50f45a2228ea5c88d7c1, type: 3}
   - {fileID: 8300000, guid: dad1d21c8b48c164e90a17907e5b4537, type: 3}

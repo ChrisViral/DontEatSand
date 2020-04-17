@@ -7,6 +7,11 @@ namespace DontEatSand.Entities.Units
         #region Fields
         [SerializeField]
         private GameObject projectile;
+
+        // 0 die sound
+        [SerializeField, Header("Sound Effect")]
+        private AudioClip[] soundEffect;
+        private AudioSource source;
         #endregion
 
         #region Functions
