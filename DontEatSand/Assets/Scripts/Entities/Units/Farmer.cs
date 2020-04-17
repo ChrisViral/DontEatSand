@@ -97,6 +97,7 @@ namespace DontEatSand.Entities.Units
                 animator.SetBool(buildParam, true);
                 
                 // Build building
+                // TODO building factories
             }
         }
 
@@ -115,7 +116,7 @@ namespace DontEatSand.Entities.Units
             base.OnAwake();
             
             // This probably doesn't work. Need to load farmer behavior tree
-            bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
+            bt = new BehaviourTree(DESUtils.FarmerBehaviourTreeLocation, this);
         }
 
         #endregion
