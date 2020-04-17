@@ -10,6 +10,8 @@ namespace DontEatSand.Entities.Buildings
         private int candyGiven = 20;
         [SerializeField]
         private Renderer flagRenderer;
+        [SerializeField, Header("Sound Effect")]
+        protected AudioClip[] soundEffect;
         #endregion
 
         #region Methods
@@ -34,12 +36,33 @@ namespace DontEatSand.Entities.Buildings
             this.flagRenderer.materials = materials;
         }
 
+        protected override void OnStart()
+        {
+            // construction sound
+            PlaySound(1);
+        }
+
         private void OnDestroy()
         {
+            // collapse sound
+            PlaySound(0);
             //When destroyed, remove the candy given
             if (this.IsControllable())
             {
                 GameEvents.OnCandyMaxChanged.Invoke(-this.candyGiven);
+            }
+        }
+
+        /// <summary>
+        /// Play isolated Sound at position at clip index
+        /// even if the current object is on destroy
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlaySound(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
             }
         }
         #endregion
