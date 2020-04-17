@@ -65,12 +65,6 @@ namespace DontEatSand.Entities.Units
             {
                 Attack(Target);
             }
-
-            if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 0.5f)
-            {
-                // no target and arrived to player-commanded destination
-                HasOrderFlag = false;
-            }
         }
 
         protected override void OnAwake()

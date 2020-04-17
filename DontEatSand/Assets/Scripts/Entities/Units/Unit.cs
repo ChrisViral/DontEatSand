@@ -51,7 +51,7 @@ namespace DontEatSand.Entities.Units
         protected Animator animator;
         private BehaviourTree bt;
         private float smoothSpeed;
-        private readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
+        protected readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
         protected float attackStart;
         protected float attackInterval = 1.0f;
 
@@ -248,7 +248,14 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Update function, only called on non-networked units. Use this instead of Update()
         /// </summary>
-        protected virtual void OnUpdate() { }
+        protected virtual void OnUpdate()
+        {
+            if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 0.5f)
+            {
+                // no target and arrived to player-commanded destination
+                HasOrderFlag = false;
+            }
+        }
 
         /// <summary>
         /// OnDestroy function, use this instead of OnDestroy()
