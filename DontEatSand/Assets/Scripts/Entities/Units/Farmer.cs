@@ -8,16 +8,6 @@ using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.Beh
 
 namespace DontEatSand.Entities.Units
 {
-    /// <summary>
-    /// Unit AI mode
-    /// </summary>
-    public enum FarmerMode
-    {
-        DIG,
-        BUILD,
-        FLEE
-    }
-    
     public class Farmer : Unit
     {
         #region Constants
@@ -30,7 +20,6 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Fields
-        public FarmerMode behaviourFarmerMode;
         private float digStart;
         private float digInterval = 3.0f;
         #endregion
@@ -130,15 +119,12 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("flee")]
         public BTCoroutine FleeRoutine()
         {
-            if (this.behaviourFarmerMode == FarmerMode.FLEE)
+            if (IsUnderAttackFlag)
             {
-                if (IsUnderAttackFlag)
-                {
-                    Flee();
-                    yield return BTNodeResult.NOT_FINISHED;
-                }
-                yield return BTNodeResult.SUCCESS;
+                Flee();
+                yield return BTNodeResult.NOT_FINISHED;
             }
+            yield return BTNodeResult.SUCCESS;
         }
 
         #endregion
