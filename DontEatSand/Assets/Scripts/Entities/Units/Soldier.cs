@@ -6,9 +6,19 @@ namespace DontEatSand.Entities.Units
 {
     public class Soldier : Unit
     {
+        #region Fields
         private float attackStart = 0f;
         private float attackInterval = 1.0f;
-        
+
+        // 0 attack sound
+        // 1 hit on unit
+        // 2 hit on building
+        [SerializeField, Header("Sound Effect")]
+        private AudioClip[] soundEffect;
+        private AudioSource source;
+
+        #endregion
+
         private bool canAttack {
             get
             {
@@ -46,17 +56,42 @@ namespace DontEatSand.Entities.Units
         public override void Attack(Entity target)
         {
             base.Attack(target);
-                
+
+            if (soundEffect.Length > 0)
+            {
+                source.PlayOneShot(soundEffect[0]);
+            }
+
             target.Damage(10);
             if(target is Unit unit) // attacking a unit
             {
                 unit.IsUnderAttackFlag = true;
+
+                if (soundEffect.Length > 0)
+                {// sound of hit on unit
+                    source.clip = soundEffect[1];
+                    source.PlayDelayed(0.1f);
+                }
             }
             else // attacking a building
             {
 
+                if (soundEffect.Length > 0)
+                {// sound of hit on building
+                    source.clip = soundEffect[2];
+                    source.PlayDelayed(0.1f);
+                }
             }
             
+        }
+
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+
+            // Setup audio
+            this.source = GetComponent<AudioSource>();
         }
 
         protected override void OnUpdate()
