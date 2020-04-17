@@ -106,7 +106,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Flag dictating if the enemy is attacking this unit
         /// </summary>
-        public bool IsUnderAttackFlag { get; set; } //needs to be set
+        public bool IsUnderAttackFlag { get; set; } // needs to be set manually
 
         /// <summary>
         /// If the unit is currently selected or not
