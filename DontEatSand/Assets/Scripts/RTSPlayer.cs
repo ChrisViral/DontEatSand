@@ -74,7 +74,7 @@ namespace DontEatSand
         /// <summary>
         /// The castle associated to this player
         /// </summary>
-        public Castle Castle { get; private set; }
+        public Castle Castle { get; internal set; }
 
         /// <summary>
         /// The current selection Rect
@@ -456,7 +456,6 @@ namespace DontEatSand
             else
             {
                 //Disable when connected
-                this.Castle = GameLogic.Instance.Castle;
                 this.enabled = false;
             }
 
@@ -466,15 +465,6 @@ namespace DontEatSand
             GameEvents.OnCandyChanged.AddListener(OnCandyChanged);
             GameEvents.OnUnitCreated.AddListener(OnUnitCreated);
             GameEvents.OnUnitDestroyed.AddListener(OnUnitDestroyed);
-        }
-
-        private void Start()
-        {
-            //Get the controllable castle
-            if (PhotonNetwork.IsConnected)
-            {
-                this.Castle = FindObjectsOfType<Castle>().First(c => c.IsControllable());
-            }
         }
 
         private void Update()

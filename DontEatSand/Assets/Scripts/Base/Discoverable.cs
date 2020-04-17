@@ -17,6 +17,7 @@ namespace DontEatSand.Base
         #endregion
 
         #region Properties
+        [SerializeField]
         private bool visible = true;
         /// <summary>
         /// If the object is currently visible or not
@@ -28,34 +29,51 @@ namespace DontEatSand.Base
             {
                 if (this.visible != value)
                 {
-                    GameObject go = this.gameObject;
-                    Layer temp = LayerUtils.GetLayer(go.layer);
-                    go.ChangeLayerRecursively(this.otherLayer);
-                    this.otherLayer = temp;
+                    SwitchLayers();
                     this.visible = value;
                 }
             }
         }
         #endregion
 
+        #region Methods
+        private void SwitchLayers()
+        {
+            GameObject go = this.gameObject;
+            Layer temp = LayerUtils.GetLayer(go.layer);
+            go.ChangeLayerRecursively(this.otherLayer);
+            this.otherLayer = temp;
+        }
+        #endregion
+
         #region Functions
-        private void Start() => this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
+        private void Start()
+        {
+            this.otherLayer = LayerUtils.GetLayer(this.invisibleLayer);
+            if (!this.Visible)
+            {
+                SwitchLayers();
+            }
+        }
 
         private void OnTriggerEnter(Collider other)
         {
-            this.Log(other.name);
-            if (this.permanent)
+            PhotonView view = other.GetComponent<PhotonView>();
+            if (view && view.IsMine && view.Owner != null)
             {
-                //If invisible, make visible
-                this.Visible = true;
-            }
-            else
-            {
-                //If invisible, make visible, and increment counter
-                this.inRange++;
-                if (!this.Visible)
+                if (this.permanent)
                 {
+                    //If invisible, make visible
                     this.Visible = true;
+                }
+                else
+                {
+                    //If invisible, make visible, and increment counter
+                    this.inRange++;
+                    if (!this.Visible)
+                    {
+                        this.Visible = true;
+                    }
                 }
             }
         }

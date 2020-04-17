@@ -300,27 +300,23 @@ namespace DontEatSand.Entities.Units
         protected override void OnAwake()
         {
             this.healthbar.gameObject.SetActive(false);
-            Material team = RTSPlayer.Instance.Castle.PlayerMaterial;
+            Material team = this.IsControllable() ? GameLogic.Instance.PlayerMaterial : GameLogic.Instance.OpponentMaterial;
             Material[] materials = this.bodyRenderer.materials;
             foreach (int index in this.tintIndices)
             {
-                materials[index] = RTSPlayer.Instance.Castle.PlayerMaterial;
+                materials[index] = team;
             }
             this.bodyRenderer.materials = materials;
+            this.animator = GetComponent<Animator>();
+            this.agent = GetComponent<NavMeshAgent>();
 
             if (this.IsControllable())
             {
-                this.agent = GetComponent<NavMeshAgent>();
                 this.agent.stoppingDistance = this.attackRange * 0.6f;
-                this.animator = GetComponent<Animator>();
                 this.behaviourMode = Mode.DEFEND;
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);
-            }
-            else
-            {
-                Destroy(GetComponent<NavMeshAgent>());
             }
         }
 

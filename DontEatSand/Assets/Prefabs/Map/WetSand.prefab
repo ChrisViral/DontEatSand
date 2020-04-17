@@ -47,7 +47,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2
+  m_Radius: 30
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &8454361113988580602
 MonoBehaviour:
@@ -63,6 +63,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invisibleLayer: 12
   permanent: 1
+  visible: 1
   selectionIndicator: {fileID: 1138203148762388692}
   selectedColour: {r: 0, g: 0.6039216, b: 0.015686275, a: 1}
   hoveredColour: {r: 0.24705882, g: 0.38431373, b: 0.9607843, a: 1}

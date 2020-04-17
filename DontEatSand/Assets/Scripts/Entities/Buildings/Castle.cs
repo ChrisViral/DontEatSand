@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using DontEatSand.Base;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using Photon.Pun;
-using Photon.Realtime;
 using RTSCam;
 using UnityEngine;
 
@@ -34,13 +34,6 @@ namespace DontEatSand.Entities.Buildings
         /// ID of this player
         /// </summary>
         public int ID => this.id;
-
-        [SerializeField]
-        private Material playerMaterial;
-        /// <summary>
-        /// Colour of this player
-        /// </summary>
-        public Material PlayerMaterial => this.playerMaterial;
 
         [SerializeField, Tooltip("All the units that can be created by this castle")]
         private Unit[] units;
@@ -212,20 +205,30 @@ namespace DontEatSand.Entities.Buildings
 
         protected override void OnStart()
         {
-            if (this.IsControllable())
+            if (RTSPlayer.Instance.Castle == this)
             {
                 //Setup
                 this.visibleSandpit.Visible = true;
-                RTSCamera cam = Camera.main.GetComponent<RTSCamera>();
+                Camera cam = Camera.main;
+                RTSCamera rtsCam = cam.GetComponent<RTSCamera>();
                 Transform parent = cam.transform.parent;
+                cam.orthographicSize = 15;
                 parent.position = this.startCameraPosition;
                 parent.rotation = Quaternion.Euler(this.startCameraRotation);
-                cam.enabled = true;
+                rtsCam.enabled = true;
                 GameEvents.OnUnitRemovedFromQueue.AddListener(OnUnitRemovedFromQueue);
 
                 //Create a farmer
                 Unit farmer = this.units[5];
-                PhotonUtils.Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
+                if (PhotonNetwork.IsConnected)
+                {
+                    GameObject go = PhotonNetwork.Instantiate(farmer.name, this.spawnLocation.position, farmer.transform.rotation);
+                    go.transform.SetParent(this.transform.parent, true);
+                }
+                else
+                {
+                    Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
+                }
             }
         }
 

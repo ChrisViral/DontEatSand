@@ -13,7 +13,7 @@ namespace DontEatSand.Extensions
         /// </summary>
         /// <param name="obj">The networked object to check</param>
         /// <returns>True if the network is disconnected, or if the PhotonView is local</returns>
-        public static bool IsControllable(this MonoBehaviourPun obj) => !PhotonNetwork.IsConnected || obj.photonView.IsMine;
+        public static bool IsControllable(this MonoBehaviourPun obj) => !PhotonNetwork.IsConnected || (obj.photonView.IsMine && obj.photonView.Owner != null);
         #endregion
     }
 }

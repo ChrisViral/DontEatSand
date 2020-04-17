@@ -1,4 +1,5 @@
 ﻿using DontEatSand.Base;
+using DontEatSand.Entities.Buildings;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using Photon.Pun;
@@ -15,8 +16,8 @@ namespace DontEatSand.Entities
         [SerializeField]
         private Renderer selectionIndicator;
         [SerializeField]
-        private Color selectedColour = Color.green, enemyColour = Color.red, hoveredColour = Color.blue;
-        private Color activeColour;
+        protected Color selectedColour = Color.green, enemyColour = Color.red, hoveredColour = Color.blue;
+        protected Color activeColour;
         #endregion
 
         #region Properties
@@ -180,17 +181,19 @@ namespace DontEatSand.Entities
         private void Start()
         {
             //Setup selection indicator
-            this.activeColour = this.IsControllable() ? this.selectedColour : this.enemyColour;
+            bool controllable = this is Castle castle ? RTSPlayer.Instance.Castle == castle : this.IsControllable();
 
             //If controllable, destroy the discoverable component
             Discoverable discoverable = GetComponent<Discoverable>();
-            if (this.IsControllable())
+            if (controllable)
             {
                 Destroy(discoverable);
+                this.activeColour = this.selectedColour;
             }
             else
             {
                 discoverable.Visible = false;
+                this.activeColour = this.enemyColour;
             }
 
             OnStart();

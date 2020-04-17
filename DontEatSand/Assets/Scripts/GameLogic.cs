@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using DontEatSand.Base;
-using DontEatSand.Entities;
 using DontEatSand.Entities.Buildings;
 using DontEatSand.Extensions;
 using DontEatSand.UI;
@@ -36,27 +34,45 @@ namespace DontEatSand
         /// The maximum amount of players in a game
         /// </summary>
         public const byte MAX_PLAYERS = 2;
+
+        /// <summary>
+        /// Tag of the HUD object
+        /// </summary>
+        private const string HUD_TAG = "HUD";
+
+        /// <summary>
+        /// Tag of the HUD object
+        /// </summary>
+        private const string WAITING_TAG = "WaitingLabel";
         #endregion
 
         #region Fields
         //Inspector fields
         [SerializeField, Header("Music")]
         private AudioClip[] music;
+        [SerializeField]
+        private Material[] teams;
 
         //Private fields
         private AudioSource source;
         private float baseVolume;
         private bool loaded;
-        private int playerIndex;
+        public int playerIndex, opponentIndex;
         private Player otherPlayer;
         private Castle[] castles;
+        private GameObject hud, waiting;
         #endregion
 
         #region Properties
         /// <summary>
-        /// The castle associated to this player
+        /// Material associated to this player
         /// </summary>
-        public Castle Castle { get; private set; }
+        public Material PlayerMaterial => this.teams[this.playerIndex];
+
+        /// <summary>
+        /// Material associated to the opponent
+        /// </summary>
+        public Material OpponentMaterial => this.teams[this.opponentIndex];
         #endregion
 
         #region Static properties
@@ -202,6 +218,16 @@ namespace DontEatSand
                     break;
                 case GameScenes.WORLD:
                     this.castles = FindObjectsOfType<Castle>();
+                    this.hud = GameObject.FindGameObjectWithTag(HUD_TAG);
+                    this.waiting = GameObject.FindGameObjectWithTag(WAITING_TAG);
+                    if (PhotonNetwork.IsConnected)
+                    {
+                        this.hud.SetActive(false);
+                    }
+                    else
+                    {
+                        this.waiting.SetActive(false);
+                    }
                     Array.Sort(this.castles);
                     break;
             }
@@ -223,50 +249,48 @@ namespace DontEatSand
             //Shortcut since we know we only have two players
             if (Random.value > 0.5f)
             {
-                this.playerIndex = 0;
-                this.photonView.RPC(nameof(SetPlayerIndex), this.otherPlayer, 1);
+                this.photonView.RPC(nameof(SetupIndex), this.otherPlayer, 1, 0);
+                SetupIndex(0, 1);
             }
             else
             {
-                this.playerIndex = 1;
-                this.photonView.RPC(nameof(SetPlayerIndex), this.otherPlayer, 0);
+                this.photonView.RPC(nameof(SetupIndex), this.otherPlayer, 0, 1);
+                SetupIndex(1, 0);
             }
-
-            SetupPlayer();
         }
 
         [PunRPC]
-        private void SetPlayerIndex(int index)
+        private void SetupIndex(int player, int opponent)
         {
-            this.playerIndex = index;
-            SetupPlayer();
-        }
-
-        private void SetupPlayer()
-        {
-            this.Castle = this.castles[this.playerIndex];
-            this.Castle.photonView.RequestOwnership();
-            this.castles.ForEach(c => c.enabled = true);
+            this.playerIndex = player;
+            this.opponentIndex = opponent;
+            Castle castle = this.castles[this.playerIndex];
+            castle.photonView.RequestOwnership();
+            RTSPlayer.Instance.Castle = castle;
             RTSPlayer.Instance.enabled = true;
+            this.castles.ForEach(c => c.enabled = true);
+            this.hud.SetActive(true);
+            this.waiting.SetActive(false);
         }
         #endregion
 
         #region Callbacks
+        public override void OnJoinedRoom()
+        {
+            this.Log("Successfully joined room as " + PhotonNetwork.NickName);
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                this.otherPlayer = PhotonNetwork.PlayerListOthers[0];
+            }
+        }
+
         public override void OnPlayerEnteredRoom(Player player)
         {
             this.Log(player.NickName + " just entered the room");
-            if (PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == MAX_PLAYERS)
             {
-                if (PhotonNetwork.CurrentRoom.PlayerCount == MAX_PLAYERS)
-                {
-                    StartGame();
-                    this.otherPlayer = player;
-                }
-            }
-            else
-            {
-                //Get other player
-                this.otherPlayer = PhotonNetwork.PlayerListOthers[0];
+                StartGame();
+                this.otherPlayer = player;
             }
         }
 
@@ -293,6 +317,9 @@ namespace DontEatSand
         #region Functions
         protected override void OnAwake()
         {
+            //Call base OnAwake()
+            base.OnAwake();
+
             //Opening message
             this.Log("Running Don't Eat Sand v" + GameVersion.VersionString);
 

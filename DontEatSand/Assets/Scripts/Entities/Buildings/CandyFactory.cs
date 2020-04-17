@@ -30,7 +30,7 @@ namespace DontEatSand.Entities.Buildings
         protected override void OnAwake()
         {
             Material[] materials = this.flagRenderer.materials;
-            materials[1] = RTSPlayer.Instance.Castle.PlayerMaterial;
+            materials[1] = this.IsControllable() ? GameLogic.Instance.PlayerMaterial : GameLogic.Instance.OpponentMaterial;
             this.flagRenderer.materials = materials;
         }
 
