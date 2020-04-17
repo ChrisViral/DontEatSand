@@ -30,6 +30,7 @@ namespace DontEatSand.Entities.Units
 
         #region Fields
         public FarmerMode behaviourMode;
+        private BehaviourTree bt;
         private float digStart;
         private float digInterval = 3.0f;
         #endregion
