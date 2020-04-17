@@ -18,6 +18,18 @@ namespace DontEatSand.Entities.Units
         }
 
         #endregion
+        
+        #region Functions
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+
+            // Scout runs faster than everyone else
+            this.Agent.speed += this.Agent.speed * 0.2f;
+        }
+
+        #endregion
 
         #region BehaviourTree
         
