@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DontEatSand.Utils;
+using UnityEngine;
 
 namespace DontEatSand.Entities.Units
 {
@@ -6,16 +7,54 @@ namespace DontEatSand.Entities.Units
     {
         #region Fields
         [SerializeField]
-        private GameObject projectile;
+        private Vector3 launchLocation;
+        [SerializeField]
+        private Projectile projectile;
+        #endregion
+
+        #region Methods
+        protected override void ProcessCommand(Vector3 destination, ISelectable target)
+        {
+            //FROM CHRIS:
+            //Just testing out the projectile, I don't know if this is actually good for BehaviourTree implementation
+            base.ProcessCommand(destination, target);
+
+            if(this.IsSelected)
+            {
+                // Acknowledge clicked entity as a target for this unit
+                if (target is Entity entity) //&& !entity.IsControllable())
+                {
+                    this.Target = entity;
+                }
+                else // clicked on the ground somewhere
+                {
+                    this.Target = null;
+                }
+            }
+        }
+
+        public override void Attack(Entity target)
+        {
+            base.Attack(target);
+            PhotonUtils.Instantiate(this.projectile, this.transform.TransformPoint(this.launchLocation)).Target = target;
+        }
         #endregion
 
         #region Functions
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+
             // Set throwing animation trigger
-            attackTriggerName = Animator.StringToHash("Throwing");
+            this.attackTriggerName = Animator.StringToHash("Throwing");
+        }
+
+        protected override void OnUpdate()
+        {
+            if(this.CanAttack)
+            {
+                Attack(this.Target);
+            }
         }
         #endregion
     }

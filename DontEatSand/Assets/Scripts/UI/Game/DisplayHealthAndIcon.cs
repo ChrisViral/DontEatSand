@@ -13,13 +13,14 @@ namespace DontEatSand.UI.Game
         [FormerlySerializedAs("greenHealth"),SerializeField]
         private Image healthbar;
         [SerializeField]
-        private Color highHealth = Color.green, lowHealth = Color.red;
+        private Gradient healthGradient;
         private Image icon;
         private Button button;
         private float smoothSpeed;
         private bool isSandpit;
         private Sandpit sandpit;
         private Entity entity;
+        private float fillAmount = 1f;
         #endregion
 
         #region Properties
@@ -92,9 +93,9 @@ namespace DontEatSand.UI.Game
             //Updates the unit's health bar
             if(this.Selected != null)
             {
-                float fill = Mathf.SmoothDamp(this.healthbar.fillAmount, this.Amount, ref this.smoothSpeed, 0.2f);
-                this.healthbar.fillAmount = fill;
-                this.healthbar.color = Color.Lerp(this.lowHealth, this.highHealth, fill);
+                this.fillAmount = Mathf.SmoothDamp(this.fillAmount, this.Amount, ref this.smoothSpeed, 0.2f);
+                this.healthbar.fillAmount = this.fillAmount;
+                this.healthbar.color = this.healthGradient.Evaluate(this.fillAmount);
             }
         }
         #endregion

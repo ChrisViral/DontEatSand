@@ -27,7 +27,6 @@ namespace DontEatSand.Entities.Units
         public override void Attack(Entity target)
         {
             base.Attack(target);
-                
             target.Damage(10);
             if(target is Unit unit) // attacking a unit
             {
@@ -37,7 +36,6 @@ namespace DontEatSand.Entities.Units
             {
 
             }
-            
         }
 
         protected override void OnUpdate()

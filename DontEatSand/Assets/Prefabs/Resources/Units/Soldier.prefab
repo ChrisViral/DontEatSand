@@ -1294,8 +1294,36 @@ MonoBehaviour:
   hoveredColour: {r: 0.24705882, g: 0.38431373, b: 0.9607843, a: 1}
   entityName: Soldier
   healthbar: {fileID: 5133865412176512007}
-  highHealth: {r: 0, g: 0.6039216, b: 0.015686275, a: 1}
-  lowHealth: {r: 0.7058824, g: 0.007843138, b: 0.007843138, a: 1}
+  healthGradient:
+    serializedVersion: 2
+    key0: {r: 0.7, g: 0, b: 0, a: 1}
+    key1: {r: 0.85, g: 0.85, b: 0, a: 1}
+    key2: {r: 0, g: 0.7, b: 0, a: 1}
+    key3: {r: 0, g: 0.7, b: 0, a: 0}
+    key4: {r: 0, g: 0.7, b: 0, a: 0}
+    key5: {r: 0, g: 0.7, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 3277
+    ctime1: 36044
+    ctime2: 65535
+    ctime3: 65535
+    ctime4: 65535
+    ctime5: 65535
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 65535
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  attackRange: 1
   behaviourMode: 0
 --- !u!195 &1248447881997185065
 NavMeshAgent:
@@ -1311,7 +1339,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 0.5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1

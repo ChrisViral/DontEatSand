@@ -45,16 +45,18 @@ namespace DontEatSand.Entities.Units
         [SerializeField]
         private Image healthbar;
         [SerializeField]
-        private Color highHealth = Color.green, lowHealth = Color.red;
+        private Gradient healthGradient;
+        [SerializeField]
+        protected float attackRange = 1f;
         public Mode behaviourMode;
         protected NavMeshAgent agent;
         protected Animator animator;
         private BehaviourTree bt;
         private float smoothSpeed;
+        private float healthPercent = 1f;
         private readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
         private float attackStart;
         private float attackInterval = 1.0f;
-
         #endregion
 
         #region Properties
@@ -158,7 +160,7 @@ namespace DontEatSand.Entities.Units
                     this.attackStart = Time.time;
                     attackReady = true;
                 }
-                return attackReady && this.Target != null && Vector3.Distance(this.Position, this.Target.Position) < 1.0f;
+                return attackReady && this.Target != null && Vector3.Distance(this.Position, this.Target.Position) < this.attackRange;
             }
         }
 
@@ -269,8 +271,9 @@ namespace DontEatSand.Entities.Units
         #region Collider Functions
         private void OnTriggerEnter(Collider collider)
         {
-            GameObject enemy = collider.gameObject;
-            if(enemy.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
+            if (collider.isTrigger) { return; }
+
+            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
             {
                 // Populate enemies
                 this.enemyUnitsInRange.Add(enemyUnit);
@@ -280,8 +283,9 @@ namespace DontEatSand.Entities.Units
 
         private void OnTriggerExit(Collider collider)
         {
-            GameObject enemy = collider.gameObject;
-            if(enemy.TryGetComponent(out Unit enemyUnit) && this.enemyUnitsInRange.Contains(enemyUnit))
+            if (collider.isTrigger) { return; }
+
+            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit) && this.enemyUnitsInRange.Contains(enemyUnit))
             {
                 this.enemyUnitsInRange.Remove(enemyUnit);
             }
@@ -298,6 +302,7 @@ namespace DontEatSand.Entities.Units
             if (this.IsControllable())
             {
                 this.agent = GetComponent<NavMeshAgent>();
+                this.agent.stoppingDistance = this.attackRange * 0.6f;
                 this.animator = GetComponent<Animator>();
                 this.behaviourMode = Mode.DEFEND;
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
@@ -324,11 +329,11 @@ namespace DontEatSand.Entities.Units
             //Send velocity to animator
             this.animator.SetFloat(velocityParam, this.agent.velocity.magnitude);
             //Set healthbar
+            this.healthPercent = Mathf.SmoothDamp(this.healthPercent, this.HealthAmount, ref this.smoothSpeed, 0.2f);
+            this.healthbar.fillAmount = this.healthPercent;
             if (this.healthbar.gameObject.activeInHierarchy)
             {
-                float fill = Mathf.SmoothDamp(this.healthbar.fillAmount, this.HealthAmount, ref this.smoothSpeed, 0.2f);
-                this.healthbar.fillAmount = fill;
-                this.healthbar.color = Color.Lerp(this.lowHealth, this.highHealth, fill);
+                this.healthbar.color = this.healthGradient.Evaluate(this.healthPercent);
             }
         }
 
