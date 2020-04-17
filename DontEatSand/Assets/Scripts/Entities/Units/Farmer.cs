@@ -1,10 +1,8 @@
-﻿using DontEatSand.Base;
-using DontEatSand.Entities.Buildings;
+﻿using DontEatSand.Entities.Buildings;
 using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.AI;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
 namespace DontEatSand.Entities.Units
@@ -12,54 +10,63 @@ namespace DontEatSand.Entities.Units
     public class Farmer : Unit
     {
         #region Constants
+        /// <summary>
         /// Animator dig trigger name
         /// </summary>
         private static readonly int digParam = Animator.StringToHash("Digging");
+
+        /// <summary>
         /// Animator build trigger name
         /// </summary>
         private static readonly int buildParam = Animator.StringToHash("Building");
+
+        private const float DIG_INTERVAL = 3.0f;
+
+        private const float BUILD_DISTANCE = 3f;
+
+        private const float DIG_DISTANCE = 0.5f;
         #endregion
 
         #region Fields
         private float digStart;
-        private float digInterval = 3.0f;
         private bool isBuilding;
-        private float buildDistance = 2f;
-        private float digDistance = 0.5f;
         #endregion
 
         #region Properties
+        protected override string BehaviourTreeLocation => DESUtils.FarmerBehaviourTreeLocation;
 
         private Sandpit SandPitTarget { get; set; }
+
         public CandyFactory BuildTarget { get; set; }
 
         /// <summary>
         /// If the unit can currently dig
         /// </summary>
-        private bool CanDig {
+        private bool CanDig
+        {
             get
             {
                 bool digReady = false;
-                if(Time.time > this.digStart + this.digInterval)
+                if (Time.time > this.digStart + DIG_INTERVAL)
                 {
                     this.digStart = Time.time;
                     digReady = true;
                 }
 
-                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= digDistance && BuildTarget == null;
+                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= DIG_DISTANCE && this.BuildTarget == null;
             }
         }
 
         public void DoneBuilding()
         {
-            isBuilding = false;
-            
+            this.isBuilding = false;
+
             // Reset stopping distance
-            this.Agent.stoppingDistance = digDistance;
-                
+            this.Agent.stoppingDistance = DIG_DISTANCE;
+
             // Set animation bool for digging
-            animator.SetBool(buildParam, false);
-            BuildTarget = null;
+            this.animator.SetBool(buildParam, false);
+            this.BuildTarget = null;
         }
 
         #endregion
@@ -71,20 +78,20 @@ namespace DontEatSand.Entities.Units
             base.ProcessCommand(destination, target);
 
             // If target is wet sand, dig
-            if (BuildTarget == null && target is Sandpit sandpit)
+            if (this.BuildTarget == null && target is Sandpit sandpit)
             {
                 this.HasOrderFlag = true;
-                this.digDistance = digDistance;
+                //this.digDistance = this.digDistance; <- Useless
                 this.SandPitTarget = sandpit;
             }
         }
 
         public void Dig(Sandpit sandpit)
         {
-            if (CanDig)
+            if (this.CanDig)
             {
                 // Set animation bool for digging
-                animator.SetBool(digParam, true);
+                this.animator.SetBool(digParam, true);
 
                 // Take sand from sandpit
                 GameEvents.OnSandChanged.Invoke(sandpit.HarvestSand(10));
@@ -92,63 +99,54 @@ namespace DontEatSand.Entities.Units
             else
             {
                 // Set animation bool for digging
-                animator.SetBool(digParam, false);
+                this.animator.SetBool(digParam, false);
             }
         }
 
         public void Build(CandyFactory candyFactory)
         {
             // Farmer just started building
-            if (BuildTarget == null && !isBuilding)
+            if (this.BuildTarget == null && !this.isBuilding)
             {
                 // Set new stopping distance for building
-                this.Agent.stoppingDistance = buildDistance;
+                this.Agent.stoppingDistance = BUILD_DISTANCE;
 
-                BuildTarget = candyFactory;
-                Destination = BuildTarget.Position;
+                this.BuildTarget = candyFactory;
+                this.Destination = this.BuildTarget.Position;
             }
             // Farmer has arrived and will start building
-            else if (!isBuilding && Vector3.Distance(Position, Agent.destination) <= buildDistance)
+            else if (!this.isBuilding && Vector3.Distance(this.Position, this.Agent.destination) <= BUILD_DISTANCE)
             {
                 // Set animation bool for building
-                animator.SetBool(buildParam, true);
-                
-                // Tell CandyFactory
-                BuildTarget.StartBuilding();
+                this.animator.SetBool(buildParam, true);
 
-                isBuilding = true;
+                // Tell CandyFactory
+                this.BuildTarget.StartBuilding();
+
+                this.isBuilding = true;
             }
         }
 
         public void Flee()
         {
             // Set destination away from enemy
-            Destination = transform.position - FindClosestTarget().transform.position;
+            this.Destination = this.transform.position - FindClosestTarget().transform.position;
         }
 
         #endregion
 
         #region Functions
-
-        protected override void OnAwake()
-        {
-            base.OnAwake();
-
-            // This probably doesn't work. Need to load farmer behavior tree
-            this.bt = new BehaviourTree(DESUtils.FarmerBehaviourTreeLocation, this);
-        }
-
         protected override void OnUpdate()
         {
             base.OnUpdate();
 
-            if (BuildTarget != null)
+            if (this.BuildTarget != null)
             {
-                Build(BuildTarget);
+                Build(this.BuildTarget);
             }
-            else if (SandPitTarget != null)
+            else if (this.SandPitTarget != null)
             {
-                Dig(SandPitTarget);
+                Dig(this.SandPitTarget);
             }
         }
 
@@ -156,10 +154,10 @@ namespace DontEatSand.Entities.Units
         {
             base.OnDestroyed();
 
-            if (isBuilding)
+            if (this.isBuilding)
             {
                 // Destroy building too
-                PhotonNetwork.Destroy(BuildTarget.gameObject);
+                PhotonNetwork.Destroy(this.BuildTarget.gameObject);
             }
         }
 
@@ -174,7 +172,7 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("flee")]
         public BTCoroutine FleeRoutine()
         {
-            if (IsUnderAttackFlag)
+            if (this.IsUnderAttackFlag)
             {
                 Flee();
                 yield return BTNodeResult.NOT_FINISHED;

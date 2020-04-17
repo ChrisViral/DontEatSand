@@ -307,8 +307,8 @@ MonoBehaviour:
   entityName: Candy Factory
   candyGiven: 20
   flagRenderer: {fileID: 7975482706729508352}
-  buildHeight: 0
-  obstacle: {fileID: 0}
+  buildHeight: 3.6
+  obstacle: {fileID: 1272027405}
   soundEffect:
   - {fileID: 8300000, guid: ad7b1254edc687a4a92cbd8283d04f8a, type: 3}
   - {fileID: 8300000, guid: 444bc766a4096984ca33822c9738e6ac, type: 3}

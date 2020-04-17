@@ -1,6 +1,5 @@
 ﻿using DontEatSand.Utils;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace DontEatSand.Entities.Units
 {
@@ -58,7 +57,7 @@ namespace DontEatSand.Entities.Units
             }
             if(!this.Target)
             {
-                Agent.stoppingDistance = 0.5f;
+                this.Agent.stoppingDistance = 0.5f;
             }
         }
         #endregion

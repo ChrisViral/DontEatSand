@@ -16,20 +16,12 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Properties
+        protected override string BehaviourTreeLocation => DESUtils.HealerBehaviourTreeLocation;
+
         /// <summary>
         /// Flag dictating if an enemy is within the aggro range
         /// </summary>
-        public bool IsAllySeenFlag
-        {
-            get
-            {
-                return this.allyUnitsInRange.Count != 0;
-            }
-            set
-            {
-
-            }
-        }
+        public bool IsAllySeenFlag => this.allyUnitsInRange.Count != 0;
 
 
         /// <summary>
@@ -95,7 +87,7 @@ namespace DontEatSand.Entities.Units
         public void Flee()
         {
             // Set destination away from enemy
-            Destination = transform.position - FindClosestTarget().transform.position;
+            this.Destination = this.transform.position - FindClosestTarget().transform.position;
         }
 
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
@@ -104,7 +96,7 @@ namespace DontEatSand.Entities.Units
 
             if(this.IsSelected)
             {
-                HasOrderFlag = true;
+                this.HasOrderFlag = true;
                 // Acknowledge clicked entity as a target for this unit
                 if (target is Entity entity) //&& !entity.IsControllable())
                 {
@@ -119,20 +111,17 @@ namespace DontEatSand.Entities.Units
         protected override void OnAwake()
         {
             base.OnAwake();
-
-            this.bt = new BehaviourTree(DESUtils.HealerBehaviourTreeLocation, this);
-
             // Set throwing animation trigger
-            attackTriggerName = Animator.StringToHash("Throwing");
+            this.attackTriggerName = Animator.StringToHash("Throwing");
         }
 
         protected override void OnUpdate()
         {
             base.OnUpdate();
             // if target exists and is within range
-            if(CanAttack && Target != null)
+            if(this.CanAttack && this.Target != null)
             {
-                Heal(Target);
+                Heal(this.Target);
             }
 
         }
@@ -174,7 +163,7 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("heal")]
         public BTCoroutine HealRoutine()
         {
-            if(IsAllySeenFlag)
+            if(this.IsAllySeenFlag)
             {
                 this.Target = FindClosestAlly();
                 if(this.Target)
@@ -201,7 +190,7 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("flee")]
         public BTCoroutine FleeRoutine()
         {
-            if (IsUnderAttackFlag)
+            if (this.IsUnderAttackFlag)
             {
                 Flee();
                 yield return BTNodeResult.NOT_FINISHED;

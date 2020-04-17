@@ -1,5 +1,4 @@
-﻿using System;
-using DontEatSand.Base;
+﻿using DontEatSand.Base;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using Photon.Pun;

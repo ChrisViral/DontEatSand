@@ -67,6 +67,11 @@ namespace DontEatSand.Entities.Units
 
         #region Properties
         /// <summary>
+        ///The location of the BehaviourTree for this unit, override to change
+        /// </summary>
+        protected virtual string BehaviourTreeLocation => DESUtils.BehaviourTreeLocation;
+
+        /// <summary>
         /// The NavMeshAgent associated to this unit
         /// </summary>
         public NavMeshAgent Agent { get; private set; }
@@ -89,21 +94,9 @@ namespace DontEatSand.Entities.Units
             }
         }
 
-        public bool IsAttackModeFlag
-        {
-            get
-            {
-                return behaviourMode == Mode.ATTACK;
-            }
-        }
+        public bool IsAttackModeFlag => this.behaviourMode == Mode.ATTACK;
 
-        public bool IsDefendModeFlag
-        {
-            get
-            {
-                return behaviourMode == Mode.DEFEND;
-            }
-        }
+        public bool IsDefendModeFlag => this.behaviourMode == Mode.DEFEND;
 
         /// <summary>
         /// Flag dictating if the unit is following an order
@@ -248,10 +241,10 @@ namespace DontEatSand.Entities.Units
         /// <param name="delay"></param>
         protected void PlaySoundOnce(int index, float delay)
         {
-            if (soundEffect.Length > index)
+            if (this.soundEffect.Length > index)
             {
-                source.clip = soundEffect[index];
-                source.PlayDelayed(delay);
+                this.source.clip = this.soundEffect[index];
+                this.source.PlayDelayed(delay);
             }
         }
 
@@ -261,9 +254,9 @@ namespace DontEatSand.Entities.Units
         /// <param name="index"></param>
         protected void PlaySoundOnce(int index)
         {
-            if (soundEffect.Length > index)
+            if (this.soundEffect.Length > index)
             {
-                source.PlayOneShot(soundEffect[index]);
+                this.source.PlayOneShot(this.soundEffect[index]);
             }
         }
 
@@ -274,9 +267,9 @@ namespace DontEatSand.Entities.Units
         /// <param name="index"></param>
         protected void PlayLastSound(int index)
         {
-            if (soundEffect.Length > index)
+            if (this.soundEffect.Length > index)
             {
-                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
+                AudioSource.PlayClipAtPoint(this.soundEffect[index], this.transform.position);
             }
         }
 
@@ -363,7 +356,7 @@ namespace DontEatSand.Entities.Units
             {
                 this.Agent.stoppingDistance = this.attackRange * 0.6f;
                 this.behaviourMode = Mode.DEFEND;
-                this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
+                this.bt = new BehaviourTree(this.BehaviourTreeLocation, this);
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);
             }
@@ -385,7 +378,7 @@ namespace DontEatSand.Entities.Units
                 if(this.Target == null && Vector3.Distance(this.Position, this.Agent.destination) < 1f)
                 {
                     // no target and arrived to player-commanded destination
-                    HasOrderFlag = false;
+                    this.HasOrderFlag = false;
                 }
 
             }
