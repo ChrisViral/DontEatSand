@@ -76,7 +76,7 @@ namespace DontEatSand.Entities.Units
                 animator.SetBool(digParam, true);
                 
                 // Take sand from sandpit
-                sandpit.HarvestSand(10);
+                GameEvents.OnSandChanged.Invoke(sandpit.HarvestSand(10));
             }
             else
             {
