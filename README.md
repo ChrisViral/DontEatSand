@@ -1,4 +1,4 @@
-# Don't Eat Sand - A D.E.S. Games production
+# Don't Eat Sand - A D.E.S. Games Production
 
 A COMP-46 Winter 2020 class project.
 
@@ -16,4 +16,4 @@ Name                  | Role                 | GitHub
 **Nat Whitheley**     | 3D Artist/Animator   | [@nat-w](https://github.com/nat-w)
 **Brandon Huang**     | Programmer/2D Artist | [@Arcavexus](https://github.com/Arcavexus)
 **Felix Yefei Xue**   | Programmer/Audio     | [@felixyf0124](https://github.com/@felixyf0124)
-**Matthew ???**       | Gameplay Programmer  | [@MBenchimol](https://github.com/@MBenchimol)
+**Matthew Benchimol**       | Gameplay Programmer  | [@MBenchimol](https://github.com/@MBenchimol)
