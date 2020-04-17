@@ -267,7 +267,23 @@ namespace DontEatSand.Entities.Units
         /// <param name="index"></param>
         protected void PlaySoundOnce(int index)
         {
-            PlaySoundOnce(index, 0f);
+            if (soundEffect.Length > index)
+            {
+                source.PlayOneShot(soundEffect[index]);
+            }
+        }
+
+        /// <summary>
+        /// Play isolated Sound at position at clip index
+        /// even if the current object is on destroy
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlayLastSound(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
+            }
         }
 
         #endregion
@@ -395,7 +411,7 @@ namespace DontEatSand.Entities.Units
         private void OnDestroy()
         {
             // play death sound (index 0)
-            PlaySoundOnce(0);
+            PlayLastSound(0);
             if (this.IsControllable())
             {
                 //Notify of death and give back sand
