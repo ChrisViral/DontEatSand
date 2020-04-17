@@ -59,6 +59,10 @@ namespace DontEatSand.Entities.Units
         protected readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
         protected float attackStart;
         protected float attackInterval = 1.0f;
+        [SerializeField, Header("Sound Effect")]
+        protected AudioClip[] soundEffect;
+        protected AudioSource source;
+
         #endregion
 
         #region Properties
@@ -235,6 +239,49 @@ namespace DontEatSand.Entities.Units
         }
         #endregion
 
+        #region Audio methods
+
+        /// <summary>
+        /// Play Sound at clip index with specified delay
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="delay"></param>
+        protected void PlaySoundOnce(int index, float delay)
+        {
+            if (soundEffect.Length > index)
+            {
+                source.clip = soundEffect[index];
+                source.PlayDelayed(delay);
+            }
+        }
+
+        /// <summary>
+        /// Play Sound at clip index with 0 delay
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlaySoundOnce(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                source.PlayOneShot(soundEffect[index]);
+            }
+        }
+
+        /// <summary>
+        /// Play isolated Sound at position at clip index
+        /// even if the current object is on destroy
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlayLastSound(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
+            }
+        }
+
+        #endregion
+
         #region Virtual methods
         /// <summary>
         /// Attacks the specified target
@@ -320,6 +367,9 @@ namespace DontEatSand.Entities.Units
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);
             }
+
+            // Setup audio
+            this.source = GetComponent<AudioSource>();
         }
 
         private void Update()
@@ -354,6 +404,8 @@ namespace DontEatSand.Entities.Units
 
         private void OnDestroy()
         {
+            // play death sound (index 0)
+            PlayLastSound(0);
             if (this.IsControllable())
             {
                 //Notify of death and give back sand

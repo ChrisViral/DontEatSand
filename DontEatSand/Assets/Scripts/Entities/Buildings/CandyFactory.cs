@@ -18,6 +18,8 @@ namespace DontEatSand.Entities.Buildings
         [SerializeField]
         private GameObject obstacle;
         private Timer buildTimer;
+        [SerializeField, Header("Sound Effect")]
+        protected AudioClip[] soundEffect;
         #endregion
 
         #region Properties
@@ -103,6 +105,12 @@ namespace DontEatSand.Entities.Buildings
             }
         }
 
+        protected override void OnStart()
+        {
+            // construction sound
+            PlaySound(1);
+        }
+
         private void Update()
         {
             if (this.IsBuilding && this.IsControllable())
@@ -121,10 +129,25 @@ namespace DontEatSand.Entities.Buildings
 
         private void OnDestroy()
         {
+            // collapse sound
+            PlaySound(0);
             //When destroyed, remove the candy given if done building
             if (this.IsControllable() && !this.Built)
             {
                 GameEvents.OnCandyMaxChanged.Invoke(-this.candyGiven);
+            }
+        }
+
+        /// <summary>
+        /// Play isolated Sound at position at clip index
+        /// even if the current object is on destroy
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlaySound(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
             }
         }
         #endregion

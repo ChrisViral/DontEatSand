@@ -9,6 +9,7 @@ namespace DontEatSand.Entities.Units
     /// </summary>
     public class Soldier : Unit
     {
+        
         #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
@@ -28,14 +29,22 @@ namespace DontEatSand.Entities.Units
         public override void Attack(Entity target)
         {
             base.Attack(target);
+
+            // index 1 attack sound
+            PlaySoundOnce(1);
+
             target.Damage(10);
 
             if(target is Unit unit) // attacking a unit
             {
                 unit.IsUnderAttackFlag = true;
+                // index 2 hit on unit sound
+                PlaySoundOnce(2, 0.1f);
             }
             else // attacking a building
             {
+                // index 3 hit on building sound
+                PlaySoundOnce(3, 0.1f);
 
             }
         }
@@ -43,7 +52,6 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Functions
-
         protected override void OnUpdate()
         {
             // if target exists and is within range

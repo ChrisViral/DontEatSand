@@ -25,6 +25,8 @@ namespace DontEatSand.Entities.Buildings
         private readonly LinkedList<Unit> buildQueue = new LinkedList<Unit>();
         private readonly Timer buildTimer = new Timer();
         private UnitInfo inProgress;
+        [SerializeField, Header("Sound Effect")]
+        protected AudioClip[] soundEffect;
         #endregion
 
         #region Properties
@@ -251,9 +253,28 @@ namespace DontEatSand.Entities.Buildings
 
         private void OnDestroy()
         {
+            // collapse
+            PlaySound(0);
+            // teacher die
+            PlaySound(1);
+
             if (this.IsControllable())
             {
                 GameEvents.OnUnitRemovedFromQueue.RemoveListener(OnUnitRemovedFromQueue);
+            }
+        }
+
+
+        /// <summary>
+        /// Play isolated Sound at position at clip index
+        /// even if the current object is on destroy
+        /// </summary>
+        /// <param name="index"></param>
+        protected void PlaySound(int index)
+        {
+            if (soundEffect.Length > index)
+            {
+                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
             }
         }
         #endregion

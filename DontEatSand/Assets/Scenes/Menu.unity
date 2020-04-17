@@ -343,6 +343,31 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 3931593007019582753, guid: 05a601c2eb3e14242acdd3903cb2f309,
+        type: 3}
+      propertyPath: music.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3931593007019582753, guid: 05a601c2eb3e14242acdd3903cb2f309,
+        type: 3}
+      propertyPath: music.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: f3acf2423a3a9834193f949979c0783b, type: 3}
+    - target: {fileID: 3931593007019582753, guid: 05a601c2eb3e14242acdd3903cb2f309,
+        type: 3}
+      propertyPath: music.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 4655bc612af154f4fba2600c4c06a065, type: 3}
+    - target: {fileID: 3931593007019582766, guid: 05a601c2eb3e14242acdd3903cb2f309,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3931593007019582766, guid: 05a601c2eb3e14242acdd3903cb2f309,
+        type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3931593007019582767, guid: 05a601c2eb3e14242acdd3903cb2f309,
         type: 3}
       propertyPath: m_LocalPosition.x

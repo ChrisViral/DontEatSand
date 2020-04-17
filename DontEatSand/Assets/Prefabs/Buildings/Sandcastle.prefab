@@ -399,6 +399,9 @@ MonoBehaviour:
   startCameraPosition: {x: 0, y: 0, z: 0}
   startCameraRotation: {x: 0, y: 0, z: 0}
   visibleSandpit: {fileID: 0}
+  soundEffect:
+  - {fileID: 8300000, guid: 90397f4632e61244c90d8900c4fa1cb9, type: 3}
+  - {fileID: 8300000, guid: e91dfb37e9ea9a34ebcf85168658cc16, type: 3}
   id: 0
   units:
   - {fileID: 1248447881997185239, guid: 85178e34428db1e47ab42aea443ff5fc, type: 3}
