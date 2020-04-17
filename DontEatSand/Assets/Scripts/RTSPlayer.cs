@@ -237,6 +237,7 @@ namespace DontEatSand
         /// <param name="unit"></param>
         private void OnUnitDestroyed(Unit unit)
         {
+            Debug.Log(unit);
             if (unit.IsControllable())
             {
                 this.units.Remove(unit);

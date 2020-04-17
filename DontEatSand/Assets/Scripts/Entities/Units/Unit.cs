@@ -11,6 +11,13 @@ using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.Beh
 
 namespace DontEatSand.Entities.Units
 {
+
+    public enum Mode
+    {
+        ATTACK,
+        DEFEND
+    }
+
     /// <summary>
     /// Unit base class
     /// </summary>
@@ -20,11 +27,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Unit AI mode
         /// </summary>
-        public enum Mode
-        {
-            ATTACK,
-            DEFEND
-        }
+
 
         #region Constants
         /// <summary>
@@ -200,7 +203,7 @@ namespace DontEatSand.Entities.Units
                 if (c == 0)
                 {
                     c = other.Health.CompareTo(this.Health);
-                    return c == 0 ? 1 : c;
+                    return c == 0 ? GetInstanceID().CompareTo(other.GetInstanceID()) : c;
                 }
             }
 
@@ -213,7 +216,6 @@ namespace DontEatSand.Entities.Units
         /// <returns></returns>
         private Unit FindClosestTarget()
         {
-            //Use non allocating, check up to 128 possible targets
             int size = enemyUnitsInRange.Count;
             if (size == 0) return null;
 
