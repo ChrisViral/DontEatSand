@@ -38,6 +38,7 @@ namespace DontEatSand.Entities.Units
         {
             base.Attack(target);
             PhotonUtils.Instantiate(this.projectile, this.transform.TransformPoint(this.launchLocation)).Target = target;
+            
         }
         #endregion
 

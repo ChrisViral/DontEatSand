@@ -82,6 +82,22 @@ namespace DontEatSand.Entities.Units
             }
         }
 
+        public bool IsAttackModeFlag
+        {
+            get
+            {
+                return behaviourMode == Mode.ATTACK;
+            }
+        }
+
+        public bool IsDefendModeFlag
+        {
+            get
+            {
+                return behaviourMode == Mode.DEFEND;
+            }
+        }
+
         /// <summary>
         /// Flag dictating if the unit is following an order
         /// </summary>
@@ -105,7 +121,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Flag dictating if the enemy is attacking this unit
         /// </summary>
-        public bool IsUnderAttackFlag { get; set; } //needs to be set
+        public bool IsUnderAttackFlag { get; set; } // needs to be set manually
 
         /// <summary>
         /// If the unit is currently selected or not
@@ -254,14 +270,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// Update function, only called on non-networked units. Use this instead of Update()
         /// </summary>
-        protected virtual void OnUpdate()
-        {
-            if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 0.5f)
-            {
-                // no target and arrived to player-commanded destination
-                HasOrderFlag = false;
-            }
-        }
+        protected virtual void OnUpdate() { }
 
         /// <summary>
         /// OnDestroy function, use this instead of OnDestroy()
@@ -322,6 +331,7 @@ namespace DontEatSand.Entities.Units
 
         private void Update()
         {
+            
             if (this.IsControllable())
             {
                 if (this.Target)
@@ -329,6 +339,13 @@ namespace DontEatSand.Entities.Units
                     this.agent.destination = this.Target.transform.position;
                 }
                 OnUpdate();
+
+                if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 1f)
+                {
+                    // no target and arrived to player-commanded destination
+                    HasOrderFlag = false;
+                }
+
             }
 
             //Send velocity to animator
@@ -379,6 +396,21 @@ namespace DontEatSand.Entities.Units
         public bool IsUnderAttack() => this.IsUnderAttackFlag;
 
         /// <summary>
+        /// Get the flag for the condition isUnderAttackFlag
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("attack-mode")]
+        public bool IsAttackMode() => this.IsAttackModeFlag;
+
+
+        /// <summary>
+        /// Get the flag for the condition isUnderAttackFlag
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("defend-mode")]
+        public bool IsDefendMode() => this.IsDefendModeFlag;
+
+        /// <summary>
         /// Routine for the followOrder leaf
         /// </summary>
         /// <returns></returns>
@@ -388,10 +420,12 @@ namespace DontEatSand.Entities.Units
 
             if(this.HasOrderFlag)
             {
+                Debug.Log("i got an order sir");
                 yield return BTNodeResult.SUCCESS;
             }
             else
             {
+                Debug.Log("i aint got shit to do sir");
                 yield return BTNodeResult.FAILURE;
             }
 
@@ -405,7 +439,24 @@ namespace DontEatSand.Entities.Units
         [BTLeaf("attack")]
         public BTCoroutine AttackRoutine()
         {
-            if (this.behaviourMode == Mode.ATTACK)
+
+            this.Target = FindClosestTarget();
+            if (this.Target)
+            {
+                this.agent.SetDestination(this.Target.Position);
+                if (this.CanAttack)
+                {
+                    Attack(this.Target);
+                }
+                yield return BTNodeResult.NOT_FINISHED;
+            }
+            else
+            {
+                yield return BTNodeResult.SUCCESS;
+            }
+
+
+            /*if (this.behaviourMode == Mode.ATTACK)
             {
                 if (IsEnemySeen())
                 {
@@ -419,10 +470,10 @@ namespace DontEatSand.Entities.Units
                             yield return BTNodeResult.NOT_FINISHED;
                         }
                     }
-                    else
-                    {
-                        //Do we need to do something here? Can this happen at all?
-                    }
+                }
+                else
+                {
+                    yield return BTNodeResult.SUCCESS;
                 }
             }
 
@@ -446,41 +497,13 @@ namespace DontEatSand.Entities.Units
                         this.behaviourMode = Mode.DEFEND;
                     }
                 }
+                else
+                {
+                    yield return BTNodeResult.SUCCESS;
+                }
                 // should return to original position if wanders too far off
-            }
-
-
-            /*
-            *   move to closest enemy in aggro range
-            *   attack unit
-            *   yield return BTNodeResult.NOT_FINISHED;
-            *
-            *
-            * if(behaviourMode == Mode.DEFEND)
-            *
-            * if(isUnderAttackFlag())
-            *   agent.SetDestination(Target.position);
-            *   Attack(Target);
-            *
-            *
-            * store original position
-            * received damage within last 2 seconds?
-            *   move to attacking unit
-            *   attack unit
-            *   yield return BTNodeResult.NOT_FINISHED;
-            *
-            *
-            *
-            *
-            * If no enemy in aggro
-            *
-            *   if dist current to original pos > aggro range, return to original pos
-            *      yield return BTNodeResult.SUCCESS;
-            *
-            *
-            */
-
-            yield return BTNodeResult.NOT_FINISHED;
+            }*/
+            yield return BTNodeResult.FAILURE;
         }
 
         /// <summary>
