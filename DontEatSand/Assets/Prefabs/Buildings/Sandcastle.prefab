@@ -393,13 +393,13 @@ MonoBehaviour:
   enemyColour: {r: 0.7075472, g: 0.0066749896, b: 0.0066749896, a: 1}
   hoveredColour: {r: 0.24705881, g: 0.3807804, b: 0.9607843, a: 1}
   entityName: Castle
-  id: 0
   spawnLocation: {fileID: 6470261023472025558}
   buildQueueMaxSize: 20
   startCameraPosition: {x: 0, y: 0, z: 0}
   startCameraRotation: {x: 0, y: 0, z: 0}
   visibleSandpit: {fileID: 0}
-  playerColour: {r: 0, g: 0, b: 0, a: 0}
+  id: 0
+  playerMaterial: {fileID: 0}
   units:
   - {fileID: 1248447881997185239, guid: 85178e34428db1e47ab42aea443ff5fc, type: 3}
   - {fileID: 1002939832855367107, guid: 1b9a60d768e864b41b2b2b6959317727, type: 3}
@@ -423,7 +423,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 0
-  OwnershipTransfer: 2
+  OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 0}
   viewIdField: 0

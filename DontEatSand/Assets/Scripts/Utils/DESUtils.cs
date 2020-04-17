@@ -17,7 +17,7 @@ namespace DontEatSand.Utils
         /// <summary>
         /// Location of the Unit BehaviourTree file
         /// </summary>
-        public static string BehaviourTreeLocation { get; } = Path.Combine(Application.dataPath, "unit-behaviour.xml");
+        public static string BehaviourTreeLocation { get; } = Path.Combine(Application.dataPath, "unit-test-behaviour.xml");
         /// <summary>
         /// Location of the Unit BehaviourTree file
         /// </summary>

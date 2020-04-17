@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-     
+using DontEatSand.Utils.BehaviourTrees;
+using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
+
+
 namespace DontEatSand.Entities.Units
 {
     public class Healer : Unit
@@ -12,6 +15,25 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Flag dictating if an enemy is within the aggro range
+        /// </summary>
+        public bool IsAllySeenFlag
+        {
+            get
+            {
+                return this.allyUnitsInRange.Count != 0;
+            }
+            set
+            {
+
+            }
+        }
+
+
+        /// <summary>
+        /// If the unit can currently attack
+        /// </summary>
         public override bool CanAttack 
         {
             get
@@ -30,10 +52,22 @@ namespace DontEatSand.Entities.Units
         #region Methods
 
         /// <summary>
+        /// Heal a given target
+        /// </summary>
+        private void Heal (Entity target)
+        {
+            // Set animator trigger for healing
+            this.animator.SetTrigger(this.attackTriggerName);
+
+            target.Damage(-10);
+        }
+
+
+        /// <summary>
         /// Find the closest enemy unit to this unit
         /// </summary>
         /// <returns></returns>
-        private Unit FindClosestTarget()
+        private Unit FindClosestAlly()
         {
             int size = this.allyUnitsInRange.Count;
             if (size == 0) return null;
@@ -46,7 +80,7 @@ namespace DontEatSand.Entities.Units
             {
                 float dist = Vector3.Distance(ally.Position, position);
                 //Making sure it's a valid entity target
-                if(dist < distanceToClosest) // && (!PhotonNetwork.IsConnected || !entity.photonView.IsMine))
+                if(dist < distanceToClosest) // && (!PhotonNetwork.IsConnected || entity.photonView.IsMine))
                 {
                     distanceToClosest = dist;
                     closestTarget = ally;
@@ -57,9 +91,15 @@ namespace DontEatSand.Entities.Units
             return closestTarget;
         }
 
+        public void Flee()
+        {
+            // Set destination away from enemy
+            Destination = transform.position - FindClosestTarget().transform.position;
+        }
+
         #endregion
 
-        #region Functions
+        #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
             base.ProcessCommand(destination, target);
@@ -74,6 +114,9 @@ namespace DontEatSand.Entities.Units
                 }
             }
         }
+        #endregion
+
+        #region Functions
 
         protected override void OnAwake()
         {
@@ -81,6 +124,17 @@ namespace DontEatSand.Entities.Units
             
             // Set throwing animation trigger
             attackTriggerName = Animator.StringToHash("Throwing");
+        }
+
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+            // if target exists and is within range
+            if(CanAttack && Target != null)
+            {
+                Heal(Target);
+            }
+            
         }
         #endregion
 
@@ -106,6 +160,55 @@ namespace DontEatSand.Entities.Units
                 this.allyUnitsInRange.Remove(allyUnit);
             }
         }
+        #endregion
+
+        #region BehaviourTree
+
+        /// <summary>
+        /// Get the flag for the condition isEnemySeenFlag
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("ally-seen")]
+        public bool IsAllySeen() => this.IsAllySeenFlag;
+
+        [BTLeaf("heal")]
+        public BTCoroutine HealRoutine()
+        {
+            if(IsAllySeenFlag)
+            {
+                this.Target = FindClosestAlly();
+                if(this.Target)
+                {
+                    this.agent.SetDestination(this.Target.Position);
+                    if(this.CanAttack) // using the same timer as attack
+                    {
+                        Heal(this.Target);
+                        yield return BTNodeResult.NOT_FINISHED;
+                    }
+                }
+            }
+            else
+            {
+                yield return BTNodeResult.FAILURE;
+            }
+
+        }
+
+        /// <summary>
+        /// Routine for the flee leaf
+        /// </summary>
+        /// <returns></returns>
+        [BTLeaf("flee")]
+        public BTCoroutine FleeRoutine()
+        {
+            if (IsUnderAttackFlag)
+            {
+                Flee();
+                yield return BTNodeResult.NOT_FINISHED;
+            }
+            yield return BTNodeResult.SUCCESS;
+        }
+
         #endregion
 
     }

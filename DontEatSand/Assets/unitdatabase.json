@@ -64,7 +64,7 @@
   },
   {
     "Name": "Castle",
-    "Description": "big ol' thing",
+    "Description": "Here is where you train kids to fight for you. If this building is destroyed, you lose. So maybe like protect it or something.",
     "Type": "BUILDING",
     "SandCost": 0,
     "CandyCost": 0,
@@ -73,7 +73,7 @@
   },
   {
     "Name": "Sandpit",
-    "Description": "It's rough and coarse, he hates it.",
+    "Description": "A pit full of sand that you can use to build candy factories. This will not work in real life. (We tried.)",
     "Type": "BUILDING",
     "SandCost": 0,
     "CandyCost": 0,

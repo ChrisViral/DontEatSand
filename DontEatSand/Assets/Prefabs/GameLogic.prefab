@@ -141,3 +141,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   music: []
+  teams:
+  - {fileID: 2100000, guid: 409b9179b11404bbca49242b1616efb9, type: 2}
+  - {fileID: 2100000, guid: 7ff96785964a14cb5ab380709cf8de1b, type: 2}
