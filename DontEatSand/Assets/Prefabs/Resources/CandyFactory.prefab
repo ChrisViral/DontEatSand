@@ -151,7 +151,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 5132c4f6bbe387240bff5164b2be6436, type: 2}
-  - {fileID: 2100000, guid: 9c36babaafdf37947ad6827d1ebb6b52, type: 2}
+  - {fileID: 2100000, guid: 409b9179b11404bbca49242b1616efb9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -242,6 +242,7 @@ MonoBehaviour:
   hoveredColour: {r: 0.24705882, g: 0.38431373, b: 0.9607843, a: 1}
   entityName: CandyFactory
   candyGiven: 20
+  flagRenderer: {fileID: 0}
 --- !u!114 &-2034762795166274692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,6 +279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invisibleLayer: 11
   permanent: 0
+  visible: 1
 --- !u!1 &7917183360066405682
 GameObject:
   m_ObjectHideFlags: 0

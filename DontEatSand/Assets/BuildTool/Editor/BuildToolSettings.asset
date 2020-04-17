@@ -16,9 +16,9 @@ MonoBehaviour:
   useWebService: 0
   versionURL: 
   developmentBuild: 0
-  publishRelease: 0
+  publishRelease: 1
   outputFolder: Compiled
-  targetFlags: 2
+  targetFlags: 6
   copyOnBuild:
   - path: credits.txt
     location: 2
