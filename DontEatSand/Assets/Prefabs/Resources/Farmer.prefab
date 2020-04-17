@@ -701,6 +701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invisibleLayer: 11
   permanent: 0
+  visible: 1
 --- !u!114 &1879311527327809462
 MonoBehaviour:
   m_ObjectHideFlags: 0

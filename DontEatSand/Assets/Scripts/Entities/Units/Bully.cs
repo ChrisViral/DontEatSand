@@ -8,7 +8,7 @@ namespace DontEatSand.Entities.Units
     /// </summary>
     public class Bully : Unit
     {
-        #region Functions
+        #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
          {
             base.ProcessCommand(destination, target);
@@ -40,7 +40,10 @@ namespace DontEatSand.Entities.Units
             }
             
         }
+        #endregion
 
+
+        #region Functions
         protected override void OnUpdate()
         {
             if(CanAttack && Target != null)

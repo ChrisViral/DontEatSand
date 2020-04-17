@@ -8,6 +8,8 @@ namespace DontEatSand.Entities.Buildings
         #region Fields
         [SerializeField]
         private int candyGiven = 20;
+        [SerializeField]
+        private Renderer flagRenderer;
         #endregion
 
         #region Methods
@@ -24,7 +26,14 @@ namespace DontEatSand.Entities.Buildings
         }
         #endregion
 
-        #region Functions
+        #region Functions<
+        protected override void OnAwake()
+        {
+            Material[] materials = this.flagRenderer.materials;
+            materials[1] = this.IsControllable() ? GameLogic.Instance.PlayerMaterial : GameLogic.Instance.OpponentMaterial;
+            this.flagRenderer.materials = materials;
+        }
+
         private void OnDestroy()
         {
             //When destroyed, remove the candy given

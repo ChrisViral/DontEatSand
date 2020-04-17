@@ -34,5 +34,8 @@ MonoBehaviour:
   - ReceiveDamage
   - ReceiveHarvested
   - SetPlayerIndex
+  - SetupPlayer
+  - SetupField
+  - SetupIndex
   DisableAutoOpenWizard: 1
   ShowSettings: 0

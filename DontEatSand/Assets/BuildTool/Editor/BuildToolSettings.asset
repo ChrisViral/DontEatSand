@@ -16,11 +16,19 @@ MonoBehaviour:
   useWebService: 0
   versionURL: 
   developmentBuild: 0
-  publishRelease: 1
-  outputFolder: 
-  targetFlags: 0
+  publishRelease: 0
+  outputFolder: Compiled
+  targetFlags: 2
   copyOnBuild:
   - path: credits.txt
-    location: 0
+    location: 2
   - path: readme.txt
-    location: 0
+    location: 2
+  - path: Assets/unitdatabase.json
+    location: 2
+  - path: Assets/unit-behaviour.xml
+    location: 2
+  - path: Assets/healer-behaviour.xml
+    location: 2
+  - path: Assets/farmer-behaviour.xml
+    location: 2

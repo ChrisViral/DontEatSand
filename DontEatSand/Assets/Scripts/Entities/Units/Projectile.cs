@@ -58,8 +58,12 @@ namespace DontEatSand.Entities.Units
                 //Setup color
                 if (PhotonNetwork.IsConnected)
                 {
-                    GetComponent<Renderer>().material = RTSPlayer.Instance.Castle.PlayerMaterial;
+                    GetComponent<Renderer>().material = GameLogic.Instance.PlayerMaterial;
                 }
+            }
+            else
+            {
+                GetComponent<Renderer>().material = GameLogic.Instance.OpponentMaterial;
             }
         }
 

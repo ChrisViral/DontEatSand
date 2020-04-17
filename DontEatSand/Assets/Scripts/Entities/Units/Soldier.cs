@@ -9,14 +9,14 @@ namespace DontEatSand.Entities.Units
     /// </summary>
     public class Soldier : Unit
     {
-        #region Functions
+        #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
             base.ProcessCommand(destination, target);
 
             if(this.IsSelected)
             {
-                HasOrderFlag = true;
+                this.HasOrderFlag = true;
                 // Acknowledge clicked entity as a target for this unit
                 if (target is Entity entity) //&& !entity.IsControllable())
                 {
@@ -40,18 +40,16 @@ namespace DontEatSand.Entities.Units
             }
         }
 
+        #endregion
+
+        #region Functions
+
         protected override void OnUpdate()
         {
             // if target exists and is within range
             if(CanAttack && Target != null)
             {
                 Attack(Target);
-            }
-
-            if(this.Target == null && Vector3.Distance(this.Position, agent.destination) < 0.5f)
-            {
-                // no target and arrived to player-commanded destination
-                HasOrderFlag = false;
             }
         }
         #endregion

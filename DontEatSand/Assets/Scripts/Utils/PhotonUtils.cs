@@ -36,6 +36,8 @@ namespace DontEatSand.Utils
                     //Set the parent if necessary
                     clone.transform.SetParent(parent, true);
                 }
+
+                return clone;
             }
             //Local instantiation when not networked
             return Object.Instantiate(prefab, position, rotation, parent);
@@ -60,6 +62,8 @@ namespace DontEatSand.Utils
                     //Set the parent if necessary
                     clone.transform.SetParent(parent, true);
                 }
+
+                return clone;
             }
             //Local instantiation when not networked
             return Object.Instantiate(prefab, position, rotation, parent);
