@@ -5,8 +5,9 @@ using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
 using Photon.Pun;
+using Photon.Realtime;
+using RTSCam;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace DontEatSand.Entities.Buildings
 {
@@ -213,16 +214,25 @@ namespace DontEatSand.Entities.Buildings
         {
             if (this.IsControllable())
             {
+                //Setup
+                this.visibleSandpit.Visible = true;
+                RTSCamera cam = Camera.main.GetComponent<RTSCamera>();
+                Transform parent = cam.transform.parent;
+                parent.position = this.startCameraPosition;
+                parent.rotation = Quaternion.Euler(this.startCameraRotation);
+                cam.enabled = true;
                 GameEvents.OnUnitRemovedFromQueue.AddListener(OnUnitRemovedFromQueue);
+
+                //Create a farmer
+                Unit farmer = this.units[5];
+                PhotonUtils.Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
             }
         }
 
         private void Update()
         {
-            if (!this.IsControllable()) return;
-
             //Check if building, if so check for completion of current unit
-            if (this.IsBuilding && this.buildTimer.Elapsed.TotalSeconds >= this.inProgress.BuildTime)
+            if (this.IsControllable() && this.IsBuilding && this.buildTimer.Elapsed.TotalSeconds >= this.inProgress.BuildTime)
             {
                 //Get unit and spawn it
                 Unit unit = this.buildQueue.First.Value;

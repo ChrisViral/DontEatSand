@@ -3,6 +3,7 @@ using System.Linq;
 using DontEatSand.Base;
 using DontEatSand.Entities;
 using DontEatSand.Entities.Buildings;
+using DontEatSand.Extensions;
 using DontEatSand.UI;
 using DontEatSand.Utils;
 using Photon.Pun;
@@ -49,6 +50,13 @@ namespace DontEatSand
         private int playerIndex;
         private Player otherPlayer;
         private Castle[] castles;
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// The castle associated to this player
+        /// </summary>
+        public Castle Castle { get; private set; }
         #endregion
 
         #region Static properties
@@ -236,8 +244,9 @@ namespace DontEatSand
 
         private void SetupPlayer()
         {
-            Castle castle = this.castles[this.playerIndex];
-            castle.photonView.RequestOwnership();
+            this.Castle = this.castles[this.playerIndex];
+            this.Castle.photonView.RequestOwnership();
+            this.castles.ForEach(c => c.enabled = true);
             RTSPlayer.Instance.enabled = true;
         }
         #endregion

@@ -21,6 +21,7 @@ namespace DontEatSand.Entities.Units
 
             if(this.IsSelected)
             {
+                this.HasOrderFlag = true;
                 // Acknowledge clicked entity as a target for this unit
                 if (target is Entity entity) //&& !entity.IsControllable())
                 {
@@ -41,7 +42,7 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Properties
-        public override bool CanAttack 
+        public override bool CanAttack
         {
             get
             {
@@ -57,47 +58,6 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Functions
-        protected override void ProcessCommand(Vector3 destination, ISelectable target)
-        {
-            base.ProcessCommand(destination, target);
-
-            if(this.IsSelected)
-            {
-                HasOrderFlag = true;
-                // Acknowledge clicked entity as a target for this unit
-                if (target is Entity entity) //&& !entity.IsControllable())
-                {
-                    this.Target = entity;
-                }
-            }
-        }
-
-        public override void Attack(Entity target)
-        {
-            base.Attack(target);
-                
-            target.Damage(10);
-
-            if(target is Unit unit) // attacking a unit
-            {
-                unit.IsUnderAttackFlag = true;
-            }
-            else // attacking a building
-            {
-
-            }
-            
-        }
-
-        protected override void OnUpdate()
-        {
-            // if target exists and is within range
-            if(CanAttack && Target != null)
-            {
-                Attack(Target);
-            }
-        }
-
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -108,7 +68,7 @@ namespace DontEatSand.Entities.Units
 
         protected override void OnUpdate()
         {
-            if(this.CanAttack)
+            if(this.CanAttack && this.Target)
             {
                 Attack(this.Target);
             }

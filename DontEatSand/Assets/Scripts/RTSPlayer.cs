@@ -456,6 +456,7 @@ namespace DontEatSand
             else
             {
                 //Disable when connected
+                this.Castle = GameLogic.Instance.Castle;
                 this.enabled = false;
             }
 
