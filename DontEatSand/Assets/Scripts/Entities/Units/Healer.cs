@@ -168,11 +168,15 @@ namespace DontEatSand.Entities.Units
                 this.Target = FindClosestAlly();
                 if(this.Target)
                 {
-                    this.Agent.SetDestination(this.Target.Position);
-                    if(this.CanAttack) // using the same timer as attack
+                    Debug.Log(this.Target.Health + " vs " + this.Target.HealthAmount);
+                    if(this.Target.Health < this.Target.HealthAmount)
                     {
-                        Heal(this.Target);
-                        yield return BTNodeResult.NOT_FINISHED;
+                        this.Agent.SetDestination(this.Target.Position);
+                        if(this.CanAttack) // using the same timer as attack
+                        {
+                            Heal(this.Target);
+                            yield return BTNodeResult.NOT_FINISHED;
+                        }
                     }
                 }
             }

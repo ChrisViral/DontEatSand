@@ -32,8 +32,11 @@ namespace DontEatSand.Entities.Units
 
         public override void Attack(Entity target)
         {
-            base.Attack(target);
-            PhotonUtils.Instantiate(this.projectile, this.transform.TransformPoint(this.launchLocation)).Target = target;
+            if(target != this)
+            {
+                base.Attack(target);
+                PhotonUtils.Instantiate(this.projectile, this.transform.TransformPoint(this.launchLocation)).Target = target;
+            }
 
         }
         #endregion

@@ -16,7 +16,8 @@ namespace DontEatSand.Entities.Units
     public enum Mode
     {
         ATTACK,
-        DEFEND
+        DEFEND,
+        IDLE
     }
 
     /// <summary>
@@ -282,8 +283,12 @@ namespace DontEatSand.Entities.Units
         /// <param name="target">Target to attack</param>
         public virtual void Attack(Entity target)
         {
-            // Set animator trigger for attacking
-            this.animator.SetTrigger(this.attackTriggerName);
+            if(target != this)
+            {
+                // Set animator trigger for attacking
+                this.animator.SetTrigger(this.attackTriggerName);
+                this.transform.LookAt(target.Position);
+            }
         }
 
         /// <summary>
@@ -355,7 +360,7 @@ namespace DontEatSand.Entities.Units
             if (this.IsControllable())
             {
                 this.Agent.stoppingDistance = this.attackRange * 0.6f;
-                this.behaviourMode = Mode.DEFEND;
+                this.behaviourMode = Mode.IDLE;
                 this.bt = new BehaviourTree(this.BehaviourTreeLocation, this);
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);

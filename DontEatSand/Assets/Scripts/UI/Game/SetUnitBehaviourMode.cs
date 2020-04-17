@@ -23,4 +23,13 @@ public class SetUnitBehaviourMode : MonoBehaviour
         }
 
     }
+
+    public void SetUnitToIdle()
+    {
+        foreach (Unit unit in RTSPlayer.Instance.SelectedUnits)
+        {
+            unit.behaviourMode = Mode.IDLE;
+        }
+
+    }
 }
