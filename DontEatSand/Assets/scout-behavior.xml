@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<behaviour-tree>
+    <sequence>
+        <selector>
+            <sequence>
+                <condition name = "has-order"/>
+                <leaf name = "follow-order"/>
+            </sequence>
+            <sequence>
+                <condition name = "under-attack"/>
+                <leaf name = "flee"/>
+            </sequence>
+            <leaf name ="idle"/>
+        </selector>
+    </sequence>
+</behaviour-tree>
