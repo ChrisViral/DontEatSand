@@ -26,8 +26,11 @@ namespace DontEatSand.Entities.Units
 
         #region Properties
 
+        private Sandpit SandPitTarget { get; set; }
+        private CandyFactory BuildTarget { get; set; }
+        
         /// <summary>
-        /// If the unit can currently attack
+        /// If the unit can currently dig
         /// </summary>
         private bool CanDig {
             get
@@ -38,7 +41,8 @@ namespace DontEatSand.Entities.Units
                     this.digStart = Time.time;
                     digReady = true;
                 }
-                return digReady && this.Target != null && Vector3.Distance(this.Position, this.Target.Position) < 1.0f;
+
+                return digReady && Vector3.Distance(this.Position, agent.destination) < 1.0f;
             }
         }
 
@@ -54,15 +58,13 @@ namespace DontEatSand.Entities.Units
             if (target is Sandpit sandpit)
             {
                 this.HasOrderFlag = true;
-                this.Destination = sandpit.transform.position;
-                Dig(sandpit);
+                this.SandPitTarget = sandpit;
             }
             // Else if target is building, build
             else if (target is CandyFactory candyFactory)
             {
                 this.HasOrderFlag = true;
-                this.Target = candyFactory;
-                Build(candyFactory);
+                this.BuildTarget = candyFactory;
             }
         }
         
@@ -74,19 +76,29 @@ namespace DontEatSand.Entities.Units
                 animator.SetBool(digParam, true);
                 
                 // Take sand from sandpit
-                sandpit.HarvestSand(10);
+                GameEvents.OnSandChanged.Invoke(sandpit.HarvestSand(10));
+            }
+            else
+            {
+                // Set animation bool for digging
+                animator.SetBool(digParam, false);
             }
         }
 
         public void Build(CandyFactory candyFactory)
         {
-            if (this.agent.pathStatus == NavMeshPathStatus.PathComplete)
+            if (CanDig)
             {
                 // Set animation boll for building
                 animator.SetBool(buildParam, true);
                 
                 // Build building
                 // TODO building factories
+            }
+            else
+            {
+                // Set animation bool for digging
+                animator.SetBool(buildParam, false);
             }
         }
 
@@ -106,6 +118,20 @@ namespace DontEatSand.Entities.Units
             
             // This probably doesn't work. Need to load farmer behavior tree
             bt = new BehaviourTree(DESUtils.FarmerBehaviourTreeLocation, this);
+        }
+
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+
+            if (BuildTarget != null)
+            {
+                Build(BuildTarget);
+            }
+            else if (SandPitTarget != null)
+            {
+                Dig(SandPitTarget);
+            }
         }
 
         #endregion
