@@ -9,14 +9,7 @@ namespace DontEatSand.Entities.Units
     /// </summary>
     public class Soldier : Unit
     {
-        // 0 die sound
-        // 1 attack sound
-        // 2 hit on unit
-        // 3 hit on building
-        //[SerializeField, Header("Sound Effect")]
-        //private AudioClip[] soundEffect;
-        //private AudioSource source;
-
+        
         #region Methods
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
         {
@@ -37,6 +30,7 @@ namespace DontEatSand.Entities.Units
         {
             base.Attack(target);
 
+            // index 1 attack sound
             PlaySoundOnce(1);
 
             target.Damage(10);
@@ -44,13 +38,14 @@ namespace DontEatSand.Entities.Units
             if(target is Unit unit) // attacking a unit
             {
                 unit.IsUnderAttackFlag = true;
-                
+                // index 2 hit on unit sound
                 PlaySoundOnce(2, 0.1f);
             }
             else // attacking a building
             {
+                // index 3 hit on building sound
                 PlaySoundOnce(3, 0.1f);
-                
+
             }
         }
 
