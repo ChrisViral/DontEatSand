@@ -28,7 +28,7 @@ namespace DontEatSand.Entities.Units
 
         private Sandpit SandPitTarget { get; set; }
         private CandyFactory BuildTarget { get; set; }
-        
+
         /// <summary>
         /// If the unit can currently dig
         /// </summary>
@@ -42,7 +42,7 @@ namespace DontEatSand.Entities.Units
                     digReady = true;
                 }
 
-                return digReady && Vector3.Distance(this.Position, agent.destination) < 1.0f;
+                return digReady && Vector3.Distance(this.Position, this.Agent.destination) < 1.0f;
             }
         }
 
@@ -67,14 +67,14 @@ namespace DontEatSand.Entities.Units
                 this.BuildTarget = candyFactory;
             }
         }
-        
+
         public void Dig(Sandpit sandpit)
         {
             if (CanDig)
             {
                 // Set animation bool for digging
                 animator.SetBool(digParam, true);
-                
+
                 // Take sand from sandpit
                 GameEvents.OnSandChanged.Invoke(sandpit.HarvestSand(10));
             }
@@ -91,7 +91,7 @@ namespace DontEatSand.Entities.Units
             {
                 // Set animation boll for building
                 animator.SetBool(buildParam, true);
-                
+
                 // Build building
                 // TODO building factories
             }
@@ -107,7 +107,7 @@ namespace DontEatSand.Entities.Units
             // Set destination away from enemy
             Destination = transform.position - FindClosestTarget().transform.position;
         }
-        
+
         #endregion
 
         #region Functions
@@ -115,7 +115,7 @@ namespace DontEatSand.Entities.Units
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+
             // This probably doesn't work. Need to load farmer behavior tree
             bt = new BehaviourTree(DESUtils.FarmerBehaviourTreeLocation, this);
         }

@@ -34,7 +34,7 @@ namespace DontEatSand.Entities.Units
         /// <summary>
         /// If the unit can currently attack
         /// </summary>
-        public override bool CanAttack 
+        public override bool CanAttack
         {
             get
             {
@@ -121,7 +121,7 @@ namespace DontEatSand.Entities.Units
         protected override void OnAwake()
         {
             base.OnAwake();
-            
+
             // Set throwing animation trigger
             attackTriggerName = Animator.StringToHash("Throwing");
         }
@@ -134,7 +134,7 @@ namespace DontEatSand.Entities.Units
             {
                 Heal(Target);
             }
-            
+
         }
         #endregion
 
@@ -179,7 +179,7 @@ namespace DontEatSand.Entities.Units
                 this.Target = FindClosestAlly();
                 if(this.Target)
                 {
-                    this.agent.SetDestination(this.Target.Position);
+                    this.Agent.SetDestination(this.Target.Position);
                     if(this.CanAttack) // using the same timer as attack
                     {
                         Heal(this.Target);

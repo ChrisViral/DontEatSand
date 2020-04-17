@@ -67,7 +67,7 @@ namespace DontEatSand.Entities.Buildings
                 if (value)
                 {
                     this.builder = value;
-                    this.agent = value.GetComponent<NavMeshAgent>();
+                    this.agent = value.Agent;
                 }
             }
         }
@@ -95,17 +95,6 @@ namespace DontEatSand.Entities.Buildings
             this.bottom[3] = new Vector3(center.x - extents.x, y, center.z - extents.x);
         }
 
-#if UNITY_EDITOR
-        private void Start()
-        {
-            //Get any agent if testing
-            if (!PhotonNetwork.IsConnected)
-            {
-                this.Builder = FindObjectOfType<Farmer>();
-            }
-        }
-#endif
-
         private void Update()
         {
 #if UNITY_EDITOR
@@ -132,7 +121,8 @@ namespace DontEatSand.Entities.Buildings
                 this.validPosition = false;
             }
 
-            this.buildRequested = Input.GetMouseButtonUp(0);
+            //Check for request
+            this.buildRequested |= Input.GetMouseButtonUp(0);
         }
 
         private void FixedUpdate()
@@ -147,7 +137,7 @@ namespace DontEatSand.Entities.Buildings
             {
                 if (this.Valid)
                 {
-                    //Do the thing
+                    RTSPlayer.Instance.SpawnFactory();
                 }
 
                 this.buildRequested = false;

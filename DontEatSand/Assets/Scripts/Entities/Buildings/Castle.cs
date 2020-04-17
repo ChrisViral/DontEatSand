@@ -81,7 +81,7 @@ namespace DontEatSand.Entities.Buildings
             UnitInfo info = unit.Info;
 
             //Check if we have the resources to create it
-            if (RTSPlayer.Instance.CheckResourcesAvailable(info.SandCost, info.CandyCost))
+            if (RTSPlayer.Instance.CheckResourcesAvailable(info))
             {
                 //Request resources
                 if (info.SandCost > 0)
@@ -224,10 +224,12 @@ namespace DontEatSand.Entities.Buildings
                 {
                     GameObject go = PhotonNetwork.Instantiate(farmer.name, this.spawnLocation.position, farmer.transform.rotation);
                     go.transform.SetParent(this.transform.parent, true);
+                    GameEvents.OnUnitCreated.Invoke(go.GetComponent<Unit>());
                 }
                 else
                 {
-                    Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
+                    Unit u = Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
+                    GameEvents.OnUnitCreated.Invoke(u);
                 }
             }
         }
