@@ -11,7 +11,9 @@ using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.Beh
 
 namespace DontEatSand.Entities.Units
 {
-
+    /// <summary>
+    /// Unit AI mode
+    /// </summary>
     public enum Mode
     {
         ATTACK,
@@ -24,20 +26,11 @@ namespace DontEatSand.Entities.Units
     [RequireComponent(typeof(Rigidbody), typeof(Animator))]
     public abstract class Unit : Entity, IComparable<Unit>
     {
-        /// <summary>
-        /// Unit AI mode
-        /// </summary>
-
-
         #region Constants
         /// <summary>
         /// Maximum position offset from the cluster
         /// </summary>
         private const float OFFSET_MAGNITUDE = 5f;
-        /// <summary>
-        /// Overlap sphere hit buffer
-        /// </summary>
-        private static readonly Collider[] hits = new Collider[128];
         /// <summary>
         /// Velocity animator parameter hash
         /// </summary>
@@ -57,11 +50,9 @@ namespace DontEatSand.Entities.Units
         protected NavMeshAgent agent;
         protected Animator animator;
         private BehaviourTree bt;
-        private LayerMask unitsMask;
         private float smoothSpeed;
-        private List<Unit> enemyUnitsInRange = new List<Unit>();
-
-        private float attackStart = 0f;
+        private readonly HashSet<Unit> enemyUnitsInRange = new HashSet<Unit>();
+        private float attackStart;
         private float attackInterval = 1.0f;
 
         #endregion
@@ -93,7 +84,7 @@ namespace DontEatSand.Entities.Units
             get
             {
                 // is headed somewhere or has a target
-                return Vector3.Distance(this.Position, agent.destination) > 1.0f && Target != null;
+                return Vector3.Distance(this.Position, this.agent.destination) > 1.0f && this.Target != null;
             }
             set
             {
@@ -108,7 +99,7 @@ namespace DontEatSand.Entities.Units
         {
             get
             {
-                return enemyUnitsInRange.Count != 0;
+                return this.enemyUnitsInRange.Count != 0;
             }
             set
             {
@@ -162,12 +153,12 @@ namespace DontEatSand.Entities.Units
             get
             {
                 bool attackReady = false;
-                if(Time.time > attackStart + attackInterval)
+                if(Time.time > this.attackStart + this.attackInterval)
                 {
-                    attackStart = Time.time;
+                    this.attackStart = Time.time;
                     attackReady = true;
                 }
-                return attackReady && Target != null && Vector3.Distance(this.Position, Target.Position) < 1.0f;
+                return attackReady && this.Target != null && Vector3.Distance(this.Position, this.Target.Position) < 1.0f;
             }
         }
 
@@ -216,14 +207,14 @@ namespace DontEatSand.Entities.Units
         /// <returns></returns>
         private Unit FindClosestTarget()
         {
-            int size = enemyUnitsInRange.Count;
+            int size = this.enemyUnitsInRange.Count;
             if (size == 0) return null;
 
             //Get closest target
             Unit closestTarget = null;
             Vector3 position = this.transform.position;
             float distanceToClosest = float.PositiveInfinity;
-            foreach (Unit enemy in enemyUnitsInRange)
+            foreach (Unit enemy in this.enemyUnitsInRange)
             {
                 float dist = Vector3.Distance(enemy.Position, position);
                 //Making sure it's a valid entity target
@@ -237,7 +228,6 @@ namespace DontEatSand.Entities.Units
             //Return it's entity
             return closestTarget;
         }
-
         #endregion
 
         #region Virtual methods
@@ -248,9 +238,9 @@ namespace DontEatSand.Entities.Units
         public virtual void Attack(Entity target)
         {
             // Set animator trigger for attacking
-            animator.SetTrigger(attackTriggerName);
+            this.animator.SetTrigger(this.attackTriggerName);
         }
-        
+
         /// <summary>
         /// Processes commands from the player
         /// Make sure to call base.ProcessCommand if overriding!
@@ -277,29 +267,30 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Collider Functions
-
         private void OnTriggerEnter(Collider collider)
         {
+            if (collider.isTrigger) { return; }
+
             GameObject enemy = collider.gameObject;
             if(enemy.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
             {
                 // Populate enemies
-                enemyUnitsInRange.Add(enemyUnit);
+                this.enemyUnitsInRange.Add(enemyUnit);
             }
 
         }
 
         private void OnTriggerExit(Collider collider)
         {
+            if (collider.isTrigger) { return; }
+
             GameObject enemy = collider.gameObject;
-            if(enemy.TryGetComponent(out Unit enemyUnit) && enemyUnitsInRange.Contains(enemyUnit))
+            if(enemy.TryGetComponent(out Unit enemyUnit) && this.enemyUnitsInRange.Contains(enemyUnit))
             {
-                enemyUnitsInRange.Remove(enemyUnit);
+                this.enemyUnitsInRange.Remove(enemyUnit);
             }
         }
-
         #endregion
-
 
         #region Functions
         /// <summary>
@@ -312,7 +303,6 @@ namespace DontEatSand.Entities.Units
             {
                 this.agent = GetComponent<NavMeshAgent>();
                 this.animator = GetComponent<Animator>();
-                this.unitsMask = LayerUtils.GetMask(Layers.VISIBLE_UNIT);
                 this.behaviourMode = Mode.DEFEND;
                 this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
                 this.bt.Start();
@@ -390,7 +380,7 @@ namespace DontEatSand.Entities.Units
         public BTCoroutine FollowOrderRoutine()
         {
 
-            if(HasOrderFlag)
+            if(this.HasOrderFlag)
             {
                 yield return BTNodeResult.SUCCESS;
             }
@@ -398,7 +388,7 @@ namespace DontEatSand.Entities.Units
             {
                 yield return BTNodeResult.FAILURE;
             }
-            
+
             // yield return BTNodeResult.NOT_FINISHED;
         }
 
@@ -414,11 +404,18 @@ namespace DontEatSand.Entities.Units
                 if (IsEnemySeen())
                 {
                     this.Target = FindClosestTarget();
-                    this.agent.SetDestination(this.Target.Position);
-                    if (CanAttack)
+                    if (this.Target)
                     {
-                        Attack(this.Target);
-                        yield return BTNodeResult.NOT_FINISHED;
+                        this.agent.SetDestination(this.Target.Position);
+                        if (this.CanAttack)
+                        {
+                            Attack(this.Target);
+                            yield return BTNodeResult.NOT_FINISHED;
+                        }
+                    }
+                    else
+                    {
+                        //Do we need to do something here? Can this happen at all?
                     }
                 }
             }
@@ -428,13 +425,21 @@ namespace DontEatSand.Entities.Units
                 if(IsUnderAttack())
                 {
                     this.Target = FindClosestTarget();
-                    Debug.Log(enemyUnitsInRange);
-                    this.agent.SetDestination(this.Target.Position);
-                    Debug.Log("CanAttack " + CanAttack);
-                    if (CanAttack)
+                    Debug.Log(this.enemyUnitsInRange.Count);
+                    //NOTE: This was throwing when out of targets, so I'm guessing this is the way to handle it
+                    if (this.Target)
                     {
-                        Attack(this.Target);
-                        yield return BTNodeResult.NOT_FINISHED;
+                        this.agent.SetDestination(this.Target.Position);
+                        Debug.Log("CanAttack " + this.CanAttack);
+                        if (this.CanAttack)
+                        {
+                            Attack(this.Target);
+                            yield return BTNodeResult.NOT_FINISHED;
+                        }
+                    }
+                    else
+                    {
+                        this.behaviourMode = Mode.DEFEND;
                     }
                 }
                 // should return to original position if wanders too far off

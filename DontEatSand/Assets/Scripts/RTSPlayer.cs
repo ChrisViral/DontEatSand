@@ -237,11 +237,28 @@ namespace DontEatSand
         /// <param name="unit"></param>
         private void OnUnitDestroyed(Unit unit)
         {
-            Debug.Log(unit);
             if (unit.IsControllable())
             {
                 this.units.Remove(unit);
-                this.SelectedUnits.Remove(unit);
+                switch (this.SelectionType)
+                {
+                    case SelectionType.UNITS:
+                        int count = this.SelectedUnits.Count;
+                        this.SelectedUnits.Remove(unit);
+                        if (count != this.SelectedUnits.Count)
+                        {
+                            this.SelectionType = this.SelectedUnits.Count == 0 ? SelectionType.NONE : SelectionType.UNITS;
+                        }
+                        break;
+
+                    case SelectionType.OTHER:
+                        if (this.Selected as Unit == unit)
+                        {
+                            this.Selected = null;
+                            this.SelectionType = SelectionType.NONE;
+                        }
+                        break;
+                }
             }
         }
 
