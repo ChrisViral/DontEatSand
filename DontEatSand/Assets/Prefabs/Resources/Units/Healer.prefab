@@ -374,6 +374,9 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
+  attackRange: 1
+  bodyRenderer: {fileID: 8997187199331507035}
+  tintIndices: 07000000
   behaviourMode: 0
 --- !u!114 &1099417551836660900
 MonoBehaviour:

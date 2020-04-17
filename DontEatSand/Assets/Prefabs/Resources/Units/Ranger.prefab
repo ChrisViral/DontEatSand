@@ -317,6 +317,8 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   attackRange: 10
+  bodyRenderer: {fileID: 7693733964660367916}
+  tintIndices: 0600000008000000
   behaviourMode: 0
   launchLocation: {x: 0.5, y: 1.5, z: 0.35}
   projectile: {fileID: 2125215933222890785, guid: 0099a88428c299b49907d3e6de150c3f,

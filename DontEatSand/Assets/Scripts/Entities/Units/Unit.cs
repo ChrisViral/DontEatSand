@@ -48,6 +48,10 @@ namespace DontEatSand.Entities.Units
         private Gradient healthGradient;
         [SerializeField]
         protected float attackRange = 1f;
+        [SerializeField]
+        private Renderer bodyRenderer;
+        [SerializeField]
+        private int[] tintIndices;
         public Mode behaviourMode;
         protected NavMeshAgent agent;
         protected Animator animator;
@@ -299,6 +303,14 @@ namespace DontEatSand.Entities.Units
         protected override void OnAwake()
         {
             this.healthbar.gameObject.SetActive(false);
+            Material team = RTSPlayer.Instance.Castle.PlayerMaterial;
+            Material[] materials = this.bodyRenderer.materials;
+            foreach (int index in this.tintIndices)
+            {
+                materials[index] = RTSPlayer.Instance.Castle.PlayerMaterial;
+            }
+            this.bodyRenderer.materials = materials;
+
             if (this.IsControllable())
             {
                 this.agent = GetComponent<NavMeshAgent>();

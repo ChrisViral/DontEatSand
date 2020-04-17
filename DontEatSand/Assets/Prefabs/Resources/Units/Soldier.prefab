@@ -1324,6 +1324,8 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   attackRange: 1
+  bodyRenderer: {fileID: 7939121564521330240}
+  tintIndices: 06000000
   behaviourMode: 0
 --- !u!195 &1248447881997185065
 NavMeshAgent:
