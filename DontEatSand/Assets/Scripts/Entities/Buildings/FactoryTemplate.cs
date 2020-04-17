@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DontEatSand.Entities.Units;
 using DontEatSand.Utils;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace DontEatSand.Entities.Buildings
 {
@@ -29,6 +32,9 @@ namespace DontEatSand.Entities.Buildings
         private readonly Vector3[] bottom = new Vector3[4];
         private int inCollider;
         public bool validPosition;
+        private NavMeshAgent agent;
+        private NavMeshPath path;
+        private bool buildRequested;
         #endregion
 
         #region Properties
@@ -48,6 +54,23 @@ namespace DontEatSand.Entities.Buildings
                 }
             }
         }
+
+        private Farmer builder;
+        /// <summary>
+        /// The builder associated to this template
+        /// </summary>
+        public Farmer Builder
+        {
+            get => this.builder;
+            set
+            {
+                if (value)
+                {
+                    this.builder = value;
+                    this.agent = value.GetComponent<NavMeshAgent>();
+                }
+            }
+        }
         #endregion
 
         #region Functions
@@ -59,6 +82,7 @@ namespace DontEatSand.Entities.Buildings
             this.camera = Camera.main;
             this.cameraTransform = this.camera.transform;
             this.groundMask = 1 << (int)this.groundLayer;
+            this.path = new NavMeshPath();
 
             //Collider data
             Vector3 center = this.collider.center;
@@ -71,30 +95,63 @@ namespace DontEatSand.Entities.Buildings
             this.bottom[3] = new Vector3(center.x - extents.x, y, center.z - extents.x);
         }
 
+#if UNITY_EDITOR
+        private void Start()
+        {
+            //Get any agent if testing
+            if (!PhotonNetwork.IsConnected)
+            {
+                this.Builder = FindObjectOfType<Farmer>();
+            }
+        }
+#endif
+
         private void Update()
         {
+#if UNITY_EDITOR
+            //Get any agent if testing
+            if (!this.builder && !PhotonNetwork.IsConnected)
+            {
+                this.Builder = FindObjectOfType<Farmer>();
+            }
+#endif
+
             //Align to face camera camera
             this.transform.rotation = Quaternion.Euler(0f, this.cameraTransform.eulerAngles.y + 180f, 0f);
 
             //Check if where mouse is positioned has
             if (Physics.Raycast(this.camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 300f, this.groundMask, QueryTriggerInteraction.Ignore) && Vector3.Angle(hit.normal, Vector3.up) < 1f)
             {
+                //Path is only valid if it's reachable
+                this.validPosition = !this.agent || (this.agent.CalculatePath(hit.point, this.path) && this.path.status == NavMeshPathStatus.PathComplete);
                 this.transform.position = hit.point;
-                this.validPosition = true;
             }
             else
             {
                 this.transform.position = new Vector3(0f, -5f, 0f);
                 this.validPosition = false;
             }
+
+            this.buildRequested = Input.GetMouseButtonUp(0);
         }
 
         private void FixedUpdate()
         {
-            //Check if anything is in the collider and there is ground under the structure
-            this.Valid = this.inCollider == 0 &&
+            //Check position is valid, nothing is in collider, and there is ground below
+            this.Valid = this.validPosition && this.inCollider == 0 &&
                          this.bottom.Select(this.transform.TransformPoint)
                              .All(p => Physics.Raycast(p, Vector3.down, 0.25f, this.groundMask, QueryTriggerInteraction.Ignore));
+
+            //Check if we need to build
+            if (this.buildRequested)
+            {
+                if (this.Valid)
+                {
+                    //Do the thing
+                }
+
+                this.buildRequested = false;
+            }
         }
 
         private void OnTriggerEnter(Collider other)

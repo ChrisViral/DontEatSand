@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 144430014893298859}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0.37446827, z: 0}
-  m_LocalScale: {x: 40, y: 40, z: 40}
+  m_LocalPosition: {x: -0, y: 0.56170243, z: 0}
+  m_LocalScale: {x: 60, y: 60, z: 60}
   m_Children: []
   m_Father: {fileID: 7332484550958902664}
   m_RootOrder: 0
@@ -104,8 +104,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5589543637185991473}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 1.0433968, z: 0}
-  m_LocalScale: {x: -0.6511968, y: -0.6511968, z: -13.169232}
+  m_LocalPosition: {x: -0, y: 1.5650955, z: 0}
+  m_LocalScale: {x: -0.9767952, y: -0.9767952, z: -19.753845}
   m_Children: []
   m_Father: {fileID: 7332484550958902664}
   m_RootOrder: 1
@@ -219,8 +219,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 0.6, z: 1}
-  m_Center: {x: 0, y: 0.35, z: 0}
+  m_Size: {x: 2.25, y: 0.9, z: 1.5}
+  m_Center: {x: 0, y: 0.525, z: 0}
 --- !u!114 &6023966929229127582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,6 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26610760fb9344469d6ad6caab280569, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
+  defaultColor: {r: 0.077830195, g: 0.077830195, b: 0.077830195, a: 1}
   invalidColour: {r: 0.49056602, g: 0.025453899, b: 0.025453899, a: 1}
   groundLayer: 8
+  validPosition: 0

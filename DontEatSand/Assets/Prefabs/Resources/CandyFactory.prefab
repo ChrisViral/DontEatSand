@@ -201,7 +201,7 @@ Transform:
   m_GameObject: {fileID: 4343453583545323010}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 2804361354440885375}
   - {fileID: 3778668559614577990}
@@ -221,7 +221,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 7
+  m_Radius: 10
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1404365302215072884
 MonoBehaviour:
@@ -242,7 +242,7 @@ MonoBehaviour:
   hoveredColour: {r: 0.24705882, g: 0.38431373, b: 0.9607843, a: 1}
   entityName: CandyFactory
   candyGiven: 20
-  flagRenderer: {fileID: 0}
+  flagRenderer: {fileID: 7975482706729508352}
 --- !u!114 &-2034762795166274692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -370,8 +370,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.030866684, y: 0.021264646, z: 0.024686353}
-  m_Center: {x: 0, y: 0, z: 0.0017108545}
+  m_Size: {x: 0.03, y: 0.02, z: 0.09}
+  m_Center: {x: 0, y: 0, z: 0.035}
 --- !u!1001 &1296244010659715729
 PrefabInstance:
   m_ObjectHideFlags: 0
