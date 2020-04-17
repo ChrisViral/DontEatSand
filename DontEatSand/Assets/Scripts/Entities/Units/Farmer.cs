@@ -2,6 +2,7 @@
 using DontEatSand.Entities.Buildings;
 using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
@@ -148,6 +149,17 @@ namespace DontEatSand.Entities.Units
             else if (SandPitTarget != null)
             {
                 Dig(SandPitTarget);
+            }
+        }
+
+        protected override void OnDestroyed()
+        {
+            base.OnDestroyed();
+
+            if (isBuilding)
+            {
+                // Destroy building too
+                PhotonNetwork.Destroy(BuildTarget.gameObject);
             }
         }
 
