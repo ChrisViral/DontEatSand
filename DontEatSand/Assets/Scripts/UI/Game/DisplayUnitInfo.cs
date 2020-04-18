@@ -57,7 +57,7 @@ namespace DontEatSand.UI.Game
                     break;
 
                 case SelectionType.OTHER:
-                    this.queueParent.SetActive(RTSPlayer.Instance.Selected is Castle castle && castle.IsControllable());
+                    this.queueParent.SetActive(RTSPlayer.Instance.Selected is Castle castle && castle.Mine);
                     DisplaySingleObject(RTSPlayer.Instance.Selected);
                     break;
 

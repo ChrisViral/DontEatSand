@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using DontEatSand.Base;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
@@ -47,7 +46,7 @@ namespace DontEatSand.Entities.Buildings
         /// <summary>
         /// If this castle is mine
         /// </summary>
-        private bool Mine => RTSPlayer.Instance.Castle == this;
+        public bool Mine => RTSPlayer.Instance.Castle == this;
 
         /// <summary>
         /// If there is still room in the build queue to add other units

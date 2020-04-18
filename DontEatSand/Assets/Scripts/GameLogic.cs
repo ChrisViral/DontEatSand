@@ -260,16 +260,17 @@ namespace DontEatSand
         [PunRPC]
         private void SetupIndex(int player, int opponent)
         {
-            this.Log("Setting up as player index " + this.playerIndex);
+            this.Log("Setting up as player index " + player);
+            this.hud.SetActive(true);
+            this.waiting.SetActive(false);
             this.playerIndex = player;
             this.opponentIndex = opponent;
             Castle castle = this.castles[this.playerIndex];
+            this.Log("Assigned castle: " + castle.name);
             castle.photonView.RequestOwnership();
             RTSPlayer.Instance.Castle = castle;
             RTSPlayer.Instance.enabled = true;
             this.castles.ForEach(c => c.enabled = true);
-            this.hud.SetActive(true);
-            this.waiting.SetActive(false);
         }
         #endregion
 
