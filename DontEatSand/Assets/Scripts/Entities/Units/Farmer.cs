@@ -53,7 +53,7 @@ namespace DontEatSand.Entities.Units
                     digReady = true;
                 }
 
-                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= DIG_DISTANCE && this.BuildTarget == null;
+                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= DIG_DISTANCE && this.SandPitTarget != null;
             }
         }
 
@@ -84,6 +84,10 @@ namespace DontEatSand.Entities.Units
                 //this.digDistance = this.digDistance; <- Useless
                 this.SandPitTarget = sandpit;
             }
+            else if (!(target is Sandpit))
+            {
+                SandPitTarget = null;
+            }
         }
 
         public void Dig(Sandpit sandpit)
@@ -100,6 +104,7 @@ namespace DontEatSand.Entities.Units
             {
                 // Set animation bool for digging
                 this.animator.SetBool(digParam, false);
+
             }
         }
 
