@@ -6,6 +6,7 @@ using DontEatSand.Utils.BehaviourTrees;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Photon.Pun;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
 namespace DontEatSand.Entities.Units
@@ -220,7 +221,7 @@ namespace DontEatSand.Entities.Units
             {
                 float dist = Vector3.Distance(enemy.Position, position);
                 //Making sure it's a valid entity target
-                if(dist < distanceToClosest) // && (!PhotonNetwork.IsConnected || !entity.photonView.IsMine))
+                if(dist < distanceToClosest && (!PhotonNetwork.IsConnected || !enemy.photonView.IsMine))
                 {
                     distanceToClosest = dist;
                     closestTarget = enemy;
@@ -316,7 +317,7 @@ namespace DontEatSand.Entities.Units
         {
             if (collider.isTrigger) { return; }
 
-            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
+            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit) && !enemyUnit.IsControllable())
             {
                 // Populate enemies
                 this.enemyUnitsInRange.Add(enemyUnit);
