@@ -87,7 +87,10 @@ namespace DontEatSand.Entities.Units
         public void Flee()
         {
             // Set destination away from enemy
-            this.Destination = this.transform.position - FindClosestTarget().transform.position;
+            Unit enemy = FindClosestTarget();
+            Debug.Log(enemy);
+            Vector3 awayVect = (this.Position - enemy.Position).normalized;
+            this.Destination = this.Position + awayVect;
         }
 
         protected override void ProcessCommand(Vector3 destination, ISelectable target)
@@ -118,6 +121,7 @@ namespace DontEatSand.Entities.Units
         protected override void OnUpdate()
         {
             base.OnUpdate();
+
             // if target exists and is within range
             if(this.CanAttack && this.Target != null)
             {
@@ -128,8 +132,10 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Collider Functions
-        private void OnTriggerEnter(Collider collider)
+        protected override void OnTriggerEnter(Collider collider)
         {
+            base.OnTriggerEnter(collider);
+
             if (collider.isTrigger) { return; }
 
             if(collider.transform.parent.TryGetComponent(out Unit allyUnit)) // && !enemyUnit.IsControllable())
@@ -140,8 +146,10 @@ namespace DontEatSand.Entities.Units
 
         }
 
-        private void OnTriggerExit(Collider collider)
+        protected override void OnTriggerExit(Collider collider)
         {
+            base.OnTriggerExit(collider);
+
             if (collider.isTrigger) { return; }
 
             if(collider.transform.parent.TryGetComponent(out Unit allyUnit) && this.allyUnitsInRange.Contains(allyUnit))
@@ -168,8 +176,7 @@ namespace DontEatSand.Entities.Units
                 this.Target = FindClosestAlly();
                 if(this.Target)
                 {
-                    Debug.Log(this.Target.Health + " vs " + this.Target.HealthAmount);
-                    if(this.Target.Health < this.Target.HealthAmount)
+                    if(this.Target.HealthAmount < 1f)
                     {
                         this.Agent.SetDestination(this.Target.Position);
                         if(this.CanAttack) // using the same timer as attack
@@ -177,6 +184,10 @@ namespace DontEatSand.Entities.Units
                             Heal(this.Target);
                             yield return BTNodeResult.NOT_FINISHED;
                         }
+                    }
+                    else
+                    {
+                        yield return BTNodeResult.FAILURE;
                     }
                 }
             }
@@ -197,9 +208,9 @@ namespace DontEatSand.Entities.Units
             if (this.IsUnderAttackFlag)
             {
                 Flee();
-                yield return BTNodeResult.NOT_FINISHED;
+                yield return BTNodeResult.SUCCESS;
             }
-            yield return BTNodeResult.SUCCESS;
+            yield return BTNodeResult.FAILURE;
         }
 
         #endregion

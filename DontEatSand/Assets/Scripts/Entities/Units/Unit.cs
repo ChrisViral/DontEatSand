@@ -317,7 +317,7 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Collider Functions
-        private void OnTriggerEnter(Collider collider)
+        protected virtual void OnTriggerEnter(Collider collider)
         {
             if (collider.isTrigger) { return; }
 
@@ -329,7 +329,7 @@ namespace DontEatSand.Entities.Units
 
         }
 
-        private void OnTriggerExit(Collider collider)
+        protected virtual void OnTriggerExit(Collider collider)
         {
             if (collider.isTrigger) { return; }
 
@@ -462,7 +462,6 @@ namespace DontEatSand.Entities.Units
 
             if(this.HasOrderFlag)
             {
-                Debug.Log("i have an order");
                 yield return BTNodeResult.SUCCESS;
             }
             else
