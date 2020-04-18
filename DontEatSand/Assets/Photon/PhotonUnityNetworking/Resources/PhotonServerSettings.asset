@@ -41,5 +41,6 @@ MonoBehaviour:
   - SetBuilt
   - SetIsBuilding
   - FinishBuildOnNetwork
+  - Win
   DisableAutoOpenWizard: 1
   ShowSettings: 0

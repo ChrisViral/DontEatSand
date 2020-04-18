@@ -275,6 +275,7 @@ namespace DontEatSand.Entities.Buildings
             if (this.Mine)
             {
                 GameEvents.OnUnitRemovedFromQueue.RemoveListener(OnUnitRemovedFromQueue);
+                GameLogic.Instance.Lose();
             }
         }
 

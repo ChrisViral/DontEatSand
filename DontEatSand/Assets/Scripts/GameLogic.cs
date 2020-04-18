@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DontEatSand.Base;
 using DontEatSand.Entities.Buildings;
 using DontEatSand.Extensions;
@@ -7,8 +8,10 @@ using DontEatSand.Utils;
 using JetBrains.Annotations;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace DontEatSand
@@ -73,6 +76,11 @@ namespace DontEatSand
         /// Material associated to the opponent
         /// </summary>
         public Material OpponentMaterial => this.teams[this.opponentIndex];
+
+        /// <summary>
+        /// If it is GameOver
+        /// </summary>
+        public bool GameOver { get; private set; }
         #endregion
 
         #region Static properties
@@ -217,6 +225,7 @@ namespace DontEatSand
 
                     break;
                 case GameScenes.WORLD:
+                    StopAllCoroutines();
                     this.playerIndex = this.opponentIndex = -1;
                     this.castles = FindObjectsOfType<Castle>();
                     this.hud = GameObject.FindGameObjectWithTag(HUD_TAG);
@@ -230,6 +239,15 @@ namespace DontEatSand
                         this.waiting.SetActive(false);
                     }
                     Array.Sort(this.castles);
+
+                    if (this.GameOver)
+                    {
+                        this.GameOver = false;
+                        if (PhotonNetwork.IsMasterClient)
+                        {
+                            StartGame();
+                        }
+                    }
                     break;
             }
 
@@ -271,6 +289,47 @@ namespace DontEatSand
             RTSPlayer.Instance.Castle = castle;
             RTSPlayer.Instance.enabled = true;
             this.castles.ForEach(c => c.enabled = true);
+        }
+
+        /// <summary>
+        /// Makes this player lose and restarts the game
+        /// </summary>
+        public void Lose()
+        {
+            this.GameOver = true;
+            this.waiting.gameObject.SetActive(true);
+            TMP_Text text = this.waiting.GetComponent<TMP_Text>();
+            text.text = "You lose!";
+            text.color = Color.red;
+            this.photonView.RPC(nameof(Win), RpcTarget.Others);
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StartCoroutine(RestartGame());
+            }
+        }
+
+        /// <summary>
+        /// Makes this player win and restarts the game
+        /// </summary>
+        [PunRPC]
+        private void Win()
+        {
+            this.GameOver = true;
+            TMP_Text text = this.waiting.GetComponent<TMP_Text>();
+            text.text = "You win!";
+            text.color = Color.green;
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StartCoroutine(RestartGame());
+            }
+        }
+
+        public IEnumerator<YieldInstruction> RestartGame()
+        {
+            yield return new WaitForSeconds(5f);
+            ReloadScene();
         }
         #endregion
 
