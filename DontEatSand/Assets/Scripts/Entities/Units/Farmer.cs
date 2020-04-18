@@ -61,12 +61,13 @@ namespace DontEatSand.Entities.Units
         {
             this.isBuilding = false;
 
-            // Reset stopping distance
-            this.Agent.stoppingDistance = DIG_DISTANCE;
-
             // Set animation bool for digging
             this.animator.SetBool(buildParam, false);
             this.BuildTarget = null;
+            
+            // Reset stopping distance and agent destination
+            this.Agent.destination = Position;
+            this.Agent.stoppingDistance = DIG_DISTANCE;
         }
 
         #endregion
