@@ -32,3 +32,5 @@ MonoBehaviour:
     location: 2
   - path: Assets/farmer-behaviour.xml
     location: 2
+  - path: Assets/scout-behavior.xml
+    location: 2
