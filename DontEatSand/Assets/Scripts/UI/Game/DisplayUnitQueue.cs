@@ -15,6 +15,7 @@ namespace DontEatSand.UI.Game
         #region Methods
         private void OnUnitAddedToQueue(UnitInfo unitInfo)
         {
+            this.Log("Adding to queue");
             QueueIcon newUnit = Instantiate(this.buttonPrefab, Vector3.zero, Quaternion.identity, this.transform);
             newUnit.Setup(unitInfo, () => RemoveUnitFromQueue(newUnit));
             // Add the unit to the queue visually
@@ -48,6 +49,7 @@ namespace DontEatSand.UI.Game
         #region Functions
         private void Awake()
         {
+            this.Log("Adding events");
             GameEvents.OnUnitAddedToQueue.AddListener(OnUnitAddedToQueue);
             GameEvents.OnUnitCreated.AddListener(OnUnitCreated);
         }

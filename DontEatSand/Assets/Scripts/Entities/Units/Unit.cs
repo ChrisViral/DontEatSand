@@ -6,6 +6,7 @@ using DontEatSand.Utils.BehaviourTrees;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Photon.Pun;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
 namespace DontEatSand.Entities.Units
@@ -16,7 +17,8 @@ namespace DontEatSand.Entities.Units
     public enum Mode
     {
         ATTACK,
-        DEFEND
+        DEFEND,
+        IDLE
     }
 
     /// <summary>
@@ -220,7 +222,7 @@ namespace DontEatSand.Entities.Units
             {
                 float dist = Vector3.Distance(enemy.Position, position);
                 //Making sure it's a valid entity target
-                if(dist < distanceToClosest) // && (!PhotonNetwork.IsConnected || !entity.photonView.IsMine))
+                if(dist < distanceToClosest && (!PhotonNetwork.IsConnected || !enemy.photonView.IsMine))
                 {
                     distanceToClosest = dist;
                     closestTarget = enemy;
@@ -282,8 +284,12 @@ namespace DontEatSand.Entities.Units
         /// <param name="target">Target to attack</param>
         public virtual void Attack(Entity target)
         {
-            // Set animator trigger for attacking
-            this.animator.SetTrigger(this.attackTriggerName);
+            if(target != this)
+            {
+                // Set animator trigger for attacking
+                this.animator.SetTrigger(this.attackTriggerName);
+                this.transform.LookAt(target.Position);
+            }
         }
 
         /// <summary>
@@ -312,11 +318,11 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Collider Functions
-        private void OnTriggerEnter(Collider collider)
+        protected virtual void OnTriggerEnter(Collider collider)
         {
             if (collider.isTrigger) { return; }
 
-            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit)) // && !enemyUnit.IsControllable())
+            if(collider.transform.parent.TryGetComponent(out Unit enemyUnit) && !enemyUnit.IsControllable())
             {
                 // Populate enemies
                 this.enemyUnitsInRange.Add(enemyUnit);
@@ -324,7 +330,7 @@ namespace DontEatSand.Entities.Units
 
         }
 
-        private void OnTriggerExit(Collider collider)
+        protected virtual void OnTriggerExit(Collider collider)
         {
             if (collider.isTrigger) { return; }
 
@@ -355,7 +361,7 @@ namespace DontEatSand.Entities.Units
             if (this.IsControllable())
             {
                 this.Agent.stoppingDistance = this.attackRange * 0.6f;
-                this.behaviourMode = Mode.DEFEND;
+                this.behaviourMode = Mode.IDLE;
                 this.bt = new BehaviourTree(this.BehaviourTreeLocation, this);
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);
@@ -457,7 +463,6 @@ namespace DontEatSand.Entities.Units
 
             if(this.HasOrderFlag)
             {
-                Debug.Log("i have an order");
                 yield return BTNodeResult.SUCCESS;
             }
             else

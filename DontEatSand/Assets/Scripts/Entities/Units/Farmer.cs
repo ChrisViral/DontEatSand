@@ -53,7 +53,7 @@ namespace DontEatSand.Entities.Units
                     digReady = true;
                 }
 
-                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= DIG_DISTANCE && this.BuildTarget == null;
+                return digReady && Vector3.Distance(this.Position, this.Agent.destination) <= DIG_DISTANCE && this.SandPitTarget != null;
             }
         }
 
@@ -61,12 +61,13 @@ namespace DontEatSand.Entities.Units
         {
             this.isBuilding = false;
 
-            // Reset stopping distance
-            this.Agent.stoppingDistance = DIG_DISTANCE;
-
             // Set animation bool for digging
             this.animator.SetBool(buildParam, false);
             this.BuildTarget = null;
+            
+            // Reset stopping distance and agent destination
+            this.Agent.destination = Position;
+            this.Agent.stoppingDistance = DIG_DISTANCE;
         }
 
         #endregion
@@ -84,6 +85,10 @@ namespace DontEatSand.Entities.Units
                 //this.digDistance = this.digDistance; <- Useless
                 this.SandPitTarget = sandpit;
             }
+            else if (!(target is Sandpit))
+            {
+                SandPitTarget = null;
+            }
         }
 
         public void Dig(Sandpit sandpit)
@@ -100,6 +105,7 @@ namespace DontEatSand.Entities.Units
             {
                 // Set animation bool for digging
                 this.animator.SetBool(digParam, false);
+
             }
         }
 
@@ -130,7 +136,8 @@ namespace DontEatSand.Entities.Units
         public void Flee()
         {
             // Set destination away from enemy
-            this.Destination = this.transform.position - FindClosestTarget().transform.position;
+            Vector3 awayVect = (this.transform.position - FindClosestTarget().transform.position).normalized;
+            this.Destination = Position + awayVect;
         }
 
         #endregion
@@ -175,9 +182,9 @@ namespace DontEatSand.Entities.Units
             if (this.IsUnderAttackFlag)
             {
                 Flee();
-                yield return BTNodeResult.NOT_FINISHED;
+                yield return BTNodeResult.SUCCESS;
             }
-            yield return BTNodeResult.SUCCESS;
+            yield return BTNodeResult.FAILURE;
         }
 
         #endregion

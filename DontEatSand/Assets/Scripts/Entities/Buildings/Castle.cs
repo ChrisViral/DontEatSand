@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using DontEatSand.Base;
 using DontEatSand.Entities.Units;
 using DontEatSand.Extensions;
 using DontEatSand.Utils;
@@ -45,6 +44,11 @@ namespace DontEatSand.Entities.Buildings
         public ReadOnlyCollection<Unit> Units { get; private set; }
 
         /// <summary>
+        /// If this castle is mine
+        /// </summary>
+        public bool Mine => RTSPlayer.Instance.Castle == this;
+
+        /// <summary>
         /// If there is still room in the build queue to add other units
         /// </summary>
         public bool CanBuild => this.buildQueue.Count < this.buildQueueMaxSize;
@@ -70,6 +74,7 @@ namespace DontEatSand.Entities.Buildings
         {
             //Check for index range
             if (index < 0 && index >= this.units.Length) throw new ArgumentOutOfRangeException(nameof(index), index, "Index must be within the range of the units list");
+            this.Log("Requesting build of " + this.units[0].Info.Name);
 
             //Check for room in the queue
             if (!this.CanBuild)
@@ -103,6 +108,11 @@ namespace DontEatSand.Entities.Buildings
                     this.inProgress = info;
                 }
                 GameEvents.OnUnitAddedToQueue.Invoke(info);
+                this.Log("Building");
+            }
+            else
+            {
+                this.LogWarning("Not enough resources!");
             }
         }
 
@@ -198,7 +208,6 @@ namespace DontEatSand.Entities.Buildings
         #region Functions
         protected override void OnAwake()
         {
-            this.Units = Array.AsReadOnly(this.units);
             if (PhotonNetwork.IsConnected)
             {
                 this.enabled = false;
@@ -207,9 +216,10 @@ namespace DontEatSand.Entities.Buildings
 
         protected override void OnStart()
         {
-            if (RTSPlayer.Instance.Castle == this)
+            if (this.Mine)
             {
                 //Setup
+                this.Units = Array.AsReadOnly(this.units);
                 this.visibleSandpit.Visible = true;
                 Camera cam = Camera.main;
                 RTSCamera rtsCam = cam.GetComponent<RTSCamera>();
@@ -226,11 +236,14 @@ namespace DontEatSand.Entities.Buildings
                 {
                     GameObject go = PhotonNetwork.Instantiate(farmer.name, this.spawnLocation.position, farmer.transform.rotation);
                     go.transform.SetParent(this.transform.parent, true);
+                    Unit u = go.GetComponent<Unit>();
+                    u.MoveUnit(u.Position + this.transform.forward * 2f, u.Position);
                     GameEvents.OnUnitCreated.Invoke(go.GetComponent<Unit>());
                 }
                 else
                 {
-                    Unit u = Instantiate(farmer, this.spawnLocation.position, farmer.transform.rotation, this.transform.parent);
+                    Unit u = Instantiate(farmer, this.spawnLocation.position + Vector3.forward * 2f, farmer.transform.rotation, this.transform.parent);
+                    u.MoveUnit(u.Position + this.transform.forward, u.Position);
                     GameEvents.OnUnitCreated.Invoke(u);
                 }
             }
@@ -239,11 +252,12 @@ namespace DontEatSand.Entities.Buildings
         private void Update()
         {
             //Check if building, if so check for completion of current unit
-            if (this.IsControllable() && this.IsBuilding && this.buildTimer.Elapsed.TotalSeconds >= this.inProgress.BuildTime)
+            if (this.Mine && this.IsBuilding && this.buildTimer.Elapsed.TotalSeconds >= this.inProgress.BuildTime)
             {
                 //Get unit and spawn it
                 Unit unit = this.buildQueue.First.Value;
                 Unit clone = PhotonUtils.Instantiate(unit, this.spawnLocation.position, unit.transform.rotation, this.transform.parent);
+                clone.MoveUnit(clone.Position + this.transform.forward * 2f, clone.Position);
                 GameEvents.OnUnitCreated.Invoke(clone);
 
                 //Pop build queue
@@ -258,7 +272,7 @@ namespace DontEatSand.Entities.Buildings
             // teacher die
             PlaySound(1);
 
-            if (this.IsControllable())
+            if (this.Mine)
             {
                 GameEvents.OnUnitRemovedFromQueue.RemoveListener(OnUnitRemovedFromQueue);
             }
@@ -272,9 +286,9 @@ namespace DontEatSand.Entities.Buildings
         /// <param name="index"></param>
         protected void PlaySound(int index)
         {
-            if (soundEffect.Length > index)
+            if (this.soundEffect.Length > index)
             {
-                AudioSource.PlayClipAtPoint(soundEffect[index], transform.position);
+                AudioSource.PlayClipAtPoint(this.soundEffect[index], this.transform.position);
             }
         }
         #endregion

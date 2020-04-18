@@ -4,6 +4,7 @@ using DontEatSand.Entities.Buildings;
 using DontEatSand.Extensions;
 using DontEatSand.UI;
 using DontEatSand.Utils;
+using JetBrains.Annotations;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -58,7 +59,6 @@ namespace DontEatSand
         private float baseVolume;
         private bool loaded;
         public int playerIndex, opponentIndex;
-        private Player otherPlayer;
         private Castle[] castles;
         private GameObject hud, waiting;
         #endregion
@@ -217,6 +217,7 @@ namespace DontEatSand
 
                     break;
                 case GameScenes.WORLD:
+                    this.playerIndex = this.opponentIndex = -1;
                     this.castles = FindObjectsOfType<Castle>();
                     this.hud = GameObject.FindGameObjectWithTag(HUD_TAG);
                     this.waiting = GameObject.FindGameObjectWithTag(WAITING_TAG);
@@ -230,9 +231,6 @@ namespace DontEatSand
                     }
                     Array.Sort(this.castles);
                     break;
-            }
-            if (loadedScene == GameScenes.MENU)
-            {
             }
 
             //Log scene change
@@ -249,12 +247,12 @@ namespace DontEatSand
             //Shortcut since we know we only have two players
             if (Random.value > 0.5f)
             {
-                this.photonView.RPC(nameof(SetupIndex), this.otherPlayer, 1, 0);
+                this.photonView.RPC(nameof(SetupIndex), RpcTarget.Others, 1, 0);
                 SetupIndex(0, 1);
             }
             else
             {
-                this.photonView.RPC(nameof(SetupIndex), this.otherPlayer, 0, 1);
+                this.photonView.RPC(nameof(SetupIndex), RpcTarget.Others, 0, 1);
                 SetupIndex(1, 0);
             }
         }
@@ -262,27 +260,22 @@ namespace DontEatSand
         [PunRPC]
         private void SetupIndex(int player, int opponent)
         {
+            this.Log("Setting up as player index " + player);
+            this.hud.SetActive(true);
+            this.waiting.SetActive(false);
             this.playerIndex = player;
             this.opponentIndex = opponent;
             Castle castle = this.castles[this.playerIndex];
+            this.Log("Assigned castle: " + castle.name);
             castle.photonView.RequestOwnership();
             RTSPlayer.Instance.Castle = castle;
             RTSPlayer.Instance.enabled = true;
             this.castles.ForEach(c => c.enabled = true);
-            this.hud.SetActive(true);
-            this.waiting.SetActive(false);
         }
         #endregion
 
         #region Callbacks
-        public override void OnJoinedRoom()
-        {
-            this.Log("Successfully joined room as " + PhotonNetwork.NickName);
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                this.otherPlayer = PhotonNetwork.PlayerListOthers[0];
-            }
-        }
+        public override void OnJoinedRoom() => this.Log("Successfully joined room as " + PhotonNetwork.NickName);
 
         public override void OnPlayerEnteredRoom(Player player)
         {
@@ -290,7 +283,6 @@ namespace DontEatSand
             if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == MAX_PLAYERS)
             {
                 StartGame();
-                this.otherPlayer = player;
             }
         }
 
@@ -309,7 +301,6 @@ namespace DontEatSand
         {
             //Return to main menu
             this.Log("Left room, returning to menu...");
-            PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer);
             LoadScene(GameScenes.MENU);
         }
         #endregion

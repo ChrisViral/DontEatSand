@@ -25,24 +25,27 @@ namespace DontEatSand.Entities.Units
 
         public override void Attack(Entity target)
         {
-            base.Attack(target);
-
-            // index 1 attack sound
-            PlaySoundOnce(1);
-
-            target.Damage(10);
-
-            if(target is Unit unit) // attacking a unit
+            if(target != this)
             {
-                unit.IsUnderAttackFlag = true;
-                // index 2 hit on unit sound
-                PlaySoundOnce(2, 0.1f);
-            }
-            else // attacking a building
-            {
-                // index 3 hit on building sound
-                PlaySoundOnce(3, 0.1f);
+                base.Attack(target);
 
+                // index 1 attack sound
+                PlaySoundOnce(1);
+
+                target.Damage(10);
+
+                if(target is Unit unit) // attacking a unit
+                {
+                    unit.IsUnderAttackFlag = true;
+                    // index 2 hit on unit sound
+                    PlaySoundOnce(2, 0.1f);
+                }
+                else // attacking a building
+                {
+                    // index 3 hit on building sound
+                    PlaySoundOnce(3, 0.1f);
+
+                }
             }
         }
 
