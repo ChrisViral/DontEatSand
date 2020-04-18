@@ -88,7 +88,6 @@ namespace DontEatSand.Entities.Units
         {
             // Set destination away from enemy
             Unit enemy = FindClosestTarget();
-            Debug.Log(enemy);
             Vector3 awayVect = (this.Position - enemy.Position).normalized;
             this.Destination = this.Position + awayVect;
         }

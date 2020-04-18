@@ -176,9 +176,9 @@ namespace DontEatSand.Entities.Units
             if (this.IsUnderAttackFlag)
             {
                 Flee();
-                yield return BTNodeResult.NOT_FINISHED;
+                yield return BTNodeResult.SUCCESS;
             }
-            yield return BTNodeResult.SUCCESS;
+            yield return BTNodeResult.FAILURE;
         }
 
         #endregion
