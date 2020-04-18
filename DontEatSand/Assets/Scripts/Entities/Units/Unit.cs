@@ -283,10 +283,12 @@ namespace DontEatSand.Entities.Units
         /// <param name="target">Target to attack</param>
         public virtual void Attack(Entity target)
         {
-            // Set animator trigger for attacking
-            this.animator.SetTrigger(this.attackTriggerName);
-
-            this.transform.LookAt(target.Position);
+            if(target != this)
+            {
+                // Set animator trigger for attacking
+                this.animator.SetTrigger(this.attackTriggerName);
+                this.transform.LookAt(target.Position);
+            }
         }
 
         /// <summary>
@@ -315,7 +317,7 @@ namespace DontEatSand.Entities.Units
         #endregion
 
         #region Collider Functions
-        private void OnTriggerEnter(Collider collider)
+        protected virtual void OnTriggerEnter(Collider collider)
         {
             if (collider.isTrigger) { return; }
 
@@ -327,7 +329,7 @@ namespace DontEatSand.Entities.Units
 
         }
 
-        private void OnTriggerExit(Collider collider)
+        protected virtual void OnTriggerExit(Collider collider)
         {
             if (collider.isTrigger) { return; }
 
@@ -359,7 +361,7 @@ namespace DontEatSand.Entities.Units
             {
                 this.Agent.stoppingDistance = this.attackRange * 0.6f;
                 this.behaviourMode = Mode.IDLE;
-                this.bt = new BehaviourTree(DESUtils.BehaviourTreeLocation, this);
+                this.bt = new BehaviourTree(this.BehaviourTreeLocation, this);
                 this.bt.Start();
                 GameEvents.OnActionRequested.AddListener(ProcessCommand);
             }
@@ -460,7 +462,6 @@ namespace DontEatSand.Entities.Units
 
             if(this.HasOrderFlag)
             {
-                Debug.Log("i have an order");
                 yield return BTNodeResult.SUCCESS;
             }
             else

@@ -1,4 +1,5 @@
-﻿using DontEatSand.Utils;
+﻿using UnityEngine;
+using DontEatSand.Utils;
 using DontEatSand.Utils.BehaviourTrees;
 using BTCoroutine = System.Collections.Generic.IEnumerator<DontEatSand.Utils.BehaviourTrees.BTNodeResult>;
 
@@ -15,7 +16,9 @@ namespace DontEatSand.Entities.Units
         public void Flee()
         {
             // Set destination away from enemy
-            this.Destination = this.transform.position - FindClosestTarget().transform.position;
+            Unit enemy = FindClosestTarget();
+            Vector3 awayVect = (this.Position - enemy.Position).normalized;
+            this.Destination = this.Position + awayVect;
         }
         #endregion
 
@@ -40,9 +43,9 @@ namespace DontEatSand.Entities.Units
             if (this.IsUnderAttackFlag)
             {
                 Flee();
-                yield return BTNodeResult.NOT_FINISHED;
+                yield return BTNodeResult.SUCCESS;
             }
-            yield return BTNodeResult.SUCCESS;
+            yield return BTNodeResult.FAILURE;
         }
 
         #endregion

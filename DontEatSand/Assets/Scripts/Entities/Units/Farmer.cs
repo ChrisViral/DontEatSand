@@ -135,7 +135,8 @@ namespace DontEatSand.Entities.Units
         public void Flee()
         {
             // Set destination away from enemy
-            this.Destination = this.transform.position - FindClosestTarget().transform.position;
+            Vector3 awayVect = (this.transform.position - FindClosestTarget().transform.position).normalized;
+            this.Destination = Position + awayVect;
         }
 
         #endregion
@@ -180,9 +181,9 @@ namespace DontEatSand.Entities.Units
             if (this.IsUnderAttackFlag)
             {
                 Flee();
-                yield return BTNodeResult.NOT_FINISHED;
+                yield return BTNodeResult.SUCCESS;
             }
-            yield return BTNodeResult.SUCCESS;
+            yield return BTNodeResult.FAILURE;
         }
 
         #endregion
